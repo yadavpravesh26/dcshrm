@@ -39,7 +39,7 @@ if($meth=="ajaxsaveHand")
 					
 			);
 		$result = 1;
-		$msg = 'Hand outs Creation Error';
+		$msg = 'Programs Creation Error';
 		if(isset($_FILES['file']['name']) && $_FILES['file']['name']!=''){
 			$result = 0;
 			$allowedExtensions = array('doc', 'docx', 'pdf', 'docx');
@@ -61,10 +61,10 @@ if($meth=="ajaxsaveHand")
 		$lastId = $prop->addID($table_name, $insdata);
 		
 		if ($lastId == 0)
-		$msg = 'Hand outs Creation Faild';
+		$msg = 'Programs Creation Faild';
 		
         if ($lastId != 0) {
-			$msg = 'Hand outs Creation Success';
+			$msg = 'Programs Creation Success';
 			echo json_encode(array('lastId'=>$lastId,'handTitle'=>$_POST['document_name'],'err'=>0,'msg'=>$msg)); exit;
 		}
 	    else{

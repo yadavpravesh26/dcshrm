@@ -1324,7 +1324,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                                                             <div class="file-box">
 
-                                                                <h3 class="m-t-0 m-b-10" style="background: #348253;"><div class="title pull-left">Handouts</div><div class="add pull-right" data-toggle="modal" data-target="#myModalHand" ><img data-toggle="tooltip" data-original-title="Add Handouts"  src="img/add-file-button.png"></div></h3>
+                                                                <h3 class="m-t-0 m-b-10" style="background: #348253;"><div class="title pull-left">Programs</div><div class="add pull-right" data-toggle="modal" data-target="#myModalHand" ><img data-toggle="tooltip" data-original-title="Add Programs"  src="img/add-file-button.png"></div></h3>
 
                                                                 <div class="clearfix m-b-10"></div>
 
@@ -1756,7 +1756,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
-                        <h4 class="modal-title" id="myModalLabel">Add Handouts</h4> </div>
+                        <h4 class="modal-title" id="myModalLabel">Add Programs</h4> </div>
 
                     	<?php /*?><div id="select-handout" class="modal-body">
 
@@ -1809,7 +1809,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 								<input type="hidden" name="subCatID" id="subCatID" class="SubCatId" value="<?php echo $subcategory_id?>">
                                 <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
                                 
-                                <label for="document_name">Handout Title</label>
+                                <label for="document_name">Programs Title</label>
                                 <div class="input-group">
                                 <input type="text" class="form-control" name="document_name" id="document_name" placeholder="Title" required>
                                 </div>

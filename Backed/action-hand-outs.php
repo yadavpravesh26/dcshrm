@@ -25,7 +25,7 @@ switch($method)
 					//'doc_content'	=>$_POST['document_content'],
 			);
 		$result = 1;
-		$msg = 'Hand outs Creation Error';
+		$msg = 'Programs Creation Error';
 		if(isset($_FILES['file']['name']) && $_FILES['file']['name']!=''){
 			$result = 0;
 			$allowedExtensions = array('doc', 'docx', 'pdf');
@@ -47,7 +47,7 @@ switch($method)
 		
         if ($res) {
 			setcookie("status", "Success", time()+10);
-			setcookie("title", "Hand outs Created Successfully", time()+10);
+			setcookie("title", "Programs Created Successfully", time()+10);
 			setcookie("err", "success", time()+10);
 			header('Location: manage-hand-outs.php');
 		}
@@ -69,7 +69,7 @@ switch($method)
 					//'doc_content'	=>$_POST['document_content'],
 			);
 		$result = 1;
-		$msg = 'Hand outs Updated Error';
+		$msg = 'Programs Updated Error';
 		if(isset($_FILES['file']['name']) && $_FILES['file']['name']!=''){
 			$result = 0;
 			$allowedExtensions = array('doc', 'docx', 'pdf');
@@ -91,7 +91,7 @@ switch($method)
 		if($res)
 		{
 			setcookie("status", "Success", time()+10);
-			setcookie("title", "Hand outs Updated Successfully", time()+10);
+			setcookie("title", "Programs Updated Successfully", time()+10);
 			setcookie("err", "success", time()+10);
 			header('Location: manage-hand-outs.php');
 		}else{
@@ -126,7 +126,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 	<meta name="author" content="">
 	<!-- Favicon icon -->
 	<link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
-	<title><?php echo $titleTag; ?> Hand outs</title>
+	<title><?php echo $titleTag; ?> Programs</title>
 	<!-- Bootstrap Core CSS -->
 	<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
@@ -283,12 +283,12 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 			<div class="container-fluid">
 				<div class="row bg-title">
 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-						<h4 class="page-title"><?php echo $titleTag; ?> Hand outs</h4> </div>
+						<h4 class="page-title"><?php echo $titleTag; ?> Programs</h4> </div>
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a href="dashboard.php">Dashboard</a>
 							</li>
-							<li class="active"><?php echo $titleTag; ?> Hand outs</li>
+							<li class="active"><?php echo $titleTag; ?> Programs</li>
 						</ol>
 					</div>
 					<!-- /.col-lg-12 -->
@@ -296,14 +296,14 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 				<div class="row">
 					<div class="col-md-12">
 						<div class="white-box">
-							<h3 class="box-title"><?php echo $titleTag; ?> Hand outs</h3>
+							<h3 class="box-title"><?php echo $titleTag; ?> Programs</h3>
 
 							<?php $foraction = (isset($_REQUEST['id'])?'update&id='.$_REQUEST['id']:'add');?>
 
 							<form data-toggle="validator" method="post" action="action-hand-outs.php?method=<?php echo $foraction; ?>" enctype="multipart/form-data" id='categoryform'>
 								<div class="row">
 									<div class="form-group col-md-4">
-										<label for="exampleInputuname">Hand outs Title</label>
+										<label for="exampleInputuname">Programs Title</label>
 
 										<div class="input-group">
 
@@ -340,7 +340,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 									<?php /*?><!-- Banner Section ends -->
 									<!-- Page Content starts -->
 									<section class="wid100">
-									<h3 class="box-title col-sm-12" style="margin: 0 0 15px !important; margin-top: 0px; margin-right: 0px; margin-bottom: 15px; margin-left: 0px;">Hand outs Content</h3>
+									<h3 class="box-title col-sm-12" style="margin: 0 0 15px !important; margin-top: 0px; margin-right: 0px; margin-bottom: 15px; margin-left: 0px;">Programs Content</h3>
 									<div class="clearfix"></div>
 
 										<div class="col-sm-12">

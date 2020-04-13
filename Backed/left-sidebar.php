@@ -38,10 +38,10 @@
 				<a href="manage-category.php" class="waves-effect"><i class="ti-settings"></i> <span class="hide-menu">Manage Category </span></a> 
 			</li>
                    
-                    <li> <a href="#" class="waves-effect"><i class="ti-receipt"></i> Manage Hand Outs <span class="fa arrow"></span> </a> 
+                    <li> <a href="#" class="waves-effect"><i class="ti-receipt"></i> Manage Programs <span class="fa arrow"></span> </a> 
                     <ul class="nav nav-second-level">
-                    <li> <a href="action-hand-outs.php">Add New Hand Outs</a> </li>
-                    <li> <a href="manage-hand-outs.php">Manage Hand Outs</a> </li>
+                    <li> <a href="action-hand-outs.php">Add New Programs</a> </li>
+                    <li> <a href="manage-hand-outs.php">Manage Programs</a> </li>
                     </ul>
                     </li>
                    
@@ -105,6 +105,12 @@
                             <li> <a href="add-employee.php">Add New Employee</a> </li>
                             <li> <a href="add-bulk-employee.php">Employee Bulk Import</a> </li>
                             <li> <a href="employee-details.php">Manage Employees </a> </li>
+                        </ul>
+                    </li>
+                    <li class=""> <a href="#" class="waves-effect"><i class="ti-image"></i> <span class="hide-menu">Manage Be Safe Programs<span class="fa arrow"></span> </span></a>
+                        <ul class="nav nav-second-level">
+                            <li> <a href="manage-be-safe.php">Manage Be Safe Programs</a> </li>
+                            <li> <a href="add-training-design.php">Assigned Be Safe Programst</a> </li>
                         </ul>
                     </li>
                     

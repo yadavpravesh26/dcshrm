@@ -471,7 +471,7 @@ ul.unstyled.centered {
                         <a class="nav-link" href="#Content_tab" role="tab" data-toggle="tab">Besafe</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#Handout_tab" role="tab" data-toggle="tab">Handout</a>
+                        <a class="nav-link" href="#Handout_tab" role="tab" data-toggle="tab">Programs</a>
                       </li>
                       <!--<li class="nav-item">
                         <a class="nav-link" href="#Trainings_tab" role="tab" data-toggle="tab">Trainings</a>
@@ -509,7 +509,7 @@ ul.unstyled.centered {
 								else if($extension == 'doc' || $extension == 'docx')
 								$class = 'fa fa-file-word-o';
 								?>
-								<h2>Downloads</h2>
+								<h2 style="margin-top: 30px;">Handouts</h2>
                                 <div class="tab_inner">
                                     <ul class="handout-sst">
                                         <li>

@@ -26,7 +26,7 @@ if(bckPermission($session['b_type'])){
 	<meta name="author" content="">
 	<!-- Favicon icon -->
 	<link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
-	<title>Manage New Hand outs</title>
+	<title>Manage New Programs</title>
 	<!-- Bootstrap Core CSS -->
 	<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">

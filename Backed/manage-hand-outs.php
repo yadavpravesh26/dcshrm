@@ -26,7 +26,7 @@ if(bckPermission($session['b_type'])){
 	<meta name="author" content="">
 	<!-- Favicon icon -->
 	<link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
-	<title>Manage New Hand outs</title>
+	<title>Manage New Programs</title>
 	<!-- Bootstrap Core CSS -->
 	<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
@@ -188,12 +188,12 @@ if(bckPermission($session['b_type'])){
 			<div class="container-fluid">
 				<div class="row bg-title">
 					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-						<h4 class="page-title">Manage Hand Outs</h4> </div>
+						<h4 class="page-title">Manage Programs</h4> </div>
 					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
 						<ol class="breadcrumb">
 							<li><a href="dashboard.php">Dashboard</a>
 							</li>
-							<li class="active">Manage Hand Outs</li>
+							<li class="active">Manage Programs</li>
 						</ol>
 					</div>
 					<!-- /.col-lg-12 -->
@@ -203,7 +203,7 @@ if(bckPermission($session['b_type'])){
 
 
 						   <div class="white-box">
-                            <h3 class="box-title">List Of Hand outs</h3>
+                            <h3 class="box-title">List Of Programs</h3>
 							   <div class="clearfix"></div>
 
 							    <h2 class="box-title " style="margin-bottom: 0;">Filter By</h2>

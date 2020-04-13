@@ -1,1 +1,1 @@
-<footer class="footer text-center"> 2018 &copy; DCSHRM </footer>
+<footer class="footer text-center"> <?php echo date('Y');?> &copy; DCSHRM </footer>

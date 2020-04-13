@@ -6,10 +6,7 @@ $cdb = new DB();
 $db = $cdb->getDb();
 $prop = new PDOFUNCTION($db);
 $method = $_REQUEST['method']!=''?$_REQUEST['method']:'';
-if(bckPermissionCompany($session['b_type'])){
-	header('location:dashboard.php');
-	exit;
-}
+
 switch($method)
 {
 	case 'add':
@@ -490,8 +487,8 @@ font-size: 14px;
 			<div class="form-group">
 
 				<label class="control-label">Department</label>
-                <select class="form-control" name="dept_id" required>
-                    <option value="">Select</option>
+                <select class="form-control" name="dept_id" onChange="call_allprograms(this)" required>
+                    <option value="0">Select</option>
 					<?php
 					$count = count($listDepart);
 					for($i=0; $i<$count; $i++){ 
@@ -542,8 +539,256 @@ font-size: 14px;
             </div>
 			
         </div>
-
-
+	<div class="clearfix"></div>
+	 <div class="col-sm-12" id="allprograms">
+         <div class="row b-b clp" style="display: flex; align-items: center;">
+            <div class="col-sm-2">
+                <h4 class="m-b-0 box-title" >Programs List</h4>
+            </div>
+        </div>
+          <div class="row m-t-10 clps">
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-5">
+                <div class="main-category">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory p-l-20">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
+                    </div>
+                </div>
+                <div class="sub-catergory pl-5">
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
+                        <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
+                    </div>
+                </div>
+            </div>
+          </div>  
+    </div>
      <div class="clearfix"></div>
      <div class="row">
     <div style="width:100%;padding-right:5px;">
@@ -717,6 +962,15 @@ font-size: 14px;
             }
        });
 });
+	function call_allprograms(that)
+	{
+		$('#allprograms1').hide();
+		$('#allprograms2').hide();
+		$('#allprograms3').hide();
+		
+		$('#allprograms'+that.value).show();
+		
+	}
     </script>
 
 </body>

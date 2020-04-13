@@ -5,10 +5,7 @@ require_once(DOC_CONFIG.'inc/pdoFunctions.php');
 $cdb = new DB();
 $db = $cdb->getDb();
 $prop = new PDOFUNCTION($db);
-if(bckPermission($session['b_type'])){
-	header('location:dashboard.php');
-	exit;
-}
+
 $method = $_REQUEST['method']!=''?$_REQUEST['method']:'';
 /* if(isset($_POST['submit'])){
 	if($_POST['department']!=''){
@@ -97,12 +94,12 @@ switch($method)
 			//$exits = $prop->getName('count(dept_id)', DEPARTMENT, " u_id=".$_POST['company']." AND dep_status=0 AND dep_name='".$_POST['form1Name']."' AND dept_id!=".$_REQUEST['id']);
 			//if($exits===0){
 				$msg = 'Industry Updated Failed';
+						$cat = implode(',', $_POST['category']);
 				$category = array();
 				if(isset($_POST['cat'])){
 					$category['m'] = 1;
 				}else{
 					if(isset($_POST['category'])){
-						$cat = implode(',', $_POST['category']);
 						$category['c'] = $cat;
 					}
 					if(isset($_POST['SubCategory'])){

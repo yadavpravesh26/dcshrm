@@ -211,9 +211,9 @@ switch($method)
 			setcookie("status", "Success", time()+10);
 
 			if($update_id=='')
-			setcookie("title", "BeSafe Program Updated Successfully", time()+10);
+			setcookie("title", "Be Safe Program Updated Successfully", time()+10);
 			else
-			setcookie("title", "BeSafe Program Created Successfully", time()+10);
+			setcookie("title", "Be Safe Program Created Successfully", time()+10);
 			
 
 			setcookie("err", "success", time()+10);
@@ -225,9 +225,9 @@ switch($method)
 			setcookie("status", "Error", time()+10);
 
             if($update_id=='')
-			setcookie("title", "Besafe Program Updated Error", time()+10);
+			setcookie("title", "Be Safe Program Updated Error", time()+10);
 			else
-			setcookie("title", "Besafe Program Created Error", time()+10);
+			setcookie("title", "Be Safe Program Created Error", time()+10);
 			
 
             setcookie("err", "error", time()+10);
@@ -1014,7 +1014,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                                                             <div class="file-box">
 
-                                                                <h3 class="m-t-0 m-b-10" style="background: #348253;"><div class="title pull-left">Handouts</div><div class="add pull-right" data-toggle="modal" data-target="#myModalHand" ><img data-toggle="tooltip" data-original-title="Add Handouts"  src="img/add-file-button.png"></div></h3>
+                                                                <h3 class="m-t-0 m-b-10" style="background: #348253;"><div class="title pull-left">Programs</div><div class="add pull-right" data-toggle="modal" data-target="#myModalHand" ><img data-toggle="tooltip" data-original-title="Add Programs"  src="img/add-file-button.png"></div></h3>
 
                                                                 <div class="clearfix m-b-10"></div>
 
@@ -1549,7 +1549,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
-                        <h4 class="modal-title" id="myModalLabel">Add Handouts</h4> </div>
+                        <h4 class="modal-title" id="myModalLabel">Add Programs</h4> </div>
 
                     	<form method="post" id="ajaxHandForm">
                             <div class="modal-body">
@@ -1571,10 +1571,10 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 								<input type="hidden" name="catId" id="catId" class="CatId" value="<?php echo $videocategory_id?>">
 								<input type="hidden" name="subCatID" id="subCatID" class="SubCatId" value="<?php echo $subcategory_id?>">
                                 <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
-                                <label for="document_name">Choose a existing Handout</label>
+                                <label for="document_name">Choose a existing Programs</label>
                                 <div class="form-group">
                                 	<select name="exist_handout" id="exist_handout" class="form-control select2" style="width:100%">
-                                    	<option value="">Seletct Hand Out</option>
+                                    	<option value="">Seletct Programs</option>
                                         <?php
                                         $sql_hand_out = 'select * from handouts where `doc_status`!=2';
 										$row_hand_out = $prop->getAll_Disp($sql_hand_out);
@@ -1586,7 +1586,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
                                     </select>
                                 </div>
                                 <p style="text-align:center; margin-top:15px;">OR</p>
-                                <label for="document_name">Handout Title</label>
+                                <label for="document_name">Programs Title</label>
                                 <div class="form-group">
                                 <input type="text" class="form-control" name="document_name" id="document_name" placeholder="Title">
                                 </div>
