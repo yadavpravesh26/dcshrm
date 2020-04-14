@@ -183,10 +183,26 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 }
 .span1{width:60%;}
 .span2{width:20%; text-align:center}
-.cd-accordion__label{background:#f1f1f1 !important; color: #414141;}
-.cd-accordion__label:hover{background:#cccccc !important;}
+.cd-accordion__label{background:#fff !important; color: #003963;}
+.cd-accordion__label:hover{background:#8bbde61a !important}
 li a{color:#414141;}
-.cd-accordion{margin-top: 10px;margin-bottom: 0px !important; border-bottom:1px solid #ccc}
+.cd-accordion{    margin-top: 10px;
+    margin-bottom: 0px !important;
+    border: 1px dotted #eaeff3;
+    border-radius: 4px;
+    box-shadow: none;
+    overflow: hidden;}
+    .span2 a {
+        border-radius: 100px;
+    width: 25px;
+    color: #0d558a;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+}
 	</style>
 </head>
 
@@ -222,7 +238,7 @@ li a{color:#414141;}
                             <h3 class="box-title m-b-0">List of Be safe Pages</h3>
 							<div class="row" style="BACKGROUND: #00568a !important;font-weight:bold;color: white;padding: 15px;">
                             	<div class="col-md-8">Category Name</div>
-                                <div class="col-md-2">Department Assigned</div>
+                                <div class="col-md-2">Departments Assigned</div>
                                 <div class="col-md-2">Employees Assigned</div>
                             </div>
                             <ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
@@ -392,6 +408,7 @@ li a{color:#414141;}
 			}
 			else
 			{
+
 				swal("Cancelled", "", "error");
 			}
 		});

@@ -32,8 +32,12 @@ $prop = new PDOFUNCTION($db);
 	<link href="plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" rel="stylesheet"/>
 	<link href="plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css" rel="stylesheet"/>
 	<link href="plugins/bower_components/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
-	<!-- Menu CSS -->
+    
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />-->
+	
+    <!-- Menu CSS -->
 	<link href="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <link href="plugins/bower_components/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<!-- Animation CSS -->
 	<link href="css/animate.css" rel="stylesheet">
 	<!-- Custom CSS -->
@@ -174,6 +178,61 @@ ol.auto-checkboxes.bonsai label {
     color: #2b2b2b;
     font-weight: 600;
 }
+.select2{width:100% !important;border-radius:5px;}
+ul.handout-sst {
+    list-style: disc;
+    padding: 0;
+}
+span.title i {
+    color: #333;
+    margin-right: 10px;
+}
+span.iconn {
+    float: right;
+    color: #0d558a;
+}
+span.title {
+    font-weight: 400;
+    color: #333;
+}
+ul.handout-sst a img {
+    margin-right: 5px;
+}
+ul.handout-sst li {
+    padding: 10px 5px;
+}
+
+ul.handout-sst {
+    list-style: none;
+    padding: 0;
+}
+.img-banner {
+    background: url(http://dcshrm.com/sadmin/uploads/catdetails/1586402717.JPG) no-repeat center center;
+    background-size: cover;
+    height: 300px;
+    width: 100%;
+    margin-bottom:30px;
+}
+.banner-txt {
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    text-align: CENTER;
+    vertical-align: middle;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.tab-content {
+    margin-top: 10px;
+}
+.dataTables_wrapper{width:100%}
+/*.multiselect.dropdown-toggle.btn.btn-default{background:transparent}
+.multiselect-container{width:100%}*/
 </style>
 </head>
 
@@ -196,10 +255,10 @@ ol.auto-checkboxes.bonsai label {
                 	<div class="col-md-12">
                     	<ul class="nav nav-tabs" role="tablist">
                           <li class="nav-item">
-                            <a class="nav-link active" href="#TrainingDetails" role="tab" data-toggle="tab">Training Details</a>
+                            <a class="nav-link active" href="#TrainingDetails" role="tab" data-toggle="tab">Be Safe Details</a>
                           </li>
                           <li class="nav-item">
-                            <a class="nav-link" href="#DepartmentAssigned" role="tab" data-toggle="tab">Department Assigned</a>
+                            <a class="nav-link" href="#DepartmentAssigned" role="tab" data-toggle="tab">Departments Assigned</a>
                           </li>
                            <li class="nav-item">
                             <a class="nav-link" href="#EmployeesAssigned" role="tab" data-toggle="tab">Employees Assigned</a>
@@ -216,249 +275,94 @@ ol.auto-checkboxes.bonsai label {
                 		<div class="row">
                         	<div class="col-md-12">
                                 <div class="white-box">
-                                    <h3 class="box-title"> Be Safe Pages Details</h3>
+                                    <h3 class="box-title"> BE SAFE PROGRAM DETAILS</h3>
+                                    <div class="img-banner"><div class="banner-txt">ASBESTOS AWARENESS</div></div>
                                 	<div class="row">
-                                        <div class="col-md-3 mb-5">
-                                        <div class="main-category">
-                                            <div class="checkbox checkbox-success">
-                                                <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="sub-catergory p-l-20">
-                                            <div class="checkbox checkbox-success">
-                                                <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                            </div>
-                                        </div>
-                                        <div class="sub-catergory pl-5">
-                                            <div class="checkbox checkbox-success">
-                                                <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mb-5">
-                                            <div class="main-category">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory p-l-20">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Sub Catergory</b></label>
-                                                </div>
-                                            </div>
-                                            <div class="sub-catergory pl-5">
-                                                <div class="checkbox checkbox-success">
-                                                    <input id="checkbox-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                                    <label class="category-label" for="checkbox-0"><b>Program Name</b></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                	    <div id="home_info" class="" style="background: #fff;width:100%">
+		<div class="bg-color"></div>
+		<div class="container" style="width:100% !important">
+			<div class="row center b_sp">
+            	<div class="col-md-12" style="padding-left: 0px;">
+                	<ul class="nav nav-tabs" role="tablist">
+                      <li class="nav-item" aria-expanded="false">
+                        <a class="nav-link active" href="#Content_tab" role="tab" data-toggle="tab" aria-expanded="true">Be Safe</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#Handout_tab" role="tab" data-toggle="tab" aria-expanded="false">Handout</a>
+                      </li>
+                      <!--<li class="nav-item">
+                        <a class="nav-link" href="#Trainings_tab" role="tab" data-toggle="tab">Trainings</a>
+                      </li>-->
+                       <li class="nav-item">
+                        <a class="nav-link" href="#Quiz_tab" role="tab" data-toggle="tab" aria-expanded="false">Quiz</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#Videos_tab" role="tab" data-toggle="tab" aria-expanded="false">Videos</a>
+                      </li>
+                    </ul>
+                </div>
+				<div class="text-box col-md-12" id="runtime_descript">
+                	<div class="tab-content">
+                     <div role="tabpanel" class="tab-pane fade active show" id="Content_tab" aria-expanded="true">
+						<p><strong>Asbestos Awareness</strong></p>
+<p>We do not have asbestos exposures in our normal business, but this does not mean that we will not encounter it as we visit job sites. If you suspect exposure to asbestos due to demolition or another source, report it immediately to a supervisor.</p>
+<p>&nbsp;</p>
+<p><strong>What are the Hazards? </strong></p>
+<p>Asbestos fibers are difficult to see with just the naked eye and breathing asbestos can cause a buildup of asbestosis in the lungs causing scaring and reduced function. Exposure to asbestos can lead to multiple abnormalities such as; lung cancer, mesothelioma, and death. People most commonly exposed to asbestos tend to work in the construction industry, ship repair, or any job that includes renovations or demolitions.</p>
+<p>&nbsp;</p>
+<p><strong>How to Avoid the Hazards </strong></p>
+<ul>
+<li>There are OSHA standards set to protect employees from asbestos in all industries.</li>
+<li>Companies and organizations are required by law to provide personal exposure assessment of the risk and hazards associated with exposure to asbestos with that specific job duty.</li>
+<li>There are laws set to determine the highest possible airborne levels of asbestos that someone could be required to work in. These are called Permissible Exposure Limit (PEL). Although there are no safe levels of exposure to asbestos, there are levels that lead to more serious harm.</li>
+<li>Where exposure exists, employers are required to protect workers by declaring regulated areas, controlling job duties in those areas, provide relevant protective equipment and implementing engineering controls to limit airborne levels as much as possible.</li>
+</ul>
+<p>&nbsp;</p>
+<p><strong>Key Things to Remember When Working with Asbestos </strong></p>
+<p>* Always wear protective mask and other equipment</p>
+<p>* Wash clothes immediately when finished working</p>
+<p>* Shower or rinse at the job site</p>
+<p>* Always be aware!</p>
+<p>&nbsp;</p>                                                <!--<div id="loadMore" style="">
+                          <a style="cursor:pointer">Load More</a>
+                        </div>-->
+                                                              </div>
+
+                     <div role="tabpanel" class="tab-pane fade" id="Handout_tab" aria-expanded="false">
+                     							<div class="tab_inner">
+						<ul class="handout-sst">
+													<li>
+                                                       <a href="images/docs/ASBESTO AWARENESS PROGRAM.docx"> <span class="title"><i class="fa fa-file-word-o"></i>ASBESTO AWARENESS PROGRAM</span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
+                                                       <li>
+                                                       <a href="images/docs/ASBESTO AWARENESS PROGRAM.docx"> <span class="title"><i class="fa fa-file-word-o"></i>COVID AWARENESS PROGRAM</span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
+						    
+						</ul>
+						</div>
+						                     </div>
+                                          <div role="tabpanel" class="tab-pane fade" id="Quiz_tab" aria-expanded="false">
+                     	    			   		 <div class="tab_inner">
+                            <ul class="handout-sst">
+                                                             <li><a href="" target="_blank" title="Click To Attend Quiz"><img src="img/notepad.png"><span class="title">ASBESTOS AWARENESS</span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                                             <li><a href="" target="_blank" title="Click To Attend Quiz"><img src="img/notepad.png"><span class="title">Training Quiz</span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                                            </ul>
+                            </div>
+    			                          </div>
+                     <div role="tabpanel" class="tab-pane fade" id="Videos_tab" aria-expanded="false">
+                     	                     </div>
+                    </div>   
+    			</div>
+    			
+                
+			</div>
+	        	       
+		</div>
+		
+	</div>
+                                	    
+                                	    
+                                	    
+                                	    
+                                	</div>
                                 </div>
                             </div>        
                            
@@ -467,26 +371,45 @@ ol.auto-checkboxes.bonsai label {
                     <div role="tabpanel" class="tab-pane fade" id="DepartmentAssigned">
                 		<div class="col-md-12">
                             <div class="white-box">
-                                <h3 class="box-title">Department Assigned</h3>
-                            	<div class="row">
+                                <h3 class="box-title" style="padding-right: 0px;">
+                                	<div class="row" style="width:100%">
+                                	<div class="col-md-9">
+                                    Departments Assigned
+                                    </div>
+                                    <div class="col-md-3" style="padding-right: 0px;">
+                                    	<div class="input-group md-form form-sm form-2 pl-0">
+                                      <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
+                                      <div class="input-group-append" style="background: gray;width: 36px;padding: 2px 10px;margin-right: -5px;">
+                                        <span class="input-group-text lime lighten-2" id="basic-text1"><i class="ti-search text-grey"
+                                            aria-hidden="true"></i></span>
+                                      </div>
+                                    </div>
+                                    </div>
+                                     <div class="clearfix"></div>
+								
+                                </div>
+                                </h3>
+                                 
+                               
+                               <div class="row">
                                  	<div class="col-md-4">
                             <div class="checkbox checkbox-success">
                                 <input id="depart-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-0"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-0"><b>Air Force(2)</b></label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-1" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-1"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-1"><b>Bankruptcy Courts Forms(2)</b></label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-2" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-2"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-2"><b>Coast Guard Forms(2)</b></label>
                             </div>
                         </div>
                                	    <div class="col-md-4">
                             <div class="checkbox checkbox-success">
                                 <input id="depart-10" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-10"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-10"><b>National Mediation Board Forms(2)</b></label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-20" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
@@ -494,21 +417,21 @@ ol.auto-checkboxes.bonsai label {
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-0" data-class="checkbox-all" data-id="30" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-30"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-30"><b>Defense Health Agency Forms(2)</b></label>
                             </div>
                         </div>
                                 	<div class="col-md-4">
                             <div class="checkbox checkbox-success">
                                 <input id="depart-120" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-120"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-120"><b>Denali Commission Forms(2)</b></label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-220" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-220"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-220"><b>Parole Commission Forms(2)</b></label>
                             </div>
                             <div class="checkbox checkbox-success">
                                 <input id="depart-33" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-33"><b>Department1(2)</b></label>
+                                <label class="category-label" for="depart-33"><b>Tax Court Forms(2)</b></label>
                             </div>
                         </div>
                         		</div>
@@ -524,13 +447,13 @@ ol.auto-checkboxes.bonsai label {
                                 <h3 class="box-title">Employees Assigned</h3>
                                 <div class="row" style="margin-bottom:40px;">
                                 	<div class="col-md-7">
-                                    <select class="form-control select2" id="empselect" >
-                                    <option>Employee Name</option>
-                                    <option>EMP2</option>
-                                    <option>EMP3</option>
-                                    <option>EMP4</option>
-                                    <option>EMP5</option>
-                                    <option>EMP6</option>
+                                    <select class="form-control select2" id="empselect" multiple >
+                                    <!--<option>Select Name</option>-->
+                                    <option>AARON</option>
+                                    <option>BRENDAN</option>
+                                    <option>CHARLEY</option>
+                                    <option>DAVID</option>
+                                    <option>ELIAS</option>
                                 </select></div>
                                 <div class="col-md-1">
                                 	<div class="radio radio-success">
@@ -556,26 +479,34 @@ ol.auto-checkboxes.bonsai label {
                                     Filter By
                                     </div>
                                 <div class="col-md-3">
-                                <select class="form-control select2" id="empselect" >
+                                <input type="text" name="" placeholder="Search by Employee Name" class="form-control">
+                                </div>    
+                                <div class="col-md-3">
+                                <select class="form-control select2" id="select_dep" >
                                     <option>Select Department</option>
-                                    <option>Department1</option>
-                                    <option>Department2</option>
-                                    <option>Department3</option>
-                                    <option>Department4</option>
-                                    <option>Department4</option>
+                                    <option>Air Force</option>
+                                    <option>AmeriCorps</option>
+                                    <option>Bankruptcy Courts Forms</option>
+                                    <option>Coast Guard Forms</option>
+                                    <option>National Mediation Board Forms</option>
                                 </select>
                                 </div>
                                 <div class="col-md-3">
-                                <select class="form-control select2" id="empselect" >
+                                <select class="form-control select2" id="select_type" >
                                     <option>Select Type</option>
                                     <option>Assign</option>
                                     <option>Unassign</option>
                                 </select>
                                 </div>
+                                <div class="col-md-2">
+                                	<button type="button" id="add_new_company" class="btn btn-success waves-effect waves-light pull-left m-r-10">
+                                     Search
+                                    </button>
+                              </div>
                                 <div class="clearfix"></div>
                                 </div>
                            		<div class="row">
-                                 <table id="myTable" class="table table-striped table-bordered">
+                                 <table id="myTable1" class="table table-striped table-bordered">
                                     <thead>
                                         <tr>
                                             <th class="text-center">Employee Assigned</th>
@@ -586,8 +517,8 @@ ol.auto-checkboxes.bonsai label {
                                     </thead>
                                     <tbody>
 										<tr>
-                                        	<td>EMP1</td>
-                                            <td>Dep1</td>
+                                        	<td>ALBERT</td>
+                                            <td>Air Force</td>
                                             <td>
                                             <div class="row">
                                             <div class="col-md-6">
@@ -607,8 +538,8 @@ ol.auto-checkboxes.bonsai label {
                                             </td>
                                         </tr>
                                         <tr>
-                                        	<td>EMP1</td>
-                                            <td>Dep1</td>
+                                        	<td>CAMERON</td>
+                                            <td>AmeriCorps</td>
                                             <td>
                                             <div class="row">
                                             <div class="col-md-6">
@@ -628,8 +559,8 @@ ol.auto-checkboxes.bonsai label {
                                             </td>
                                         </tr>
                                         <tr>
-                                        	<td>EMP1</td>
-                                            <td>Dep1</td>
+                                        	<td>BRETT</td>
+                                            <td>Bankruptcy Courts Forms</td>
                                             <td>
                                             <div class="row">
                                             <div class="col-md-6">
@@ -722,25 +653,11 @@ ol.auto-checkboxes.bonsai label {
         <script src="plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
 
         <script type="text/javascript" src="plugins/bower_components/multiselect/js/jquery.multi-select.js"></script>
-    
+        <script src="plugins/bower_components/datatables/jquery.dataTables.min.js"></script>
+    	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>-->
+
     
 	<script>
-	$(".select2").select2();
-	$('#add_new_company').click(function() {
-	  console.log('okkkk');
-	  if ($('input[name="category[]"]').is(':checked')) 
-	  {
-	  	return true;
-	  }
-	  else
-	  {
-	  	swal('Please select Permission');
-		setTimeout(function() {
-			$(".confirm").trigger('click');
-		}, 3000);
-		return false;
-	   }	
-	});
 	<?php 
 		if($_COOKIE['err'] !='')
 		{
@@ -756,99 +673,28 @@ ol.auto-checkboxes.bonsai label {
 		}
 	?>
 	$(document).ready(function () { //newly added
-		$("select[name='industry_type']").change(function(){
-			$("#industry_text").val($(this).find(":selected").text());
-		});
-		
-		<?php //if(!(isset($_REQUEST['id']) && $_REQUEST['id']>0)){ ?>
-        $('#inputemail').keyup(function () {
-			//alert($(this).val());
-            var inputemail = $(this).val(); // assuming this is a input text field
-			
-				$.ajax({
-						type: "POST",
-						url: "ajax.php",
-						cache:false,
-						data: 'emailid='+inputemail+'&meth=companyemailexist',
-						dataType: 'json',
-						success: function(data)
-						{
-							if(data.status) {
-								console.log(data.status+"ppp");
-								$("#inputemail").css("border", "1px solid #CC2424");
-								$(".alexist").html("Email ID already exist");
-								$(".alexist").css("color", "#CC2424");
-								$("#inputemail").focus();
-								 $(':input[type="submit"]').prop('disabled', true);
-								return false;
-							}
-							else {
-								console.log(data.status);
-								$("#inputemail").css("border", "1px solid #E4E7EA");
-								$(".alexist").html("");
-								 $(':input[type="submit"]').prop('disabled', false);
-							}
-						}
-					});
-					
-					
-					$(document).ready(function() {
-		 $('#myTable').DataTable( {
-			"bFilter": true,
+	
+		$("#empselect").select2();
+		$("#select_dep").select2();
+		$("#select_type").select2();
+		$("#empselect").MultiSelect({
+		  nonSelectedText: 'Select Employee Name'
+		 });*/
+		 
+		 $('#myTable1').DataTable( {
+			"bFilter": false,
 			"bInfo" : true,
 			"paging":   true,
 			"ordering": false,
 			"info":     false,
 			"lengthMenu": [ [50, 10, 150, 50000], [50, 100, 150, "All"] ],
-			"displayLength": 50,
 			"processing": true,
-			"serverSide": true
-			
-		});
-                
-        });
-		<?php //} ?>
-		$("#inputPassword4, #inputPasswordConfirm4").keydown(function(e){
-		 if (e.keyCode == 32) { 
-		var ID=$(this).attr('rel');
-		 $("#"+ID).fadeIn(1000).fadeOut(1000);
-       return false; 
-     }
-	});	
-    });
-	function ResetFormVal(){
-		$("#formadvertiser")[0].reset();
-	}
-	</script>
-<script src="js/jquery.qubit.js"></script>
-<script src="js/jquery.json-list.js"></script>
-<script src="js/jquery.bonsai.js"></script>
-<script>
-$('.auto-checkboxes').bonsai({
-  expandAll: true,
-  checkboxes: true, // depends on jquery.qubit plugin
-  createInputs: 'checkbox' // takes values from data-name and data-value, and data-name is inherited
-});
-</script>
-<script>
-$(document).ready(function () {
-	$( 'input[type="checkbox"]' ).click(function() {
-		setInterval(function(){ 
-			$( 'input[type="checkbox"]' ).each(function( index ) {
-				console.log($(this).val());
-				if ($(this).prop("indeterminate")) {
-					$(this).prop("indeterminate", false);
-					$(this).prop("checked", true);
-					console.log( index + ": " + $( this ).val() );
-				}
-			});
-		}, 3000);
-	  	
-	  
+			"serverSide": false,
+			"displayLength": 50
+		} );
+		
 	});
-	
-})
-</script>
+	</script>
 </body>
 
 </html>
