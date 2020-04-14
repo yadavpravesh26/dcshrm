@@ -51,6 +51,7 @@ $prop = new PDOFUNCTION($db);
 -->
 	<link href="css/colors/default-dark.css" id="theme" rel="stylesheet">
     <link href="css/jquery.bonsai.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/style-accordian.css">
     <!--<link href="css/colors/blue.css" id="theme" rel="stylesheet">-->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -600,7 +601,7 @@ ul.handout-sst {
         </div>
         <!-- /#page-wrapper -->
     </div>
-    <script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
+    	<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
 
@@ -677,8 +678,11 @@ ul.handout-sst {
 		$("#empselect").select2();
 		$("#select_dep").select2();
 		$("#select_type").select2();
-		$("#empselect").MultiSelect({
-		  nonSelectedText: 'Select Employee Name'
+		/*$("#empselect").multiselect({
+		  nonSelectedText: 'Select Employee Name',
+		  enableFiltering: true,
+		  enableCaseInsensitiveFiltering: true,
+		  buttonWidth:'100%'
 		 });*/
 		 
 		 $('#myTable1').DataTable( {

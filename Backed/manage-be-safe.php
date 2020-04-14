@@ -8,76 +8,17 @@ $db = $cdb->getDb();
 $prop = new PDOFUNCTION($db);
 $table_name = "cat_sub";
 $method = $_REQUEST['method']!=''?$_REQUEST['method']:'';
-
-switch($method)
+if($session['b_type'] != 2 && !isset($session['bid']) && $session['bid']=='')
 {
-	case 'add':
-		$count = $prop->counts('c_id',SUB_CATEGORY, array('c_name'=>$_POST['category_id'],'sc_name'=>$_POST['scat_name'],'status'=>0));
-		if($count==0){
-			$input = array(
-					'c_name'	=>$_POST['category_id'],
-					'sc_name'	=>$_POST['scat_name'],
-					);
-			$result = $prop->add(SUB_CATEGORY, $input);
-			if ($result) {
-				setcookie("status", "Success", time()+10);
-				setcookie("title", "Subcategory Created Successfully", time()+10);
-				setcookie("err", "success", time()+10);
-				header('Location: manage-category.php');
-			}
-			else{
-				setcookie("status", "Error", time()+10);
-				setcookie("title", "Category Creation Error", time()+10);
-				setcookie("err", "error", time()+10);
-				header('Location: manage-category.php');
-			}
-		}else{
-			setcookie("status", "Error", time()+10);
-			setcookie("title", "Subcategory Already Exits", time()+10);
-			setcookie("err", "error", time()+10);
-			header('Location: manage-category.php');
-		}
-		break;
-	case 'update':
-		$count = $prop->getName('COUNT(c_id)', SUB_CATEGORY, " 1=1 AND c_name=".$_POST['category_id']." AND sc_name='".$_POST['scat_name']."' AND status=0 AND c_id!=".$_REQUEST['id']);
-		if($count==0){
-			$t_cond = array("c_id" => $_REQUEST['id']);
-			$input = array(
-				  'c_name'	=>$_POST['category_id'],
-				  'sc_name'	=>$_POST['scat_name'],
-				);
-			if($prop->update(SUB_CATEGORY, $input, $t_cond))
-			{
-				setcookie("status", "Success", time()+10);
-				setcookie("title", "Subcategory Updated Successfully", time()+10);
-				setcookie("err", "success", time()+10);
-				header('Location: manage-category.php');
-			}else{
-				setcookie("status", "Error", time()+10);
-				setcookie("title", "Subcategory Updated Error", time()+10);
-				setcookie("err", "error", time()+10);
-				header('Location: manage-category.php?id='.$_REQUEST['id']);
-			}
-		}else{
-			setcookie("status", "Error", time()+10);
-			setcookie("title", "Category Already Exits", time()+10);
-			setcookie("err", "error", time()+10);
-			header('Location: manage-category.php?id='.$_REQUEST['id']);
-		}
-		break;
+	header('location:dashboard.php');
+	exit;
 }
-$formAction = 'add';
-if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
-	$formAction = 'update&&id='.$_REQUEST['id'];
-	$curr_val = $prop->get_Disp('SELECT * FROM `'.SUB_CATEGORY.'` WHERE status!=2 AND c_id='.$_REQUEST['id']);
-	if(empty($curr_val)){
-		setcookie("status", "Error", time()+10);
-		setcookie("title", "Error", time()+10);
-		setcookie("err", "error", time()+10);
-		header('Location: manage-category.php');
-		exit;
-	}
-}
+$permission = $prop->get('permission',USERS, array("id"=>$session['bid']));
+$nav_cat = json_decode($permission['permission'], TRUE);
+$nav_category = $nav_cat['c'];
+$nav_sub_category = $nav_cat['s'];
+$nav_pages = $nav_cat['p'];
+$cat_count = count($nav_cat['c']);
 ?>
 <!DOCTYPE html>
 
@@ -93,7 +34,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
     <title>Manage Be Safe Category</title>
-    <!-- Bootstrap Core CSS -->
+     <!-- Bootstrap Core CSS -->
 	<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
 	<!-- Footable CSS -->
@@ -104,11 +45,16 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 	<link href="plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css" rel="stylesheet"/>
 	<link href="plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css" rel="stylesheet"/>
 	<link href="plugins/bower_components/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
-	<!-- Menu CSS -->
+    
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />-->
+	
+    <!-- Menu CSS -->
 	<link href="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet">
+    <link href="plugins/bower_components/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 	<!-- Animation CSS -->
 	<link href="css/animate.css" rel="stylesheet">
 	<!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style-accordian.css">
 	<link href="css/style.css" rel="stylesheet">
 	<link href="css/custom-style.css" rel="stylesheet">
 	<!--alerts CSS -->
@@ -117,8 +63,9 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 	<!-- We have chosen the skin-blue (blue.css) for this starter
           page. However, you can choose any other skin from folder css / colors .
 -->
-	<link rel="stylesheet" href="css/style-accordian.css">
 	<link href="css/colors/default-dark.css" id="theme" rel="stylesheet">
+    <link href="css/jquery.bonsai.css" rel="stylesheet" type="text/css">
+    
     <!--<link href="css/colors/blue.css" id="theme" rel="stylesheet">-->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -182,6 +129,8 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
     display: inline-block;
 }
 .span1{width:60%;}
+.span1 a{color: #003963;
+    font-weight: 500;}
 .span2{width:20%; text-align:center}
 .cd-accordion__label{background:#fff !important; color: #003963;}
 .cd-accordion__label:hover{background:#8bbde61a !important}
@@ -203,7 +152,14 @@ li a{color:#414141;}
     font-size: 12px;
     font-weight: 500;
 }
-	</style>
+.cd-accordion__item:last-child .cd-accordion__label{padding-left:0px;}
+.main_cate_checkbox, .sub_cate_checkbox,.porgram_checkbox{margin-left:10px;margin-top:13px; margin-bottom:0px; float:left}
+.sub_cate_checkbox{padding-left:20px;}
+.sub_cate_checkbox{padding-left:30px;}
+.porgram_checkbox{padding-left:50px;}
+input.form-control, .select2{border-radius:5px;}
+button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
+</style>
 </head>
 
 <body>
@@ -236,84 +192,46 @@ li a{color:#414141;}
                     <div class="col-lg-12">
                         <div class="white-box">
                             <h3 class="box-title m-b-0">List of Be safe Pages</h3>
+                            <div class="row" style="margin-bottom:20px;">
+                                <div class="col-md-3">
+                                <input type="text" name="" placeholder="Search Keyword" class="form-control">
+                                </div>    
+                                <div class="col-md-3">
+                                <select class="form-control select2" id="select_dep" >
+                                    <option>Filter by Department</option>
+                                    <option>Air Force</option>
+                                    <option>AmeriCorps</option>
+                                    <option>Bankruptcy Courts Forms</option>
+                                    <option>Coast Guard Forms</option>
+                                    <option>National Mediation Board Forms</option>
+                                </select>
+                                </div>
+                                <div class="col-md-3">
+                                <select class="form-control select2" id="select_emp" >
+                                    <option>Filter by Employee</option>
+                                    <option>ALBERT</option>
+                                    <option>AARON</option>
+                                    <option>BRETT</option>
+                                    <option>CAMERON</option>
+                                    <option>DAVID</option>
+                                </select>
+                                </div>
+                                <div class="col-md-3">
+                                	<button type="button" class="btn btn-success waves-effect waves-light pull-right m-r-10">
+                                	 <i class="ti-plus"></i> Assign to Department
+                                	</button>
+                              </div>
+                                <div class="clearfix"></div>
+                                </div>
+                                
 							<div class="row" style="BACKGROUND: #00568a !important;font-weight:bold;color: white;padding: 15px;">
                             	<div class="col-md-8">Category Name</div>
                                 <div class="col-md-2">Departments Assigned</div>
                                 <div class="col-md-2">Employees Assigned</div>
                             </div>
-                            <ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
-                                <li class="cd-accordion__item cd-accordion__item--has-children">
-                                  <input class="cd-accordion__input" type="checkbox" name ="group-1" id="group-1">
-                                  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="group-1"><span class="span1">Main Category 1</span><span class="span2"><a href="add-training-design.php">10</a></span><span class="span2"><a href="add-training-design.php">10</a></span></label>
-                            
-                                  <ul class="cd-accordion__sub cd-accordion__sub--l1">
-                                    <li class="cd-accordion__item cd-accordion__item--has-children">
-                                      <input class="cd-accordion__input" type="checkbox" name ="sub-group-1" id="sub-group-1">
-                                      <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-1"><span class="span1">Sub Category 1</span><span class="span2"><a href="add-training-design.php">3</a></span><span class="span2"><a href="add-training-design.php">3</a></span></label>
-                            
-                                      <ul class="cd-accordion__sub cd-accordion__sub--l2">
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 1</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 2</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 3</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                      </ul>
-                                    </li>
-                                  </ul>
-                                  
-                                  <ul class="cd-accordion__sub cd-accordion__sub--l1">
-                                    <li class="cd-accordion__item cd-accordion__item--has-children">
-                                      <input class="cd-accordion__input" type="checkbox" name ="sub-group-2" id="sub-group-2">
-                                      <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-2"><span class="span1">Sub Category 2</span><span class="span2"><a href="add-training-design.php">7</a></span><span class="span2">7</span></label>
-                            
-                                      <ul class="cd-accordion__sub cd-accordion__sub--l2">
-                                         <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 1</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 2</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 3</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                      </ul>
-                                    </li>
-                                  </ul>
-                                  
-                                  
-                                </li>
-                            
-                               
-                              </ul>
+                            <div id="filter_data_val">
                               
-                            <ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
-                                <li class="cd-accordion__item cd-accordion__item--has-children">
-                                  <input class="cd-accordion__input" type="checkbox" name ="group-2" id="group-2">
-                                  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="group-2"><span class="span1">Main Category 2</span><span class="span2">10</span><span class="span2">10</span></label>
-                            
-                                  <ul class="cd-accordion__sub cd-accordion__sub--l1">
-                                    <li class="cd-accordion__item cd-accordion__item--has-children">
-                                      <input class="cd-accordion__input" type="checkbox" name ="sub-group-21" id="sub-group-21">
-                                      <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-21"><span class="span1">Sub Category 1</span><span class="span2">3</span><span class="span2">3</span></label>
-                            
-                                      <ul class="cd-accordion__sub cd-accordion__sub--l2">
-                                         <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 1</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 2</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 3</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                      </ul>
-                                    </li>
-                                  </ul>
-                                  
-                                  <ul class="cd-accordion__sub cd-accordion__sub--l1">
-                                    <li class="cd-accordion__item cd-accordion__item--has-children">
-                                      <input class="cd-accordion__input" type="checkbox" name ="sub-group-22" id="sub-group-22">
-                                      <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-22"><span class="span1">Sub Category 2</span><span class="span2">7</span><span class="span2">7</span></label>
-                            
-                                      <ul class="cd-accordion__sub cd-accordion__sub--l2">
-                                         <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 1</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 2</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                        <li class="cd-accordion__item"><a class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1">Page 3</span><span class="span2">1</span><span class="span2">1</span></a></li>
-                                      </ul>
-                                    </li>
-                                  </ul>
-                                  
-                                  
-                                </li>
-                            
-                               
-                              </ul>      
+                            </div>   
                         </div>
                     </div>
                 </div>
@@ -326,37 +244,151 @@ li a{color:#414141;}
         </div>
         <!-- /#page-wrapper -->
     </div>
-    <!-- /#wrapper -->
-	<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
-	<!-- Bootstrap Core JavaScript -->
-	<script src="bootstrap/dist/js/tether.min.js"></script>
-	<script src="bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
-    <!-- Menu Plugin JavaScript -->
-    <script src="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
-    <!--slimscroll JavaScript -->
-    <script src="js/jquery.slimscroll.js"></script>
-	<script src="js/custom.min.js"></script>
-	<script src="js/validator.js"></script>
-	<!-- Sweet-Alert  -->
-    <script src="plugins/bower_components/sweetalert/sweetalert.min.js"></script>
-	<!--Wave Effects -->
-    <script src="js/waves.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="js/custom.min.js"></script>
-    <script src="js/jasny-bootstrap.js"></script>
-    <!--Style Switcher -->
-    <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
-    <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+     <!-- myModalDepartment content -->
+      <div id="myModalDepartment" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-    <!-- Custom Theme JavaScript -->
-    <script src="js/custom.min.js"></script>
-    <script src="js/validator.js"></script>
-	<!-- Footable -->
-    <script src="plugins/bower_components/footable/js/footable.all.min.js"></script>
-    <!--Acordian 3 level init-->
-    <script src="js/main.js"></script>
-    <script src="js/util.js"></script>
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title" id="myModalLabel">Assign Department</h4> </div>
+
+                    	<form method="post" id="ajaxHandForm">
+                            <div class="modal-body">
+                                <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
+                                <label for="document_name">Choose Department</label>
+                                <div class="form-group">
+                                	<select name="popup_depart" id="popup_depart" class="form-control select2" style="width:100%">
+                                    	<option value="">Select Department</option>
+                                        <option data-select2-id="9">Air Force</option>
+                                        <option data-select2-id="10">AmeriCorps</option>
+                                        <option data-select2-id="11">Bankruptcy Courts Forms</option>
+                                        <option data-select2-id="12">Coast Guard Forms</option>
+                                        <option data-select2-id="13">National Mediation Board Forms</option>
+                                    </select>
+                                </div>
+                               
+                            </div>
+    
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-info waves-effect">Assign</button>
+                            </div>
+						</form>
+                </div>
+
+                <!-- /.modal-content -->
+
+            </div>
+
+            <!-- /.modal-dialog -->
+
+        </div>
+     <!-- /.modal -->
+     <!-- myModalEMP content -->
+      <div id="myModalEMP" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+
+                    <div class="modal-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title" id="myModalLabel">Assign Employee</h4> </div>
+
+                    	<form method="post" id="ajaxHandForm">
+                            <div class="modal-body">
+                                <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
+                                <label for="document_name">Choose Employee</label>
+                                <div class="form-group">
+                                	<select name="popup_emp" id="popup_emp" class="form-control select2" style="width:100%">
+                                    	<option value="">Select Employee</option>
+                                        <option>ALBERT</option>
+                                        <option>AARON</option>
+                                        <option>BRETT</option>
+                                        <option>CAMERON</option>
+                                        <option>DAVID</option>
+                                    </select>
+                                </div>
+                               
+                            </div>
+    
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-info waves-effect">Assign</button>
+                            </div>
+						</form>
+                </div>
+
+                <!-- /.modal-content -->
+
+            </div>
+
+            <!-- /.modal-dialog -->
+
+        </div>
+     <!-- /.modal -->
+    <script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+
+        <script src="bootstrap/dist/js/tether.min.js"></script>
+
+        <script src="bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <script src="plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
+
+        <!-- Menu Plugin JavaScript -->
+
+        <script src="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
+
+        <!--slimscroll JavaScript -->
+
+        <script src="js/jquery.slimscroll.js"></script>
+
+        <!--Wave Effects -->
+
+        <script src="js/waves.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+
+        <script src="js/custom.min.js"></script>
+
+        <script src="js/jasny-bootstrap.js"></script>
+
+        <!--Style Switcher -->
+
+        <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
+
+        <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
+		<!-- Sweet-Alert  -->
+
+		<script src="plugins/bower_components/sweetalert/sweetalert.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+
+        <script src="js/custom.min.js"></script>
+
+        <script src="js/validator.js"></script>
+
+        <script src="plugins/bower_components/custom-select/custom-select.min.js" type="text/javascript"></script>
+
+        <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+
+        <script src="plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+
+        <script src="plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
+
+        <script type="text/javascript" src="plugins/bower_components/multiselect/js/jquery.multi-select.js"></script>
+        <script src="plugins/bower_components/datatables/jquery.dataTables.min.js"></script>
+        <!--Acordian 3 level init-->
+		<script src="js/main.js"></script>
+        <script src="js/util.js"></script>
     <script>
     $(function() {
     <?php 
@@ -373,236 +405,49 @@ li a{color:#414141;}
 			setcookie('err', $_COOKIE['err'], time()-100);
 		}
 	?>
-    });
-	$(document).on('click', '.main-status', function() {
-		var element = $(this);
-		var id = element.attr("data-id");
-		var status = element.attr("data-status");
-		var ms = (status==0?'Active':'Inactive');
-		swal({
-			title: ms,
-			text: "Are you sure?",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Yes, Change it!",
-			cancelButtonText: "Cancel",
-			closeOnConfirm: false,
-			closeOnCancel: false
-		}, function(isConfirm){
-			if (isConfirm) {
-				$.ajax({
-					type: "POST",
-					url: "ajax-status.php",
-					cache:false,
-					data: 'id='+id+'&status='+status+'&meth=cat-status',
-					dataType:'json',
-					success: function(response)
-					{
-						swal(response.status, response.msg,response.err);
-						if(response.result){
-							location.reload();
-						}
-					}
-				});
-			}
-			else
-			{
-
-				swal("Cancelled", "", "error");
-			}
-		});
-	});
-	$(document).on('click', '.sub-status', function() {
-		var element = $(this);
-		var id = element.attr("data-id");
-		var status = element.attr("data-status");
-		var ms = (status==0?'Active':'Inactive');
-		swal({
-			title: ms,
-			text: "Are you sure?",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Yes, Change it!",
-			cancelButtonText: "Cancel",
-			closeOnConfirm: false,
-			closeOnCancel: false
-		}, function(isConfirm){
-			if (isConfirm) {
-				$.ajax({
-					type: "POST",
-					url: "ajax-status.php",
-					cache:false,
-					data: 'id='+id+'&status='+status+'&meth=catsub-status',
-					dataType:'json',
-					success: function(response)
-					{
-						swal(response.status, response.msg,response.err);
-						if(response.result){
-							location.reload();
-						}
-					}
-				});
-			}
-			else
-			{
-				swal("Cancelled", "", "error");
-			}
-		});
-	});
-	/*Delete Cat*/
-	$(document).on('click', '.deleteCat', function() {
-		var element = $(this);
-		var id = element.attr("data-id");
-		var status = element.attr("data-status");
-		var ms = (status==0?'Active':'Delete');
-		swal({
-			title: ms,
-			text: "Are you sure, you want to delete it?",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Yes, Delete it!",
-			cancelButtonText: "Cancel",
-			closeOnConfirm: false,
-			closeOnCancel: false
-		}, function(isConfirm){
-			if(isConfirm) {
-				$.ajax({
-					type: "POST",
-					url: "ajax-status.php",
-					cache:false,
-					data: 'id='+id+'&status='+status+'&meth=catsub-status-delete',
-					dataType:'json',
-					success: function(response)
-					{
-						swal(response.status, response.msg,response.err);						
-						if(response.result){
-							location.reload();
-						}
-					}
-				});
-			}
-			else
-			{
-				swal("Cancelled", "", "error");
-			}
-		});
-	});
-	/*Delete Cat END*/
-	/*Delete SubCat*/
-	$(document).on('click', '.deleteone_subcat span', function() {
-		var element = $(this);
-		var id = element.attr("data-id");
-		var status = element.attr("data-status");
-		var ms = (status==0?'Active':'Delete');
-		swal({
-			title: ms,
-			text: "Are you sure, you want to delete it?",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Yes, Delete it!",
-			cancelButtonText: "Cancel",
-			closeOnConfirm: false,
-			closeOnCancel: false
-		}, function(isConfirm){
-			if(isConfirm) {
-				$.ajax({
-					type: "POST",
-					url: "ajax-status.php",
-					cache:false,
-					data: 'id='+id+'&status='+status+'&meth=catsub-status-subdelete',
-					dataType:'json',
-					success: function(response)
-					{
-						swal(response.status, response.msg,response.err);						
-						if(response.result){
-							location.reload();
-						}
-					}
-				});
-			}
-			else
-			{
-				swal("Cancelled", "", "error");
-			}
-		});
-	});
-	/*Delete SubCat END*/
-	/*NoCategory Cat*/
-	$(document).on('click', '.NoCategory', function() {
-		var element = $(this);
-		var id = element.attr("data-id");
-		var status = element.attr("data-status");
-		var ms = 'SubCategory Exist';
-		swal({
-			title: ms,
-			text: "That's why you can't delete it",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#DD6B55",
-			confirmButtonText: "Go Back!",
-			cancelButtonText: "Cancel",
-			closeOnConfirm: false,
-			closeOnCancel: false
-		}, function(isConfirm){
-			if (isConfirm) {
-				 swal('Status','You are back!!!','success');
-			}
-			else
-			{
-				swal("Cancelled", "", "error");
-			}
-		});
-	});
-	/*NoCategory END*/
 	
-	$("#submitAjaxBtn").click(function(e){
-		var name = $('#mainCategory').val();
-		var id = $('#mainCatId').val();
-		if(name!='' && name!='undifined'){
-			$('.mainCategory').html('');
-			$('.mainCategory').hide();
-			$.ajax({
-				type: "POST",
-				url: "ajax.php",
-				cache:false,
-				data: 'name='+name+'&id='+id+'&meth=Action-Category',
-				dataType:'json',
-				success: function(response)
+    });
+	jQuery(document).ready(function() {
+		call_filter_data();
+		setTimeout(function() { 
+			$('.checkbox input[type="checkbox"]').click(function(e){
+				var classname = $(this).attr('class');
+				var prev_classname = $(this).parent().attr('id');
+				console.log(classname+prev_classname);
+				if($(this).prop("checked") == true)
 				{
-					swal(response.status, response.msg, response.error);
-					if(response.result){
-						location.reload();
-					}
+					$( "ul." + prev_classname + " li .checkbox input[type='checkbox']").each(function( index ) {
+					  $( this ).prop('checked', true);
+					});
+				}
+				else
+				{
+					$( "ul." + prev_classname + " .checkbox input[type='checkbox']").each(function( index ) {
+					  $( this ).prop('checked', false);
+					});
 				}
 			});
-		}else{
-			$('.mainCategory').html('Please enter category name');
-			$('.mainCategory').show();
-			$('#mainCategory').focus();
-		}
+		}, 3000);
+		
+		//$("#empselect").select2();
+		$("#select_dep").select2();
+		$("#select_emp").select2();
+		$("#popup_depart").select2();
+		$("#popup_emp").select2();
 	});
-	$('.edit-cat').click(function(e){
-		let id = $(this).attr('data-id');
-		let name = $('#cat-name-'+id).html();
-		$('#mainCategory').val(name);
-		$('#mainCatId').val(id);
-		$('#submitAjaxBtn').html('Update');
-		$('#myModalLabel').html('Edit Category');
-		$('.mainCategory').html('');
-		$('.mainCategory').hide();
-	});
-	$('.add-cat').click(function(e){
-		$('#mainCategory').val('');
-		$('#mainCatId').val('');
-		$('#submitAjaxBtn').html('Add');
-		$('#myModalLabel').html('Add Category');
-		$('.mainCategory').html('');
-		$('.mainCategory').hide();
-	});
+	
+	function call_filter_data()
+	{
+		$.ajax({
+			url: "be_safe_list.php",
+			type: 'POST',
+			data: 'catIDs=<?php echo $nav_cat['c'];?>&subCateIDs=<?php echo $nav_cat['s'];?>&pageIDs=<?php echo $nav_cat['p'];?>',
+			dataType:'html',
+			success: function (datahtml) {
+				$('#filter_data_val').html(datahtml);				
+			}
+		})
+	}
 	</script>
 </body>
 
