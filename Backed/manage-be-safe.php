@@ -13,6 +13,114 @@ if($session['b_type'] != 2 && !isset($session['bid']) && $session['bid']=='')
 	header('location:dashboard.php');
 	exit;
 }
+
+/*Assign Department code END*/
+if(isset($_POST['submitType']) and $_POST['submitType'] == 'assignDepart')
+{
+	$BeSafePorgram = $_POST['BeSafePorgram'];
+	$departID = $_POST['departID'];
+	$insert_count = 0;
+	$msg = '';
+	foreach($_POST['BeSafePorgram'] as $item) {
+       $item = explode('-',$item);
+	   $input = array(
+			'depart_id'	=>$departID,
+			'catID'	=>$item[0],
+			'subCatID'	=>$item[1],
+			'programID'	=>$item[2],
+			'status'	=>0
+		);
+	   $exits = $prop->getName('count(id)', 'assign_depart', "depart_id=".$departID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+	   if($exits === 0){
+	   		$result = $prop->add('assign_depart', $input);
+			if ($result) {
+				$insert_count++;
+			}
+	   }
+	   else
+	   {
+	   		$unassignDepID = $prop->getName('id', 'assign_depart', "status=2 AND depart_id=".$departID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			if($unassignDepID != 0)
+			{
+				$t_cond = array("id" => $unassignDepID);
+				$result = $prop->update('assign_depart', $input, $t_cond);
+				if ($result) {
+					$insert_count++;
+				}
+				
+			}
+	   }
+    }
+	if($insert_count != 0)
+	{
+		setcookie('status', 'Success', time()+10);
+		setcookie('title', 'Department Assigned Successfully', time()+10);
+		setcookie('err', 'success', time()+10);
+		header('Location: manage-be-safe.php');
+	}
+	else
+	{
+		setcookie('status', 'Error', time()+10);
+		setcookie('title', 'Department already Assigned', time()+10);
+		setcookie('err', 'error', time()+10);
+		header('Location: manage-be-safe.php');
+	}
+}
+/*Assign Department code END*/
+/*Assign Employee code Start*/
+if(isset($_POST['submitType']) and $_POST['submitType'] == 'assignEMP')
+{
+	$BeSafePorgram = $_POST['BeSafePorgram'];
+	$empID = $_POST['empID'];
+	$insert_count = 0;
+	$msg = '';
+	foreach($_POST['BeSafePorgram'] as $item) {
+       $item = explode('-',$item);
+	   $input = array(
+			'emp_id'	=>$empID,
+			'catID'	=>$item[0],
+			'subCatID'	=>$item[1],
+			'programID'	=>$item[2],
+			'status'	=>0
+		);
+	   $exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+	   if($exits === 0){
+	   		$result = $prop->add('assign_emp', $input);
+			if ($result) {
+				$insert_count++;
+			}
+	   }
+	   else
+	   {
+	   		$unassignEmpID = $prop->getName('id', 'assign_emp', "status=2 AND emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			if($unassignEmpID != 0)
+			{
+				$t_cond = array("id" => $unassignEmpID);
+				$result = $prop->update('assign_emp', $input, $t_cond);
+				if ($result) {
+					$insert_count++;
+				}
+				
+			}
+	   }
+    }
+	if($insert_count != 0)
+	{
+		setcookie('status', 'Success', time()+10);
+		setcookie('title', 'Employee Assigned Successfully', time()+10);
+		setcookie('err', 'success', time()+10);
+		header('Location: manage-be-safe.php');
+	}
+	else
+	{
+		setcookie('status', 'Error', time()+10);
+		setcookie('title', 'Employee already Assigned', time()+10);
+		setcookie('err', 'error', time()+10);
+		header('Location: manage-be-safe.php');
+	}
+}
+/*Assign Employee code END*/
+
 $permission = $prop->get('permission',USERS, array("id"=>$session['bid']));
 $nav_cat = json_decode($permission['permission'], TRUE);
 $nav_category = $nav_cat['c'];
@@ -199,48 +307,52 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                     <div class="col-lg-12">
                         <div class="white-box">
                             <h3 class="box-title m-b-0">List of Be safe Pages</h3>
-                            <div class="row" style="margin-bottom:20px;">
-                                <div class="col-md-3">
-                                <input type="text" name="" placeholder="Search Keyword" class="form-control">
-                                </div>    
-                                <div class="col-md-3">
-                                <select class="form-control select2" id="select_dep" >
-                                    <option>Filter by Department</option>
-                                    <?php
-									$count = count($listDepart);
-									for($i=0; $i<$count; $i++){ 
-										echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
-									}
-									?>
-                                </select>
+                            <form method="post" enctype="multipart/form-data" id="formBeSafe">
+                            	<input type="hidden" name="departID" id="departID" >
+                                <input type="hidden" name="empID" id="empID" >
+                                <input type="hidden" name="submitType" id="submitType" >
+                                <div class="row" style="margin-bottom:20px;">
+                                    <div class="col-md-3">
+                                    <input type="text" name="filterKey" id="filterKey" placeholder="Search Keyword" class="form-control">
+                                    </div>    
+                                    <div class="col-md-3">
+                                    <select class="form-control select2" id="filterDep" >
+                                        <option value="">Filter by Department</option>
+                                        <?php
+                                        $count = count($listDepart);
+                                        for($i=0; $i<$count; $i++){ 
+                                            echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                    <select class="form-control select2" id="filterEmp" >
+                                        <option value="">Filter by Employee</option>
+                                        <?php
+                                        $count = count($listEmps);
+                                        for($i=0; $i<$count; $i++){ 
+                                            echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" id="assignDepart" name="assignDepart" data-id="mainCatDepart-19" data-toggle="modal" data-target="#myModalDepartment" class="btn btn-success waves-effect waves-light pull-right m-r-10">
+                                         <i class="ti-plus"></i> Assign to Department
+                                        </button>
+                                  </div>
+                                    <div class="clearfix"></div>
+                                    </div>                                
+                                <div class="row" style="BACKGROUND: #00568a !important;font-weight:bold;color: white;padding: 15px;">
+                                    <div class="col-md-8">Category Name</div>
+                                    <div class="col-md-2">Departments Assigned</div>
+                                    <div class="col-md-2">Employees Assigned</div>
                                 </div>
-                                <div class="col-md-3">
-                                <select class="form-control select2" id="select_emp" >
-                                    <option>Filter by Employee</option>
-                                    <?php
-									$count = count($listEmps);
-									for($i=0; $i<$count; $i++){ 
-										echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
-									}
-									?>
-                                </select>
-                                </div>
-                                <div class="col-md-3">
-                                	<button type="button" class="btn btn-success waves-effect waves-light pull-right m-r-10">
-                                	 <i class="ti-plus"></i> Assign to Department
-                                	</button>
-                              </div>
-                                <div class="clearfix"></div>
-                                </div>
-                                
-							<div class="row" style="BACKGROUND: #00568a !important;font-weight:bold;color: white;padding: 15px;">
-                            	<div class="col-md-8">Category Name</div>
-                                <div class="col-md-2">Departments Assigned</div>
-                                <div class="col-md-2">Employees Assigned</div>
-                            </div>
-                            <div id="filter_data_val">
-                              
-                            </div>   
+                                <div id="filter_data_val">
+                                  
+                                </div>   
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -266,28 +378,26 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 
                         <h4 class="modal-title" id="myModalLabel">Assign Department</h4> </div>
 
-                    	<form method="post" id="ajaxHandForm">
-                            <div class="modal-body">
-                                <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
-                                <label for="document_name">Choose Department</label>
-                                <div class="form-group">
-                                	<select name="popup_depart" id="popup_depart" class="form-control select2" style="width:100%">
-                                    	<option value="">Select Department</option>
-                                        <?php
-										$count = count($listDepart);
-										for($i=0; $i<$count; $i++){ 
-											echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
-										}
-										?>
-                                    </select>
-                                </div>
-                               
+                    	<div class="modal-body">
+                           <label for="document_name">Choose Department</label>
+                            <div class="form-group">
+                                <select name="popup_depart" id="popup_depart" class="form-control select2" style="width:100%">
+                                    <option value="">Select Department</option>
+                                    <?php
+                                    $count = count($listDepart);
+                                    for($i=0; $i<$count; $i++){ 
+                                        echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <div class="errorDepart"></div>
                             </div>
-    
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-info waves-effect">Assign</button>
-                            </div>
-						</form>
+                           
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-info waves-effect" id="btnPopDepart" name="btnPopDepart">Assign</button>
+                        </div>
                 </div>
 
                 <!-- /.modal-content -->
@@ -311,28 +421,26 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 
                         <h4 class="modal-title" id="myModalLabel">Assign Employee</h4> </div>
 
-                    	<form method="post" id="ajaxHandForm">
-                            <div class="modal-body">
-                                <input type="hidden" name="meth" id="meth" value="ajaxsaveHand">
-                                <label for="document_name">Choose Employee</label>
-                                <div class="form-group">
-                                	<select name="popup_emp" id="popup_emp" class="form-control select2" style="width:100%">
-                                    	<option value="">Select Employee</option>
-                                        <?php
-                                        $count = count($listEmps);
-                                        for($i=0; $i<$count; $i++){ 
-                                            echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                               
+                    	<div class="modal-body">
+                            <label for="document_name">Choose Employee</label>
+                            <div class="form-group">
+                                <select name="popup_emp" id="popup_emp" class="form-control select2" style="width:100%">
+                                    <option value="">Select Employee</option>
+                                    <?php
+                                    $count = count($listEmps);
+                                    for($i=0; $i<$count; $i++){ 
+                                        echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <div class="errorEMP"></div>
                             </div>
-    
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-info waves-effect">Assign</button>
-                            </div>
-						</form>
+                           
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" id="btnPopEmp" name="btnPopEmp" class="btn btn-info waves-effect">Assign</button>
+                        </div>
                 </div>
 
                 <!-- /.modal-content -->
@@ -419,40 +527,20 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 	
     });
 	jQuery(document).ready(function() {
-		call_filter_data();
-		setTimeout(function() { 
-			$('.checkbox input[type="checkbox"]').click(function(e){
-				var classname = $(this).attr('class');
-				var prev_classname = $(this).parent().attr('id');
-				console.log(classname+prev_classname);
-				if($(this).prop("checked") == true)
-				{
-					$( "ul." + prev_classname + " li .checkbox input[type='checkbox']").each(function( index ) {
-					  $( this ).prop('checked', true);
-					});
-				}
-				else
-				{
-					$( "ul." + prev_classname + " .checkbox input[type='checkbox']").each(function( index ) {
-					  $( this ).prop('checked', false);
-					});
-				}
-			});
-		}, 3000);
-		
+		call_filter_data('','','');
 		//$("#empselect").select2();
-		$("#select_dep").select2();
-		$("#select_emp").select2();
+		$("#filterDep").select2();
+		$("#filterEmp").select2();
 		$("#popup_depart").select2();
 		$("#popup_emp").select2();
 	});
 	
-	function call_filter_data()
+	function call_filter_data(keyword,departID,empID)
 	{
 		$.ajax({
 			url: "be_safe_list.php",
 			type: 'POST',
-			data: 'catIDs=<?php echo $nav_cat['c'];?>&subCateIDs=<?php echo $nav_cat['s'];?>&pageIDs=<?php echo $nav_cat['p'];?>',
+			data: 'catIDs=<?php echo $nav_cat['c'];?>&subCateIDs=<?php echo $nav_cat['s'];?>&pageIDs=<?php echo $nav_cat['p'];?>&keyword='+ keyword +'&departID='+ departID+'&empID='+ empID,
 			dataType:'html',
 			success: function (datahtml) {
 				$('#filter_data_val').html(datahtml);				
