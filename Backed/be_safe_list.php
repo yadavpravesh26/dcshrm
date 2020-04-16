@@ -29,11 +29,11 @@ $prop = new PDOFUNCTION($db);
 			  <label class="category-label" for="main_cate_<?php echo $row_cat[$i]['c_id'];?>"></label>
 		  </div>
 		  <input class="cd-accordion__input" type="checkbox" name="group-<?php echo $row_cat[$i]['c_id'];?>" id="group-<?php echo $row_cat[$i]['c_id'];?>">
-		  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="group-<?php echo $row_cat[$i]['c_id'];?>"><span class="span1"><?php echo $row_cat[$i]['c_name'];?></span><span class="span2"><a href="add-training-design.php">10</a>
+		  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="group-<?php echo $row_cat[$i]['c_id'];?>"><span class="span1"><?php echo $row_cat[$i]['c_name'];?></span><span class="span2">10
 		  <a class="addDepartment" data-id="mainCatDepart-<?php echo $row_cat[$i]['c_id'];?>" data-toggle="modal" data-target="#myModalDepartment" style="font-size:16px;">
 			<i class="fa fa-plus-circle" aria-hidden="true"></i>
 		  </a>
-		  </span><span class="span2"><a href="add-training-design.php">10</a>
+		  </span><span class="span2"10
 		  <a class="addEmp" data-id="mainCatEmp-<?php echo $row_cat[$i]['c_id'];?>" data-toggle="modal" data-target="#myModalEMP" style="font-size:16px;">
 			<i class="fa fa-plus-circle" aria-hidden="true"></i>
 		  </a>
@@ -55,11 +55,11 @@ $prop = new PDOFUNCTION($db);
 				  <label class="category-label" for="sub_cate_<?php echo $mainCatID.$subCatID;?>"></label>
 			  </div>
 			  <input class="cd-accordion__input" type="checkbox" name ="sub-group-<?php echo $mainCatID.$subCatID;?>" id="sub-group-<?php echo $mainCatID.$subCatID;?>">
-			  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-<?php echo $mainCatID.$subCatID;?>"><span class="span1"><?php echo $row_subCat[$j]['sc_name'];?></span><span class="span2"><a href="add-training-design.php">3</a>
+			  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-<?php echo $mainCatID.$subCatID;?>"><span class="span1"><?php echo $row_subCat[$j]['sc_name'];?></span><span class="span2">3
 			  <a class="addDepartment" data-id="subCatDepart-<?php echo $mainCatID;?>" data-toggle="modal" data-target="#myModalDepartment" style="font-size:16px;">
 				<i class="fa fa-plus-circle" aria-hidden="true"></i>
 			  </a>
-			  </span><span class="span2"><a href="add-training-design.php">3</a>
+			  </span><span class="span2">3
 			  <a class="addEmp" data-id="subCatEmp-<?php echo $mainCatID;?>" data-toggle="modal" data-target="#myModalEMP" style="font-size:16px;">
 				<i class="fa fa-plus-circle" aria-hidden="true"></i>
 			  </a>
@@ -79,11 +79,11 @@ $prop = new PDOFUNCTION($db);
 					  <input id="porgram_<?php echo $mainCatID.$subCatID.$pID;?>" data-class="subcate<?php echo $subCatID;?>" class="" type="checkbox" value="<?php echo $pID;?>" >
 					  <label class="category-label" for="porgram_<?php echo $mainCatID.$subCatID.$pID;?>"></label>
 					</div>
-					<div class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1"><a href="add-training-design.php"><?php echo $row_programs[$k]['title'];?></a></span><span class="span2"><a href="add-training-design.php">3</a>
+					<div class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1"><a href="add-training-design.php?programID=<?php echo $pID;?>"><?php echo $row_programs[$k]['title'];?></a></span><span class="span2"><a href="add-training-design.php?programID=<?php echo $pID;?>">3</a>
 					<a class="addDepartment" data-id="programDepart-<?php echo $pID;?>" data-toggle="modal" data-target="#myModalDepartment" style="font-size:16px;">
 					<i class="fa fa-plus-circle" aria-hidden="true"></i>
 				  </a>
-					</span><span class="span2"><a href="add-training-design.php">3</a>
+					</span><span class="span2"><a href="add-training-design.php?programID=<?php echo $pID;?>">3</a>
 					<a class="addEmp" data-id="programEmp-<?php echo $pID;?>" data-toggle="modal" data-target="#myModalEMP" style="font-size:16px;">
 					<i class="fa fa-plus-circle" aria-hidden="true"></i>
 				  </a>

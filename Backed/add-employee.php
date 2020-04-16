@@ -345,7 +345,7 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
     <link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
     <title>Add New Employee</title>
     <!-- Bootstrap Core CSS -->
-     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
 	   <!-- Footable CSS -->

@@ -19,6 +19,13 @@ $nav_category = $nav_cat['c'];
 $nav_sub_category = $nav_cat['s'];
 $nav_pages = $nav_cat['p'];
 $cat_count = count($nav_cat['c']);
+
+$where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
+$listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
+
+$where_emp = ' where status != 2 and u_type = 4 and u_id='.$session['bid'];
+$listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
+
 ?>
 <!DOCTYPE html>
 
@@ -199,21 +206,23 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                 <div class="col-md-3">
                                 <select class="form-control select2" id="select_dep" >
                                     <option>Filter by Department</option>
-                                    <option>Air Force</option>
-                                    <option>AmeriCorps</option>
-                                    <option>Bankruptcy Courts Forms</option>
-                                    <option>Coast Guard Forms</option>
-                                    <option>National Mediation Board Forms</option>
+                                    <?php
+									$count = count($listDepart);
+									for($i=0; $i<$count; $i++){ 
+										echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
+									}
+									?>
                                 </select>
                                 </div>
                                 <div class="col-md-3">
                                 <select class="form-control select2" id="select_emp" >
                                     <option>Filter by Employee</option>
-                                    <option>ALBERT</option>
-                                    <option>AARON</option>
-                                    <option>BRETT</option>
-                                    <option>CAMERON</option>
-                                    <option>DAVID</option>
+                                    <?php
+									$count = count($listEmps);
+									for($i=0; $i<$count; $i++){ 
+										echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+									}
+									?>
                                 </select>
                                 </div>
                                 <div class="col-md-3">
@@ -264,11 +273,12 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                 <div class="form-group">
                                 	<select name="popup_depart" id="popup_depart" class="form-control select2" style="width:100%">
                                     	<option value="">Select Department</option>
-                                        <option data-select2-id="9">Air Force</option>
-                                        <option data-select2-id="10">AmeriCorps</option>
-                                        <option data-select2-id="11">Bankruptcy Courts Forms</option>
-                                        <option data-select2-id="12">Coast Guard Forms</option>
-                                        <option data-select2-id="13">National Mediation Board Forms</option>
+                                        <?php
+										$count = count($listDepart);
+										for($i=0; $i<$count; $i++){ 
+											echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
+										}
+										?>
                                     </select>
                                 </div>
                                
@@ -308,11 +318,12 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                 <div class="form-group">
                                 	<select name="popup_emp" id="popup_emp" class="form-control select2" style="width:100%">
                                     	<option value="">Select Employee</option>
-                                        <option>ALBERT</option>
-                                        <option>AARON</option>
-                                        <option>BRETT</option>
-                                        <option>CAMERON</option>
-                                        <option>DAVID</option>
+                                        <?php
+                                        $count = count($listEmps);
+                                        for($i=0; $i<$count; $i++){ 
+                                            echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                                

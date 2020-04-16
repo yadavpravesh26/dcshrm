@@ -6,6 +6,19 @@ $cdb = new DB();
 $db = $cdb->getDb();
 $prop = new PDOFUNCTION($db);
 
+$curr_val = $prop->get('*',PAGES, array("p_id"=>$_REQUEST['programID'],'page_status'=>0));
+$page_id = $curr_val['p_id'];
+
+if(empty($curr_val)){
+	header('location: manage-be-safe.php');
+	exit;
+}
+
+$where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
+$listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
+
+$where_emp = ' where status != 2 and u_type = 4 and u_id='.$session['bid'];
+$listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
 ?>
 <!DOCTYPE html>
 
@@ -41,6 +54,7 @@ $prop = new PDOFUNCTION($db);
 	<!-- Animation CSS -->
 	<link href="css/animate.css" rel="stylesheet">
 	<!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style-accordian.css">
 	<link href="css/style.css" rel="stylesheet">
 	<link href="css/custom-style.css" rel="stylesheet">
 	<!--alerts CSS -->
@@ -51,7 +65,7 @@ $prop = new PDOFUNCTION($db);
 -->
 	<link href="css/colors/default-dark.css" id="theme" rel="stylesheet">
     <link href="css/jquery.bonsai.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="css/style-accordian.css">
+    
     <!--<link href="css/colors/blue.css" id="theme" rel="stylesheet">-->
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -208,7 +222,7 @@ ul.handout-sst {
     padding: 0;
 }
 .img-banner {
-    background: url(http://dcshrm.com/sadmin/uploads/catdetails/1586402717.JPG) no-repeat center center;
+    background: url(<?php echo '../uploads/catdetails/'.$curr_val[ban_image]; ?>) no-repeat center center;
     background-size: cover;
     height: 300px;
     width: 100%;
@@ -232,8 +246,9 @@ ul.handout-sst {
     margin-top: 10px;
 }
 .dataTables_wrapper{width:100%}
-/*.multiselect.dropdown-toggle.btn.btn-default{background:transparent}
-.multiselect-container{width:100%}*/
+button.btn.btn-success, button.btn {
+    color: #FFFFFF;
+}
 </style>
 </head>
 
@@ -277,7 +292,7 @@ ul.handout-sst {
                         	<div class="col-md-12">
                                 <div class="white-box">
                                     <h3 class="box-title"> BE SAFE PROGRAM DETAILS</h3>
-                                    <div class="img-banner"><div class="banner-txt">ASBESTOS AWARENESS</div></div>
+                                    <div class="img-banner"><div class="banner-txt"><?php echo $curr_val[title] ?></div></div>
                                 	<div class="row">
                                 	    <div id="home_info" class="" style="background: #fff;width:100%">
 		<div class="bg-color"></div>
@@ -305,50 +320,118 @@ ul.handout-sst {
 				<div class="text-box col-md-12" id="runtime_descript">
                 	<div class="tab-content">
                      <div role="tabpanel" class="tab-pane fade active show" id="Content_tab" aria-expanded="true">
-						<p><strong>Asbestos Awareness</strong></p>
-<p>We do not have asbestos exposures in our normal business, but this does not mean that we will not encounter it as we visit job sites. If you suspect exposure to asbestos due to demolition or another source, report it immediately to a supervisor.</p>
-<p>&nbsp;</p>
-<p><strong>What are the Hazards? </strong></p>
-<p>Asbestos fibers are difficult to see with just the naked eye and breathing asbestos can cause a buildup of asbestosis in the lungs causing scaring and reduced function. Exposure to asbestos can lead to multiple abnormalities such as; lung cancer, mesothelioma, and death. People most commonly exposed to asbestos tend to work in the construction industry, ship repair, or any job that includes renovations or demolitions.</p>
-<p>&nbsp;</p>
-<p><strong>How to Avoid the Hazards </strong></p>
-<ul>
-<li>There are OSHA standards set to protect employees from asbestos in all industries.</li>
-<li>Companies and organizations are required by law to provide personal exposure assessment of the risk and hazards associated with exposure to asbestos with that specific job duty.</li>
-<li>There are laws set to determine the highest possible airborne levels of asbestos that someone could be required to work in. These are called Permissible Exposure Limit (PEL). Although there are no safe levels of exposure to asbestos, there are levels that lead to more serious harm.</li>
-<li>Where exposure exists, employers are required to protect workers by declaring regulated areas, controlling job duties in those areas, provide relevant protective equipment and implementing engineering controls to limit airborne levels as much as possible.</li>
-</ul>
-<p>&nbsp;</p>
-<p><strong>Key Things to Remember When Working with Asbestos </strong></p>
-<p>* Always wear protective mask and other equipment</p>
-<p>* Wash clothes immediately when finished working</p>
-<p>* Shower or rinse at the job site</p>
-<p>* Always be aware!</p>
-<p>&nbsp;</p>                                                <!--<div id="loadMore" style="">
+						<p><strong><?php echo $curr_val[ban_title] ?></strong></p>
+<?php 
+                        echo $curr_val[descript];					
+                        ?>
+                                                                    <!--<div id="loadMore" style="">
                           <a style="cursor:pointer">Load More</a>
                         </div>-->
                                                               </div>
 
-                     <div role="tabpanel" class="tab-pane fade" id="Handout_tab" aria-expanded="false">
-                     							<div class="tab_inner">
-						<ul class="handout-sst">
+                     						<div role="tabpanel" class="tab-pane fade" id="Handout_tab" aria-expanded="false">
+                     							<?php
+												if($curr_val['handout']!="emp" && $curr_val['handout']!=""){
+												//echo $curr_val['handout'];
+												?>
+												<div class="tab_inner">
+												<ul Class="handout-sst">
+												<?php
+												$catfetdoc =  "SELECT * FROM handouts WHERE doc_type=1 AND doc_id IN(".$curr_val['handout'].") AND doc_status=0";
+												$rowdoc=$prop->getAll_Disp($catfetdoc);
+												for($i=0; $i<count($rowdoc); $i++){
+													$old_name = "../images/docs/".$rowdoc[$i]['doc_file'] ;
+													$extension = end(explode('.',strtolower($old_name)));
+													$new_name = "../images/docs/".$rowdoc[$i][doc_name].".".$extension ;
+													rename( $old_name, $new_name);
+												?>
 													<li>
-                                                       <a href="images/docs/ASBESTO AWARENESS PROGRAM.docx"> <span class="title"><i class="fa fa-file-word-o"></i>ASBESTO AWARENESS PROGRAM</span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
-                                                       <li>
-                                                       <a href="images/docs/ASBESTO AWARENESS PROGRAM.docx"> <span class="title"><i class="fa fa-file-word-o"></i>COVID AWARENESS PROGRAM</span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
-						    
-						</ul>
-						</div>
+													<?php 
+														if($extension == 'pdf')
+														$class = 'fa fa-file-pdf-o';
+														else if($extension == 'doc' || $extension == 'docx')
+														$class = 'fa fa-file-word-o';
+													?>
+												   <a href="<?php echo $new_name; ?>"> <span class="title"><i class="<?php echo $class;?>"></i><?php echo $rowdoc[$i][doc_name]; ?></span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
+												<?php } ?>    
+												</ul>
+												</div>
+												<?php } ?>
 						                     </div>
                                           <div role="tabpanel" class="tab-pane fade" id="Quiz_tab" aria-expanded="false">
-                     	    			   		 <div class="tab_inner">
-                            <ul class="handout-sst">
-                                                             <li><a href="" target="_blank" title="Click To Attend Quiz"><img src="img/notepad.png"><span class="title">ASBESTOS AWARENESS</span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
-                                                             <li><a href="" target="_blank" title="Click To Attend Quiz"><img src="img/notepad.png"><span class="title">Training Quiz</span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
-                                                            </ul>
-                            </div>
+                     	    			   		 <?php if($curr_val['quiz']!="emp" && $curr_val['quiz']!=""){?>
+                                                 <div class="tab_inner">
+                                                    <ul Class="handout-sst">
+                                                     <?php
+                                                    $catfetdoc =  "SELECT * FROM dynamic_form WHERE form_type=0 AND d_form_id IN(".$curr_val['quiz'].") AND d_detele_status=0";
+                                                    $rowdoc=$prop->getAll_Disp($catfetdoc);
+                                                    $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['bid']));
+                                                    $user_name = $CompanyId['name'];
+                                                    $email = $CompanyId['email'];
+                                                    $contact_no = $CompanyId['contact_no'];
+                                                    $user_name = explode(' ',$user_name);
+                                                    $fname = $user_name[0];
+                                                    $lname = $user_name[1];
+                                                    
+                                                    for($i=0; $i<count($rowdoc); $i++)
+                                                     {
+                                                     
+													 ?>
+                                                        <li><a href="<?php echo  $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-question-circle "></i><span class="title"><?php echo $rowdoc[$i][d_template_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                                        <?php }?>
+                                                    </ul>
+                                                    </div>
+                                             <?php } ?>
     			                          </div>
                      <div role="tabpanel" class="tab-pane fade" id="Videos_tab" aria-expanded="false">
+                     <?php
+						if($curr_val['videos']!="emp" && $curr_val['videos']!="") { 
+							/* $catfetdoc =  "SELECT * FROM docs WHERE doc_type=3 AND doc_id IN(".$curr_val['videos'].") AND doc_status=0"; */
+							$str_videos = $prop->getName('GROUP_CONCAT(doc_file)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
+							
+							$str_videos_names = $prop->getName('GROUP_CONCAT(doc_name)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
+							$arr_videos = explode(",", $str_videos);
+							$arr_videos_names = explode(",", $str_videos_names);
+							$result = count($arr_videos);
+							$ex = explode("v=",$arr_videos[0]);
+							$ex = explode("&",$ex[1]);
+						?>
+							<div class="container">
+							<div class="row">
+								<div class="col-sm-8 col-md-8">
+									<iframe id="vid_frame" src="https://www.youtube.com/embed/<?php echo $ex[0]; ?>" frameborder="0" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+								</div>
+								<div class="col-sm-4 col-md-4" style=" background: #cccccc1a; box-shadow: 1px 2px 11px #cccccc5c; ">
+									<div class="row">
+									<div class="scroll-me">
+                                        <div id="vid-list">
+                                        <?php 
+                                            for($i=0;$i<$result;$i++)
+                                            {
+                                                $ex = explode("v=",$arr_videos[$i]);
+                                                $ex = explode("&",$ex[1]);
+                                        ?>
+                                        
+                                            <div class="video-sec">
+                                                <div class="col-sm-4 col-md-4 pt1">
+                                                    <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'">
+                                                      <span class="vid-thumb"><img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" /></span>
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 pt2"> 
+                                                    <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'"><label><?php echo $arr_videos_names[$i];?></label></a>
+                                                </div>
+                                            </div>
+                                        <?php 
+                                            }
+                                        ?>
+                                        </div>
+									</div>		
+								</div>
+								</div>
+							</div>
+						</div>
+						<?php } ?>
                      	                     </div>
                     </div>   
     			</div>
@@ -393,49 +476,29 @@ ul.handout-sst {
                                  
                                
                                <div class="row">
-                                 	<div class="col-md-4">
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-0" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-0"><b>Air Force(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-1" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-1"><b>Bankruptcy Courts Forms(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-2" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-2"><b>Coast Guard Forms(2)</b></label>
-                            </div>
-                        </div>
-                               	    <div class="col-md-4">
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-10" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-10"><b>National Mediation Board Forms(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-20" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-20"><b>Department1(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-0" data-class="checkbox-all" data-id="30" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-30"><b>Defense Health Agency Forms(2)</b></label>
-                            </div>
-                        </div>
-                                	<div class="col-md-4">
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-120" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-120"><b>Denali Commission Forms(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-220" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox" checked>
-                                <label class="category-label" for="depart-220"><b>Parole Commission Forms(2)</b></label>
-                            </div>
-                            <div class="checkbox checkbox-success">
-                                <input id="depart-33" data-class="checkbox-all" data-id="0" class="category" name="category[]" value="2" type="checkbox">
-                                <label class="category-label" for="depart-33"><b>Tax Court Forms(2)</b></label>
-                            </div>
-                        </div>
-                        		</div>
+                               		<?php
+									$count = count($listDepart);
+									for($i=0; $i<$count; $i++){ 
+										$checked = '';
+										$departID = $listDepart[$i]['dept_id'];
+										$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
+										$empCount = $prop->getName('count(id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
+										if( ($i+1)%4 == 0 or $i == 0)
+										echo '<div class="col-md-4">';
+										echo '<div class="checkbox checkbox-success">
+                                            <input id="depart-'.$listDepart[$i]['dept_id'].'" data-class="checkbox-all" data-id="'.$listDepart[$i]['dept_id'].'" class="category" name="department[]" value="'.$listDepart[$i]['dept_id'].'" type="checkbox" '.$checked.'>
+                                            <label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$empCount.')</b></label>
+                                        </div>';
+										if( ($i+1)%4 == 0)
+										echo '</div>';
+										
+										if( ($i+1)%4 != 0 and ($i+1) == $count )
+										echo '</div>';
+									}
+									
+									?>
+                                    <div class="clearfix"></div>
+                                </div>
                             </div>
                         </div>        
                        
@@ -450,11 +513,12 @@ ul.handout-sst {
                                 	<div class="col-md-7">
                                     <select class="form-control select2" id="empselect" multiple >
                                     <!--<option>Select Name</option>-->
-                                    <option>AARON</option>
-                                    <option>BRENDAN</option>
-                                    <option>CHARLEY</option>
-                                    <option>DAVID</option>
-                                    <option>ELIAS</option>
+                                    <?php
+									$count = count($listEmps);
+									for($i=0; $i<$count; $i++){ 
+										echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+									}
+									?>
                                 </select></div>
                                 <div class="col-md-1">
                                 	<div class="radio radio-success">
@@ -485,11 +549,12 @@ ul.handout-sst {
                                 <div class="col-md-3">
                                 <select class="form-control select2" id="select_dep" >
                                     <option>Select Department</option>
-                                    <option>Air Force</option>
-                                    <option>AmeriCorps</option>
-                                    <option>Bankruptcy Courts Forms</option>
-                                    <option>Coast Guard Forms</option>
-                                    <option>National Mediation Board Forms</option>
+                                    <?php
+									$count = count($listDepart);
+									for($i=0; $i<$count; $i++){ 
+										echo '<option value="'.$listDepart[$i]['dept_id'].'">'.$listDepart[$i]['dep_name'].'</option>';
+									}
+									?>
                                 </select>
                                 </div>
                                 <div class="col-md-3">
@@ -517,69 +582,38 @@ ul.handout-sst {
                                         </tr>
                                     </thead>
                                     <tbody>
-										<tr>
-                                        	<td>ALBERT</td>
-                                            <td>Air Force</td>
+                                    	<?php
+                                        $count = count($listEmps);
+										for($i=0; $i<$count; $i++){ 
+											?>
+											<tr>
+                                        	<td><?php echo $listEmps[$i]['name'];?></td>
+                                            <td><?php
+                                            	$depID = $listEmps[$i]['department_id'];
+												$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
+												echo $depName;
+											?></td>
                                             <td>
                                             <div class="row">
                                             <div class="col-md-6">
                                             <div class="radio radio-success">
-                                                <input id="assign1"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="assign">
-                                                <label class="category-label" for="assign1"><b>Assign</b></label>
+                                                <input id="assign<?php echo $listEmps[$i]['id'];?>"  data-id="0" class="category" name="assign_type" value="<?php echo $listEmps[$i]['id'];?>" type="radio"  value="assign">
+                                                <label class="category-label" for="assign<?php echo $listEmps[$i]['id'];?>"><b>Assign</b></label>
                                             </div>
                                             </div>
                                             <div class="col-md-6">
                                             <div class="radio radio-success">
-                                                <input id="unassign1"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="unassign">
-                                                <label class="category-label" for="unassign1"><b>UnAssign</b></label>
+                                                <input id="<?php echo $listEmps[$i]['id'];?>"  data-id="0" class="category" name="assign_type" value="<?php echo $listEmps[$i]['id'];?>" type="radio"  value="unassign">
+                                                <label class="category-label" for="unassign<?php echo $listEmps[$i]['id'];?>"><b>UnAssign</b></label>
                                             </div>
                                             </div>
                                             </div>
 
                                             </td>
                                         </tr>
-                                        <tr>
-                                        	<td>CAMERON</td>
-                                            <td>AmeriCorps</td>
-                                            <td>
-                                            <div class="row">
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="assign2"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="assign">
-                                                <label class="category-label" for="assign2"><b>Assign</b></label>
-                                            </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="unassign2"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="unassign">
-                                                <label class="category-label" for="unassign2"><b>UnAssign</b></label>
-                                            </div>
-                                            </div>
-                                            </div>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                        	<td>BRETT</td>
-                                            <td>Bankruptcy Courts Forms</td>
-                                            <td>
-                                            <div class="row">
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="assign3"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="assign">
-                                                <label class="category-label" for="assign3"><b>Assign</b></label>
-                                            </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="unassign3"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="unassign">
-                                                <label class="category-label" for="unassign3"><b>UnAssign</b></label>
-                                            </div>
-                                            </div>
-                                            </div>
-
-                                            </td>
-                                        </tr> 
+                                        <?php
+										}
+										?>
 										
 										
                                     </tbody>
