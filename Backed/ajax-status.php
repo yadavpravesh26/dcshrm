@@ -431,5 +431,74 @@ if($meth=='filter_cities')
 }
 /*filter_cities END*/
 
-
+/*Assign DepartMent Start*/
+if($meth=='assignDepart')
+{
+	$catID = $_POST["catID"];
+	$subCatID = $_POST["subCatID"];
+	$deprtID = $_POST['deprtID'];
+	$programID = $_POST['programID'];
+	$type = $_POST['type'];
+	if($type == 'assign')
+	{
+		$input = array(
+			'depart_id'	=>$deprtID,
+			'catID'	=>$catID ,
+			'subCatID'	=>$subCatID,
+			'programID'	=>$programID,
+			'status'	=>0
+		);
+		$insert_count =0;
+		$exits = $prop->getName('count(id)', 'assign_depart', "depart_id=".$deprtID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+		   if($exits === 0){
+				$result = $prop->add('assign_depart', $input);
+				if ($result) {
+					$insert_count++;
+				}
+		   }
+		   else
+		   {
+				$unassignDepID = $prop->getName('id', 'assign_depart', "status=2 AND depart_id=".$deprtID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+				if($unassignDepID != 0)
+				{
+					$t_cond = array("id" => $unassignDepID);
+					$result = $prop->update('assign_depart', $input, $t_cond);
+					if ($result) {
+						$insert_count++;
+					}
+					
+				}
+		   }
+		   
+		$output = array('status'=>'Error','msg'=>'Department already Assigned','err'=>'error');
+		if($insert_count != 0)
+		{
+			$output = array('status'=>'Status','msg'=>'Department Assigned Successfully','err'=>'success','result'=>1);
+		}
+	}
+	else
+	{
+		$input = array(
+			'depart_id'	=>$deprtID,
+			'catID'	=>$catID ,
+			'subCatID'	=>$subCatID,
+			'programID'	=>$programID,
+			'status'	=>2
+		);
+		$unassignDepID = $prop->getName('id', 'assign_depart', "depart_id=".$deprtID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+		$output = array('status'=>'Status','msg'=>'Department Unassigned Failed','err'=>'success','result'=>1);
+		if($unassignDepID != 0)
+		{
+			$t_cond = array("id" => $unassignDepID);
+			$result = $prop->update('assign_depart', $input, $t_cond);
+			if ($result) {
+				$insert_count++;
+				$output = array('status'=>'Status','msg'=>'Department Unassigned Successfully','err'=>'success','result'=>1);
+			}
+			
+		}
+	}	
+	echo json_encode($output); exit;
+}
+/*Assign DepartMent END*/
 ?>

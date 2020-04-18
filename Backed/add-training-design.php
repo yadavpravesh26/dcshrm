@@ -93,6 +93,7 @@ $listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
     border-bottom: 1px dashed #4f5366;
 }
 
+
 .navigation ul li:after, .navigation ul li:before {
     left: 0;
     content: "";
@@ -285,8 +286,7 @@ button.btn.btn-success, button.btn {
                 </div>
                 <?php $foraction = (isset($_REQUEST['id'])?'update&id='.$_REQUEST['id']:'add');?>
 
-                <div class="tab-content">
-               
+                <div class="tab-content">               
                 	<div role="tabpanel" class="tab-pane fade in active" id="TrainingDetails">
                 		<div class="row">
                         	<div class="col-md-12">
@@ -295,163 +295,156 @@ button.btn.btn-success, button.btn {
                                     <div class="img-banner"><div class="banner-txt"><?php echo $curr_val[title] ?></div></div>
                                 	<div class="row">
                                 	    <div id="home_info" class="" style="background: #fff;width:100%">
-		<div class="bg-color"></div>
-		<div class="container" style="width:100% !important">
-			<div class="row center b_sp">
-            	<div class="col-md-12" style="padding-left: 0px;">
-                	<ul class="nav nav-tabs" role="tablist">
-                      <li class="nav-item" aria-expanded="false">
-                        <a class="nav-link active" href="#Content_tab" role="tab" data-toggle="tab" aria-expanded="true">Be Safe</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#Handout_tab" role="tab" data-toggle="tab" aria-expanded="false">Handout</a>
-                      </li>
-                      <!--<li class="nav-item">
-                        <a class="nav-link" href="#Trainings_tab" role="tab" data-toggle="tab">Trainings</a>
-                      </li>-->
-                       <li class="nav-item">
-                        <a class="nav-link" href="#Quiz_tab" role="tab" data-toggle="tab" aria-expanded="false">Quiz</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="#Videos_tab" role="tab" data-toggle="tab" aria-expanded="false">Videos</a>
-                      </li>
-                    </ul>
-                </div>
-				<div class="text-box col-md-12" id="runtime_descript">
-                	<div class="tab-content">
-                     <div role="tabpanel" class="tab-pane fade active show" id="Content_tab" aria-expanded="true">
-						<p><strong><?php echo $curr_val[ban_title] ?></strong></p>
-<?php 
-                        echo $curr_val[descript];					
-                        ?>
-                                                                    <!--<div id="loadMore" style="">
-                          <a style="cursor:pointer">Load More</a>
-                        </div>-->
-                                                              </div>
-
-                     						<div role="tabpanel" class="tab-pane fade" id="Handout_tab" aria-expanded="false">
-                     							<?php
-												if($curr_val['handout']!="emp" && $curr_val['handout']!=""){
-												//echo $curr_val['handout'];
-												?>
-												<div class="tab_inner">
-												<ul Class="handout-sst">
-												<?php
-												$catfetdoc =  "SELECT * FROM handouts WHERE doc_type=1 AND doc_id IN(".$curr_val['handout'].") AND doc_status=0";
-												$rowdoc=$prop->getAll_Disp($catfetdoc);
-												for($i=0; $i<count($rowdoc); $i++){
-													$old_name = "../images/docs/".$rowdoc[$i]['doc_file'] ;
-													$extension = end(explode('.',strtolower($old_name)));
-													$new_name = "../images/docs/".$rowdoc[$i][doc_name].".".$extension ;
-													rename( $old_name, $new_name);
-												?>
-													<li>
-													<?php 
-														if($extension == 'pdf')
-														$class = 'fa fa-file-pdf-o';
-														else if($extension == 'doc' || $extension == 'docx')
-														$class = 'fa fa-file-word-o';
-													?>
-												   <a href="<?php echo $new_name; ?>"> <span class="title"><i class="<?php echo $class;?>"></i><?php echo $rowdoc[$i][doc_name]; ?></span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
-												<?php } ?>    
-												</ul>
-												</div>
-												<?php } ?>
-						                     </div>
-                                          <div role="tabpanel" class="tab-pane fade" id="Quiz_tab" aria-expanded="false">
-                     	    			   		 <?php if($curr_val['quiz']!="emp" && $curr_val['quiz']!=""){?>
-                                                 <div class="tab_inner">
-                                                    <ul Class="handout-sst">
-                                                     <?php
-                                                    $catfetdoc =  "SELECT * FROM dynamic_form WHERE form_type=0 AND d_form_id IN(".$curr_val['quiz'].") AND d_detele_status=0";
-                                                    $rowdoc=$prop->getAll_Disp($catfetdoc);
-                                                    $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['bid']));
-                                                    $user_name = $CompanyId['name'];
-                                                    $email = $CompanyId['email'];
-                                                    $contact_no = $CompanyId['contact_no'];
-                                                    $user_name = explode(' ',$user_name);
-                                                    $fname = $user_name[0];
-                                                    $lname = $user_name[1];
-                                                    
-                                                    for($i=0; $i<count($rowdoc); $i++)
-                                                     {
-                                                     
-													 ?>
-                                                        <li><a href="<?php echo  $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-question-circle "></i><span class="title"><?php echo $rowdoc[$i][d_template_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
-                                                        <?php }?>
-                                                    </ul>
+                                            <div class="bg-color"></div>
+                                            <div class="container" style="width:100% !important">
+                                                <div class="row center b_sp">
+                                                    <div class="col-md-12" style="padding-left: 0px;">
+                                                        <ul class="nav nav-tabs" role="tablist">
+                                                          <li class="nav-item" aria-expanded="false">
+                                                            <a class="nav-link active" href="#Content_tab" role="tab" data-toggle="tab" aria-expanded="true">Be Safe</a>
+                                                          </li>
+                                                          <li class="nav-item">
+                                                            <a class="nav-link" href="#Handout_tab" role="tab" data-toggle="tab" aria-expanded="false">Handout</a>
+                                                          </li>
+                                                          <!--<li class="nav-item">
+                                                            <a class="nav-link" href="#Trainings_tab" role="tab" data-toggle="tab">Trainings</a>
+                                                          </li>-->
+                                                           <li class="nav-item">
+                                                            <a class="nav-link" href="#Quiz_tab" role="tab" data-toggle="tab" aria-expanded="false">Quiz</a>
+                                                          </li>
+                                                          <li class="nav-item">
+                                                            <a class="nav-link" href="#Videos_tab" role="tab" data-toggle="tab" aria-expanded="false">Videos</a>
+                                                          </li>
+                                                        </ul>
                                                     </div>
-                                             <?php } ?>
-    			                          </div>
-                     <div role="tabpanel" class="tab-pane fade" id="Videos_tab" aria-expanded="false">
-                     <?php
-						if($curr_val['videos']!="emp" && $curr_val['videos']!="") { 
-							/* $catfetdoc =  "SELECT * FROM docs WHERE doc_type=3 AND doc_id IN(".$curr_val['videos'].") AND doc_status=0"; */
-							$str_videos = $prop->getName('GROUP_CONCAT(doc_file)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
-							
-							$str_videos_names = $prop->getName('GROUP_CONCAT(doc_name)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
-							$arr_videos = explode(",", $str_videos);
-							$arr_videos_names = explode(",", $str_videos_names);
-							$result = count($arr_videos);
-							$ex = explode("v=",$arr_videos[0]);
-							$ex = explode("&",$ex[1]);
-						?>
-							<div class="container">
-							<div class="row">
-								<div class="col-sm-8 col-md-8">
-									<iframe id="vid_frame" src="https://www.youtube.com/embed/<?php echo $ex[0]; ?>" frameborder="0" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
-								</div>
-								<div class="col-sm-4 col-md-4" style=" background: #cccccc1a; box-shadow: 1px 2px 11px #cccccc5c; ">
-									<div class="row">
-									<div class="scroll-me">
-                                        <div id="vid-list">
-                                        <?php 
-                                            for($i=0;$i<$result;$i++)
-                                            {
-                                                $ex = explode("v=",$arr_videos[$i]);
-                                                $ex = explode("&",$ex[1]);
-                                        ?>
-                                        
-                                            <div class="video-sec">
-                                                <div class="col-sm-4 col-md-4 pt1">
-                                                    <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'">
-                                                      <span class="vid-thumb"><img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" /></span>
-                                                    </a>
+                                                    <div class="text-box col-md-12" id="runtime_descript">
+                                                        <div class="tab-content">
+                                                         <div role="tabpanel" class="tab-pane fade active show" id="Content_tab" aria-expanded="true">
+                                                            <p><strong><?php echo $curr_val[ban_title] ?></strong></p>
+                                    <?php 
+                                                            echo $curr_val[descript];					
+                                                            ?>
+                                                         </div>
+                                                         <div role="tabpanel" class="tab-pane fade" id="Handout_tab" aria-expanded="false">
+                                                                <?php
+                                                                if($curr_val['handout']!="emp" && $curr_val['handout']!=""){
+                                                                //echo $curr_val['handout'];
+                                                                ?>
+                                                                <div class="tab_inner">
+                                                                <ul Class="handout-sst">
+                                                                <?php
+                                                                $catfetdoc =  "SELECT * FROM handouts WHERE doc_type=1 AND doc_id IN(".$curr_val['handout'].") AND doc_status=0";
+                                                                $rowdoc=$prop->getAll_Disp($catfetdoc);
+                                                                for($i=0; $i<count($rowdoc); $i++){
+                                                                    $old_name = "../images/docs/".$rowdoc[$i]['doc_file'] ;
+                                                                    $extension = end(explode('.',strtolower($old_name)));
+                                                                    $new_name = "../images/docs/".$rowdoc[$i][doc_name].".".$extension ;
+                                                                    rename( $old_name, $new_name);
+                                                                ?>
+                                                                    <li>
+                                                                    <?php 
+                                                                        if($extension == 'pdf')
+                                                                        $class = 'fa fa-file-pdf-o';
+                                                                        else if($extension == 'doc' || $extension == 'docx')
+                                                                        $class = 'fa fa-file-word-o';
+                                                                    ?>
+                                                                   <a href="<?php echo $new_name; ?>"> <span class="title"><i class="<?php echo $class;?>"></i><?php echo $rowdoc[$i][doc_name]; ?></span><span class="iconn"><i class="fa fa-download" aria-hidden="true"></i></span></a></li>
+                                                                <?php } ?>    
+                                                                </ul>
+                                                                </div>
+                                                                <?php } ?>
+                                                             </div>
+                                                         <div role="tabpanel" class="tab-pane fade" id="Quiz_tab" aria-expanded="false">
+                                                                 <?php if($curr_val['quiz']!="emp" && $curr_val['quiz']!=""){?>
+                                                                 <div class="tab_inner">
+                                                                    <ul Class="handout-sst">
+                                                                     <?php
+                                                                    $catfetdoc =  "SELECT * FROM dynamic_form WHERE form_type=0 AND d_form_id IN(".$curr_val['quiz'].") AND d_detele_status=0";
+                                                                    $rowdoc=$prop->getAll_Disp($catfetdoc);
+                                                                    $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['bid']));
+                                                                    $user_name = $CompanyId['name'];
+                                                                    $email = $CompanyId['email'];
+                                                                    $contact_no = $CompanyId['contact_no'];
+                                                                    $user_name = explode(' ',$user_name);
+                                                                    $fname = $user_name[0];
+                                                                    $lname = $user_name[1];
+                                                                    
+                                                                    for($i=0; $i<count($rowdoc); $i++)
+                                                                     {
+                                                                     
+                                                                     ?>
+                                                                        <li><a href="<?php echo  $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-question-circle "></i><span class="title"><?php echo $rowdoc[$i][d_template_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                                                        <?php }?>
+                                                                    </ul>
+                                                                    </div>
+                                                             <?php } ?>
+                                                          </div>
+                                                         <div role="tabpanel" class="tab-pane fade" id="Videos_tab" aria-expanded="false">
+                                                         <?php
+                                                            if($curr_val['videos']!="emp" && $curr_val['videos']!="") { 
+                                                                /* $catfetdoc =  "SELECT * FROM docs WHERE doc_type=3 AND doc_id IN(".$curr_val['videos'].") AND doc_status=0"; */
+                                                                $str_videos = $prop->getName('GROUP_CONCAT(doc_file)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
+                                                                
+                                                                $str_videos_names = $prop->getName('GROUP_CONCAT(doc_name)', 'docs', ' 1=1 AND doc_status=0 AND doc_type=3 AND doc_id IN('.$curr_val['videos'].')');
+                                                                $arr_videos = explode(",", $str_videos);
+                                                                $arr_videos_names = explode(",", $str_videos_names);
+                                                                $result = count($arr_videos);
+                                                                $ex = explode("v=",$arr_videos[0]);
+                                                                $ex = explode("&",$ex[1]);
+                                                            ?>
+                                                                <div class="container">
+                                                                <div class="row">
+                                                                    <div class="col-sm-8 col-md-8">
+                                                                        <iframe id="vid_frame" src="https://www.youtube.com/embed/<?php echo $ex[0]; ?>" frameborder="0" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+                                                                    </div>
+                                                                    <div class="col-sm-4 col-md-4" style=" background: #cccccc1a; box-shadow: 1px 2px 11px #cccccc5c; ">
+                                                                        <div class="row">
+                                                                        <div class="scroll-me">
+                                                                            <div id="vid-list">
+                                                                            <?php 
+                                                                                for($i=0;$i<$result;$i++)
+                                                                                {
+                                                                                    $ex = explode("v=",$arr_videos[$i]);
+                                                                                    $ex = explode("&",$ex[1]);
+                                                                            ?>
+                                                                            
+                                                                                <div class="video-sec">
+                                                                                    <div class="col-sm-4 col-md-4 pt1">
+                                                                                        <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'">
+                                                                                          <span class="vid-thumb">
+                                                                                          <!--<img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" />--></span>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    <div class="col-sm-6 col-md-6 pt2"> 
+                                                                                        <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'"><label><?php echo $arr_videos_names[$i];?></label></a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            <?php 
+                                                                                }
+                                                                            ?>
+                                                                            </div>
+                                                                        </div>		
+                                                                    </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <?php } ?>
+                                                                                 </div>
+                                                        </div>   
+                                                    </div>
+                                                    
+                                                    
                                                 </div>
-                                                <div class="col-sm-6 col-md-6 pt2"> 
-                                                    <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'"><label><?php echo $arr_videos_names[$i];?></label></a>
-                                                </div>
-                                            </div>
-                                        <?php 
-                                            }
-                                        ?>
-                                        </div>
-									</div>		
-								</div>
-								</div>
-							</div>
-						</div>
-						<?php } ?>
-                     	                     </div>
-                    </div>   
-    			</div>
-    			
-                
-			</div>
-	        	       
-		</div>
-		
-	</div>
-                                	    
-                                	    
-                                	    
-                                	    
+                                                           
+                                            </div>                                        
+                                    	</div>                                	    
                                 	</div>
                                 </div>
                             </div>        
                            
                          </div>  
                 	</div>
+                    
                     <div role="tabpanel" class="tab-pane fade" id="DepartmentAssigned">
                 		<div class="col-md-12">
                             <div class="white-box">
@@ -462,7 +455,7 @@ button.btn.btn-success, button.btn {
                                     </div>
                                     <div class="col-md-3" style="padding-right: 0px;">
                                     	<div class="input-group md-form form-sm form-2 pl-0">
-                                      <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
+                                      <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search" id="searchKeyword">
                                       <div class="input-group-append" style="background: gray;width: 36px;padding: 2px 10px;margin-right: -5px;">
                                         <span class="input-group-text lime lighten-2" id="basic-text1"><i class="ti-search text-grey"
                                             aria-hidden="true"></i></span>
@@ -475,29 +468,8 @@ button.btn.btn-success, button.btn {
                                 </h3>
                                  
                                
-                               <div class="row">
-                               		<?php
-									$count = count($listDepart);
-									for($i=0; $i<$count; $i++){ 
-										$checked = '';
-										$departID = $listDepart[$i]['dept_id'];
-										$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
-										$empCount = $prop->getName('count(id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
-										if( ($i+1)%4 == 0 or $i == 0)
-										echo '<div class="col-md-4">';
-										echo '<div class="checkbox checkbox-success">
-                                            <input id="depart-'.$listDepart[$i]['dept_id'].'" data-class="checkbox-all" data-id="'.$listDepart[$i]['dept_id'].'" class="category" name="department[]" value="'.$listDepart[$i]['dept_id'].'" type="checkbox" '.$checked.'>
-                                            <label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$empCount.')</b></label>
-                                        </div>';
-										if( ($i+1)%4 == 0)
-										echo '</div>';
-										
-										if( ($i+1)%4 != 0 and ($i+1) == $count )
-										echo '</div>';
-									}
-									
-									?>
-                                    <div class="clearfix"></div>
+                                <div class="row" id="departAssignTab">
+                               		
                                 </div>
                             </div>
                         </div>        
@@ -622,8 +594,7 @@ button.btn.btn-success, button.btn {
                     		 </div>
                         </div>        
                        
-                	</div>
-               
+                	</div>               
                  
                 </div>
                 <div class="clearfix"></div>
@@ -698,7 +669,7 @@ button.btn.btn-success, button.btn {
 		{
 			echo 'swal("'.$_COOKIE['status'].'", "'.$_COOKIE['title'].'", "'.$_COOKIE['err'].'");';
 				?>
-				setTimeout(function() {
+				 setTimeout(function() {
 					$(".confirm").trigger('click');
 				  }, 3000);
 				<?php
@@ -708,7 +679,7 @@ button.btn.btn-success, button.btn {
 		}
 	?>
 	$(document).ready(function () { //newly added
-	
+		AssignPart('');
 		$("#empselect").select2();
 		$("#select_dep").select2();
 		$("#select_type").select2();
@@ -731,7 +702,46 @@ button.btn.btn-success, button.btn {
 			"displayLength": 50
 		} );
 		
+		$('#searchKeyword').keyup(function(e){
+			var keyword = $(this).val();
+			AssignPart(keyword);
+		});
+		
 	});
+	function AssignPart(keyword)
+	{
+		$.ajax({
+			url: "assignDepartTab.php",
+			type: 'POST',
+			data: 'keyword='+ keyword+'&programID=<?php echo $_REQUEST['programID']; ?>',
+			dataType:'html',
+			success: function (datahtml) {
+				$('#departAssignTab').html(datahtml);				
+			}
+		})
+	}
+	function assignDepart(that,catID,subCatID,deprtID)
+	{
+		if($(that).prop("checked") == true)
+		type = 'assign';
+		else
+		type = 'unassign';
+		 console.log(type);
+		$.ajax({
+			type: "POST",
+			url: "ajax-status.php",
+			cache:false,
+			data: 'catID='+catID+'&subCatID='+subCatID+'&deprtID='+deprtID+'&programID=<?php echo $_REQUEST['programID'];?>&meth=assignDepart&type='+type,
+			dataType:'json',
+			success: function(response)
+			{
+				swal(response.status, response.msg,response.err);
+				setTimeout(function() {
+				  $(".confirm").trigger('click');
+			 	}, 3000);
+			}
+		});
+	}
 	</script>
 </body>
 
