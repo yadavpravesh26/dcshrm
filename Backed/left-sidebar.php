@@ -22,12 +22,12 @@
 				<a href="dashboard.php" class="waves-effect"><i class="icon-pie-chart"></i> <span class="hide-menu">Dashboard </span></a> 
 			</li>
 			<?php if($session['b_type']===0){ ?>
-			<li> <a href="#" class="waves-effect"><i class="ti-write"></i> <span class="hide-menu">Manage B-Safe Page<span class="fa arrow"></span> </span></a>
+			<li> <a href="#" class="waves-effect"><i class="ti-write"></i> <span class="hide-menu">Manage Be Safe Page<span class="fa arrow"></span> </span></a>
                 <ul <?php if($current_page == 'page-builder.php' or $current_page == 'manage-new-page.php'){echo $active_css;} else{ echo 'class="nav nav-second-level" ';}?>>
                 	<?php if($session['b_type']===0){ ?>
                     <li> <a href="page-builder.php">Add New Page</a> </li>
                      <?php } ?>
-                    <li> <a href="manage-new-page.php">Manage B-Safe Pages</a> </li>
+                    <li> <a href="manage-new-page.php">Manage Be Safe Pages</a> </li>
                 </ul>
             </li>
            <?php } ?>
@@ -107,11 +107,11 @@
                             <li> <a href="employee-details.php">Manage Employees </a> </li>
                         </ul>
                     </li>
-                    <li class=""> <a href="#" class="waves-effect"><i class="ti-image"></i> <span class="hide-menu">Manage Be Safe Programs<span class="fa arrow"></span> </span></a>
-                        <ul class="nav nav-second-level">
+                    <li class=""> <a href="manage-be-safe.php" class="waves-effect"><i class="ti-image"></i> <span class="hide-menu">Manage Be Safe Programs </span></a>
+                    <!--     <ul class="nav nav-second-level">
                             <li> <a href="manage-be-safe.php">Manage Be Safe Programs</a> </li>
-                            <li> <a href="add-training-design.php">Assigned Be Safe Programst</a> </li>
-                        </ul>
+                            <li> <a href="add-training-design.php">Assigned Be Safe Programs</a> </li>
+                        </ul>  -->
                     </li>
                     
                     <li class=""> <a href="manage-departments.php" class="waves-effect"><i class="ti-settings"></i> <span class="hide-menu">Manage Departments </span></a>

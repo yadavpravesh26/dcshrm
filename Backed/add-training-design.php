@@ -516,11 +516,11 @@ button.btn.btn-success, button.btn {
                                     Filter By
                                     </div>
                                 <div class="col-md-3">
-                                <input type="text" name="" placeholder="Search by Employee Name" class="form-control">
+                                <input type="text" name="empKeyword" placeholder="Search by Employee Name" class="form-control" id="empKeyword" onKeyUp="filter_data()">
                                 </div>    
                                 <div class="col-md-3">
-                                <select class="form-control select2" id="select_dep" >
-                                    <option>Select Department</option>
+                                <select class="form-control select2" id="empFilterByDep" onChange="filter_data()" >
+                                    <option value="">Select Department</option>
                                     <?php
 									$count = count($listDepart);
 									for($i=0; $i<$count; $i++){ 
@@ -530,16 +530,16 @@ button.btn.btn-success, button.btn {
                                 </select>
                                 </div>
                                 <div class="col-md-3">
-                                <select class="form-control select2" id="select_type" >
-                                    <option>Select Type</option>
-                                    <option>Assign</option>
-                                    <option>Unassign</option>
+                                <select class="form-control select2" id="empFilterByType" onChange="filter_data()">
+                                    <option value="">Select Type</option>
+                                    <option value="0">Assign</option>
+                                    <option value="2">Unassign</option>
                                 </select>
                                 </div>
                                 <div class="col-md-2">
-                                	<button type="button" id="add_new_company" class="btn btn-success waves-effect waves-light pull-left m-r-10">
+                                	<!--<button type="button" id="add_new_company" class="btn btn-success waves-effect waves-light pull-left m-r-10">
                                      Search
-                                    </button>
+                                    </button>-->
                               </div>
                                 <div class="clearfix"></div>
                                 </div>
@@ -554,40 +554,7 @@ button.btn.btn-success, button.btn {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    	<?php
-                                        $count = count($listEmps);
-										for($i=0; $i<$count; $i++){ 
-											?>
-											<tr>
-                                        	<td><?php echo $listEmps[$i]['name'];?></td>
-                                            <td><?php
-                                            	$depID = $listEmps[$i]['department_id'];
-												$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
-												echo $depName;
-											?></td>
-                                            <td>
-                                            <div class="row">
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="assign<?php echo $listEmps[$i]['id'];?>"  data-id="0" class="category" name="assign_type" value="<?php echo $listEmps[$i]['id'];?>" type="radio"  value="assign">
-                                                <label class="category-label" for="assign<?php echo $listEmps[$i]['id'];?>"><b>Assign</b></label>
-                                            </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                            <div class="radio radio-success">
-                                                <input id="<?php echo $listEmps[$i]['id'];?>"  data-id="0" class="category" name="assign_type" value="<?php echo $listEmps[$i]['id'];?>" type="radio"  value="unassign">
-                                                <label class="category-label" for="unassign<?php echo $listEmps[$i]['id'];?>"><b>UnAssign</b></label>
-                                            </div>
-                                            </div>
-                                            </div>
-
-                                            </td>
-                                        </tr>
-                                        <?php
-										}
-										?>
-										
-										
+                                    
                                     </tbody>
                                 </table>
                         		</div>
@@ -681,15 +648,8 @@ button.btn.btn-success, button.btn {
 	$(document).ready(function () { //newly added
 		AssignPart('');
 		$("#empselect").select2();
-		$("#select_dep").select2();
-		$("#select_type").select2();
-		/*$("#empselect").multiselect({
-		  nonSelectedText: 'Select Employee Name',
-		  enableFiltering: true,
-		  enableCaseInsensitiveFiltering: true,
-		  buttonWidth:'100%'
-		 });*/
-		 
+		$("#empFilterByDep").select2();
+		$("#empFilterByType").select2();
 		 $('#myTable1').DataTable( {
 			"bFilter": false,
 			"bInfo" : true,
@@ -699,15 +659,37 @@ button.btn.btn-success, button.btn {
 			"lengthMenu": [ [50, 10, 150, 50000], [50, 100, 150, "All"] ],
 			"processing": true,
 			"serverSide": false,
-			"displayLength": 50
-		} );
+			"displayLength": 50,
+			"ajax":{
+				url :"assignEmpTab.php", 
+				type: "post",  
+				"data": function ( data ) {
+					data.empKeyword = $("#empKeyword").val();
+					data.empFilterByDep = $("#empFilterByDep option:selected").val();
+					data.empFilterByType = $("#empFilterByType option:selected").val();
+					data.programID = <?php echo $page_id;?>;
+				},
+				complete: function() {
+					console.log('complete');
+					$('[data-toggle="tooltip"]').tooltip();
+				},
+				error: function(){ 
+					$(".form-grid-error").html("");
+					$("#form-grid").append('<tbody class="form-grid-error"><tr><th colspan="3">No data found in the server</th></tr></tbody>');
+					$("#form-grid_processing").css("display","none");
+				}
+			}
+		});
 		
 		$('#searchKeyword').keyup(function(e){
 			var keyword = $(this).val();
 			AssignPart(keyword);
 		});
-		
 	});
+	function filter_data()
+	{
+		$('#myTable1').DataTable().ajax.reload();
+	}
 	function AssignPart(keyword)
 	{
 		$.ajax({
