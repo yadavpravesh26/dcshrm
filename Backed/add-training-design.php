@@ -8,10 +8,113 @@ $prop = new PDOFUNCTION($db);
 
 $curr_val = $prop->get('*',PAGES, array("p_id"=>$_REQUEST['programID'],'page_status'=>0));
 $page_id = $curr_val['p_id'];
+$subCatID = $curr_val['category'];
+$CatVal = $prop->get('c_name','cat_sub', array("c_id"=>$subCatID ,'status'=>0));
+$CatID = $CatVal['c_name'];
 
 if(empty($curr_val)){
 	header('location: manage-be-safe.php');
 	exit;
+}
+if(isset($_POST['btnEmpAssign']))
+{
+	if(isset($_POST['FlowType']))
+	$assignType = $_POST['FlowType'];
+	
+	$assign_count = 0;
+	$unassign_count = 0;
+	foreach ($_POST['empNames'] as $empID)
+	{
+		if($assignType == 1) //assign code
+		{
+			$input = array(
+				'emp_id'	=>$empID,
+				'catID'	=>$CatID,
+				'subCatID'	=>$subCatID,
+				'programID'	=>$page_id,
+				'status'	=>0
+			);
+			$exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$CatID." AND subCatID=".$subCatID." AND programID=".$page_id);
+			if($exits === 0){
+				$result = $prop->add('assign_emp', $input);
+				if ($result) {
+					$assign_count++;
+				}
+			}
+			else
+			{
+				$unassignEmpID = $prop->getName('id', 'assign_emp', "status=2 AND emp_id=".$empID." AND catID=".$CatID." AND subCatID=".$subCatID." AND programID=".$page_id);
+				if($unassignEmpID != 0)
+				{
+					$t_cond = array("id" => $unassignEmpID);
+					$result = $prop->update('assign_emp', $input, $t_cond);
+					if ($result) {
+						$assign_count++;
+					}
+					
+				}
+			}
+			
+		}
+		else //unassign code
+		{
+			$input = array(
+				'emp_id'	=>$empID,
+				'catID'	=>$CatID,
+				'subCatID'	=>$subCatID,
+				'programID'	=>$page_id,
+				'status'	=>2
+			);
+			$exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$CatID." AND subCatID=".$subCatID." AND programID=".$page_id);
+			if($exits === 0){
+				$result = $prop->add('assign_emp', $input);
+				if ($result) {
+					$unassign_count++;
+				}
+			}
+			else
+			{
+				$unassignEmpID = $prop->getName('id', 'assign_emp', "status=0 AND emp_id=".$empID." AND catID=".$CatID." AND subCatID=".$subCatID." AND programID=".$page_id);
+				if($unassignEmpID != 0)
+				{
+					$t_cond = array("id" => $unassignEmpID);
+					$result = $prop->update('assign_emp', $input, $t_cond);
+					if ($result) {
+						$unassign_count++;
+					}
+					
+				}
+			}
+		}
+	}
+	if($assign_count != 0)
+	{
+		setcookie('status', 'Success', time()+10);
+		setcookie('title', 'Employee Assigned Successfully', time()+10);
+		setcookie('err', 'success', time()+10);
+		header('Location: add-training-design.php?programID='.$page_id);
+	}
+	else if($assign_count == 0 and $unassign_count == 0)
+	{
+		setcookie('status', 'Error', time()+10);
+		setcookie('title', 'Employee already Assigned', time()+10);
+		setcookie('err', 'error', time()+10);
+		header('Location: add-training-design.php?programID='.$page_id);
+	}
+	else if($unassign_count != 0)
+	{
+		setcookie('status', 'Success', time()+10);
+		setcookie('title', 'Employee Unassigned Successfully', time()+10);
+		setcookie('err', 'success', time()+10);
+		header('Location: add-training-design.php?programID='.$page_id);
+	}
+	else
+	{
+		setcookie('status', 'Error', time()+10);
+		setcookie('title', 'Employee already Unassigned'.$assignType, time()+10);
+		setcookie('err', 'error', time()+10);
+		header('Location: add-training-design.php?programID='.$page_id);
+	}
 }
 
 $where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
@@ -481,9 +584,10 @@ button.btn.btn-success, button.btn {
                 		<div class="col-md-12">
                             <div class="white-box">
                                 <h3 class="box-title">Employees Assigned</h3>
+                                <form method="post" name="empAssignForm">
                                 <div class="row" style="margin-bottom:40px;">
                                 	<div class="col-md-7">
-                                    <select class="form-control select2" id="empselect" multiple >
+                                    <select class="form-control select2" id="empselect" name="empNames[]" multiple required>
                                     <!--<option>Select Name</option>-->
                                     <?php
 									$count = count($listEmps);
@@ -492,25 +596,25 @@ button.btn.btn-success, button.btn {
 									}
 									?>
                                 </select></div>
-                                <div class="col-md-1">
-                                	<div class="radio radio-success">
-                                        <input id="assign-120"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="assign">
-                                        <label class="category-label" for="assign-120"><b>Assign</b></label>
+                                    <div class="col-md-1">
+                                        <div class="radio radio-success">
+                                            <input id="assign-120" name="FlowType" type="radio"  value="1" required>
+                                            <label class="category-label" for="assign-120"><b>Assign</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="radio radio-success">
+                                            <input id="unassign-120" name="FlowType" type="radio" value="2"  >
+                                            <label class="category-label" for="unassign-120"><b>UnAssign</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" name="btnEmpAssign" id="add_new_company" class="btn btn-success waves-effect waves-light pull-left m-r-10">
+                                         Submit
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                	<div class="radio radio-success">
-                                        <input id="unassign-120"  data-id="0" class="category" name="type[]" value="2" type="radio"  value="unassign">
-                                        <label class="category-label" for="unassign-120"><b>UnAssign</b></label>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                	<button type="button" id="add_new_company" class="btn btn-success waves-effect waves-light pull-left m-r-10">
-                     Add
-                    </button>
-                                </div>
-                                </div>
-                                
+                                </form>
                                 <div class="row" style="margin-bottom:20px;">
                                 	<div class="col-md-1" style="padding-top:7px;">
                                     Filter By
@@ -714,6 +818,24 @@ button.btn.btn-success, button.btn {
 			url: "ajax-status.php",
 			cache:false,
 			data: 'catID='+catID+'&subCatID='+subCatID+'&deprtID='+deprtID+'&programID=<?php echo $_REQUEST['programID'];?>&meth=assignDepart&type='+type,
+			dataType:'json',
+			success: function(response)
+			{
+				swal(response.status, response.msg,response.err);
+				setTimeout(function() {
+				  $(".confirm").trigger('click');
+			 	}, 3000);
+			}
+		});
+	}
+	
+	function assignEmp(type,empID)
+	{
+		$.ajax({
+			type: "POST",
+			url: "ajax-status.php",
+			cache:false,
+			data: 'catID=<?php echo $CatID; ?>&subCatID=<?php echo $subCatID ?>&empID='+empID+'&programID=<?php echo $_REQUEST['programID'];?>&meth=assignEmp&type='+type,
 			dataType:'json',
 			success: function(response)
 			{

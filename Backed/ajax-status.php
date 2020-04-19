@@ -501,4 +501,75 @@ if($meth=='assignDepart')
 	echo json_encode($output); exit;
 }
 /*Assign DepartMent END*/
+
+/*Assign Employee Start*/
+if($meth=='assignEmp')
+{
+	$catID = $_POST["catID"];
+	$subCatID = $_POST["subCatID"];
+	$empID = $_POST['empID'];
+	$programID = $_POST['programID'];
+	$type = $_POST['type'];
+	if($type == 1)
+	{
+		$input = array(
+			'emp_id'	=>$empID,
+			'catID'	=>$catID ,
+			'subCatID'	=>$subCatID,
+			'programID'	=>$programID,
+			'status'	=>0
+		);
+		$insert_count =0;
+		$exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+		   if($exits === 0){
+				$result = $prop->add('assign_emp', $input);
+				if ($result) {
+					$insert_count++;
+				}
+		   }
+		   else
+		   {
+				$unassignEmpID = $prop->getName('id', 'assign_emp', "status=2 AND emp_id=".$empID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+				if($unassignEmpID != 0)
+				{
+					$t_cond = array("id" => $unassignEmpID);
+					$result = $prop->update('assign_emp', $input, $t_cond);
+					if ($result) {
+						$insert_count++;
+					}
+					
+				}
+		   }
+		   
+		$output = array('status'=>'Error','msg'=>'Employee already Assigned'.$unassignEmpID,'err'=>'error');
+		if($insert_count != 0)
+		{
+			$output = array('status'=>'Status','msg'=>'Employee Assigned Successfully','err'=>'success','result'=>1);
+		}
+	}
+	else
+	{
+		$input = array(
+			'emp_id'	=>$empID,
+			'catID'	=>$catID ,
+			'subCatID'	=>$subCatID,
+			'programID'	=>$programID,
+			'status'	=>2
+		);
+		$unassignEmpID = $prop->getName('id', 'assign_emp', "emp_id=".$empID." AND catID=".$catID." AND subCatID=".$subCatID." AND programID=".$programID);
+		$output = array('status'=>'Status','msg'=>'Employee Unassigned Failed','err'=>'success','result'=>1);
+		if($unassignEmpID != 0)
+		{
+			$t_cond = array("id" => $unassignEmpID);
+			$result = $prop->update('assign_emp', $input, $t_cond);
+			if ($result) {
+				$insert_count++;
+				$output = array('status'=>'Status','msg'=>'Employee Unassigned Successfully','err'=>'success','result'=>1);
+			}
+			
+		}
+	}	
+	echo json_encode($output); exit;
+}
+/*Assign Employee END*/
 ?>

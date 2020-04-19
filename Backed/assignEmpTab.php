@@ -55,12 +55,12 @@ for($i=0; $i<count($row); $i++)
 	$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
 	$nestedData[] = $depName;
 	$radio='<div class="row"><div class="col-md-6"><div class="radio radio-success">
-	<input class="radioAssign" id="assign'.$depID.'"  data-id="'.$depID.'" name="assign_type'.$depID.'" value="" type="radio"  value="0" '.$Achecked.'>
-	<label class="category-label" for="assign'.$depID.'"><b>Assign</b></label>
+	<input class="radioAssign" id="assign'.$empID.'"  data-id="'.$empID.'" name="assign_type'.$empID.'" onclick="assignEmp(1,'.$empID.')" type="radio" '.$Achecked.'>
+	<label class="category-label" for="assign'.$empID.'"><b>Assign</b></label>
 	</div></div>
 	<div class="col-md-6"><div class="radio radio-success">
-	<input class="radioAssign" id="unassign'.$depID.'"  data-id="'.$depID.'" name="assign_type'.$depID.'" value="" type="radio"  value="2" '.$Uchecked.'>
-	<label class="category-label" for="unassign'.$depID.'"><b>UnAssign</b></label>
+	<input class="radioAssign" id="unassign'.$empID.'"  data-id="'.$empID.'" name="assign_type'.$empID.'" onclick="assignEmp(2,'.$empID.')" type="radio" '.$Uchecked.'>
+	<label class="category-label" for="unassign'.$empID.'"><b>UnAssign</b></label>
 	</div></div></div>';
 	$nestedData[] = $radio;
 	$data[] = $nestedData;
