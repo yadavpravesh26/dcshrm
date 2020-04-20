@@ -137,118 +137,56 @@ nav{width:100%;}
 	<ul class="main_category">
 		<li class='active'><a href='index.php'>HOME</a></li>
 		<li><a href='#'>Category</a>
-			<ul>
+        	<ul>
 			<?php
-			$_cat_sub = '';
-			$nav_cat = json_decode($_SESSION['US']['permission'], TRUE);
-		//	print_r($nav_cat);
-			//$nav_main = $nav_cat['m'];
-			$nav_category = $nav_cat['c'];
-			$nav_sub_category = $nav_cat['s'];
-			$nav_pages = $nav_cat['p'];
+        	$sqlCat = 'select E.catID as catID,C.c_name as catName from  assign_emp E JOIN cats C on E.catID = C.c_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' GROUP BY E.catID';
 			
-			/*$rej_cat = json_decode($_SESSION['US']['perm_reject'], TRUE);
-			$rej_category = $rej_cat['c'];
-			$rej_sub_category = $rej_cat['s'];
-			$rej_where_cat = $rej_where_subcat = '';
-			if($rej_category!='')
-				$rej_where_cat = ' AND c_id NOT IN ('.$rej_category.') ';
-			if($rej_sub_category!='')
-				$rej_where_subcat = ' AND c_id NOT IN ('.$rej_sub_category.') ';*/
-			if(isset($nav_main) && $nav_main===1){
-				$sqlm = 'SELECT c_id,c_name as name from `'.MAIN_CATEGORY.'` WHERE status=0 '.$rej_where_cat;
-				$row_m=$prop->getAll_Disp($sqlm);
-				$count_m = count($row_m);
-				for($i=0; $i<$count_m; $i++){
-				?>
-				<li><a href='#'><?php echo $row_m[$i]['name']; ?></a>
-					<ul class="sub_category_menu pre-scrollable">
-					<?php 
-					$sqls = "SELECT c_id as id,c_name as c_id, sc_name as name  from `".SUB_CATEGORY."` WHERE status=0 AND c_name='".$row_m[$i]['c_id']."' $rej_where_subcat";
-					$row_s=$prop->getAll_Disp($sqls);
-					$count_s = count($row_s);
-					for($j=0; $j<$count_s; $j++){
-						$_cat_sub .=$row_s[$j]['id'].',';
-					?>
-						<li><a href='#'><?php echo $row_s[$j]['name']; ?></a>
-							<ul class="large-menu pre-scrollable">
-							<?php
-							$sqlp = 'SELECT p_id,title from `'.PAGES.'` WHERE category='.$row_s[$j]['id'].' AND page_status=0 order by title ASC';
-							$row_p=$prop->getAll_Disp($sqlp);
-							$count_p = count($row_p);
-							for($k=0; $k<$count_p; $k++){
-							?>
-								<li>
-									<a href='category-detail.php?id=<?php echo $row_p[$k]['p_id']; ?>' title="<?php echo $row_p[$k]['title']; ?>">
-									<?php 
-									echo substr($row_p[$k]['title'],0,75 );
-									$stlenth = strlen($row_p[$k]['title']);
-									echo ($stlenth > 75?'...':'');
-									?></a>
-								</li>
-							<?php 
-							} 
-							?>
-							</ul>
-						</li>
-					<?php 
-					} 
-					?>
+			$row_cat = $prop->getAll_Disp($sqlCat);
+			if(count($row_cat)>0)
+			{
+				for($i=0; $i<count($row_cat); $i++)
+				{?>
+				<li><a href='#'><?php echo $row_cat[$i]['catName']; ?></a>
+					<ul class="sub_category_menu">
+						<?php
+						$sqlSubCat = 'select E.subCatID as subCatID,C.sc_name as subCatName from  assign_emp E JOIN cat_sub C on E.subCatID = C.c_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' and E.catID='.$row_cat[$i]['catID'].' GROUP BY E.subCatID';
+						$row_subCat = $prop->getAll_Disp($sqlSubCat);
+						for($j=0; $j<count($row_subCat); $j++)
+						{
+						?>
+							<li><a href='#'><?php echo $row_subCat[$j]['subCatName']; ?></a>
+                            	<ul class="large-menu pre-scrollable">
+                                	<?php
+                                    	$sqlPage = 'select E.programID as programID,C.title as title from  assign_emp E JOIN pages C on E.programID = C.p_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' and E.catID='.$row_cat[$i]['catID'].' and E.subCatID='.$row_subCat[$j]['subCatID'].' GROUP BY E.programID';
+										$row_page = $prop->getAll_Disp($sqlPage);
+										for($k=0; $k<count($row_page); $k++)
+										{
+										?>
+											<li>
+												<a href='category-detail.php?id=<?php echo $row_page[$k]['programID'];?>' title="<?php echo $row_page[$k]['title'];?>">
+												<?php 
+												echo substr($row_page[$k]['title'],0,75 );
+												$stlenth = strlen($row_p[$k]['title']);
+												echo ($stlenth > 75?'...':'');
+												echo $sqlnew;
+												?></a>
+                                        	</li>
+										<?php 
+										}
+									?>
+                                </ul>
+                            </li>	
+						<?php 
+						}
+						?>
 					</ul>
 				</li>
-				<?php 
+			<?php
 				}
-			}else{
-				
-				if(isset($nav_category) && $nav_category!=''){
-					$sqlm = 'SELECT c_id,c_name as name from `'.MAIN_CATEGORY.'` WHERE status=0 AND c_id IN ('.$nav_category.') ';
-					$row_m=$prop->getAll_Disp($sqlm);
-					$count_m = count($row_m);
-					for($i=0; $i<$count_m; $i++){
-					?>
-					<li><a href='#'><?php echo $row_m[$i]['name']; ?></a>
-						<ul class="sub_category_menu">
-						<?php 
-						$sqls = "SELECT c_id as id,c_name as c_id, sc_name as name  from `".SUB_CATEGORY."` WHERE status=0 AND c_id IN (".$nav_sub_category.") AND c_name='".$row_m[$i]['c_id']."'";
-						$row_s=$prop->getAll_Disp($sqls);
-						$count_s = count($row_s);
-						for($j=0; $j<$count_s; $j++){
-							$_cat_sub .=$row_s[$j]['id'].',';
-						?>
-							<li><a href='#'><?php echo $row_s[$j]['name']; ?></a>
-								<ul class="large-menu pre-scrollable">
-								<?php
-								$sqlp = 'SELECT p_id,title from `'.PAGES.'` WHERE category='.$row_s[$j]['id'].' and p_id IN ('.$nav_pages.') AND page_status=0 order by title ASC';
-								$row_p=$prop->getAll_Disp($sqlp);
-								$count_p = count($row_p);
-								for($k=0; $k<$count_p; $k++){
-								?>
-									<li>
-										<a href='category-detail.php?id=<?php echo $row_p[$k]['p_id']; ?>' title="<?php echo $row_p[$k]['title'];?>">
-										<?php 
-										echo substr($row_p[$k]['title'],0,75 );
-										$stlenth = strlen($row_p[$k]['title']);
-										echo ($stlenth > 75?'...':'');
-										?></a>
-									</li>
-								<?php 
-								} 
-								?>
-								</ul>
-							</li>
-						<?php 
-						} 
-						?>
-						</ul>
-					</li>
-					<?php 
-					}
-
-				}	
-			}
-			$_cat_sub = rtrim($_cat_sub,',');
-			?>
-			</ul>
+			}	
+			?>        	
+            </ul>
+			
 		</li>
 		<!--<li><a href='saved-forms.php'>Saved Forms</a></li>-->
 		<li class="text-right pull-right"><a href="#" class="waves-effect">Date : <?php echo date("j M Y"); ?></a></li>
