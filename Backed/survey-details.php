@@ -258,7 +258,7 @@ font-size: 14px;
 
 <!--end-->
         </div>
-        <footer class="footer text-center"> 2017 &copy; MACA Supply </footer>
+        <footer class="footer text-center"> <?php include 'footer.php';?> </footer>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->

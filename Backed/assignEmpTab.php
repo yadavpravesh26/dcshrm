@@ -22,12 +22,12 @@ if($requestData[empKeyword] != '')
 	$where .= ' AND name like "%'.$requestData[empKeyword].'%"';
 }
 
-$sql = 'select * from '.USERS.' where u_type = 4 AND status != 2 '.$where.' and u_id='.$session['bid'];
-/*$sql = 'Select U.name as name,U.department_id as department_id, U.id as id, A.status as assignType ,A.programID as programID 
+//$sql = 'select * from '.USERS.' where status != 2 and id='.$_SESSION['US']['user_id'];
+$sql = 'Select U.name as name,U.department_id as department_id, U.id as id, A.status as assignType ,A.programID as programID 
 		from '.USERS.' U 
 		INNER JOIN assign_emp A 
 		ON U.id = A.emp_id 
-		where U.u_type = 4 '.$where.' and U.u_id='.$session['bid'].' GROUP BY U.id' ;*/
+		where U.u_type = 4 '.$where.' and U.u_id='.$session['bid'].' and  A.programID ='. $programID .' GROUP BY U.id' ;
 
 $row = $prop->getAll_Disp($sql);
 for($i=0; $i<count($row); $i++)

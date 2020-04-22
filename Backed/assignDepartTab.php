@@ -37,16 +37,22 @@ if($count > 0)
 		
 		if (in_array($departID, $alreadyAssigned)) {
 		$checked = 'checked';
-		}	
+		}
+			
 		$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
-		//$empCount = $prop->getName('count(id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
-		$programCount = $prop->getName('count(programID)', 'assign_depart', "status!=2 AND depart_id=".$departID);
+		//$empCount = $prop->getName('count(DISTINCT id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
+		$empSql = 'select count(DISTINCT U.id) as empCount from '.USERS.' U right join assign_depart D ON U.department_id = D.depart_id where U.status!=2 AND U.department_id='.$departID.' and U.u_id='.$session['bid'];
+		//echo $empSql;
+		$row_EmpCount = $prop->get_Disp($empSql);
+		$empCount = $row_EmpCount['empCount']; 
+		
+		//$programCount = $prop->getName('count(programID)', 'assign_depart', "status!=2 AND depart_id=".$departID);
 		if( ($i+1)%4 == 0)
 		echo '</div><div class="col-md-4">';
 		
 		echo '<div class="checkbox checkbox-success">
 			<input id="depart-'.$listDepart[$i]['dept_id'].'" data-class="checkbox-all" data-id="'.$listDepart[$i]['dept_id'].'" class="category" name="department[]" onClick="assignDepart(this,'.$currCatID.','.$currSubCatID.','.$listDepart[$i]['dept_id'].')" value="'.$listDepart[$i]['dept_id'].'" type="checkbox" '.$checked.'>
-			<label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$programCount.')</b></label>
+			<label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$empCount.')</b></label>
 		</div>';
 	}
 	echo '</div>';

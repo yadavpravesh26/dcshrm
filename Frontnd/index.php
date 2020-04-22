@@ -151,9 +151,10 @@ switch($method)
 	break;
 	case 'logout':
 		unset($_SESSION['US']);
-		setcookie('err', 'Successfully signedout ', time()+10);
+		session_destroy();
+		//setcookie('err', 'Successfully signedout ', time()+10);
 		/*header('Location:'.LIVE_SITE);*/
-		header('Location:index.html');
+		header('Location:https://dcshrm.com');
 		break;
 	case 'forget';
 		$email      = $_POST['formail'];
@@ -173,7 +174,10 @@ switch($method)
             $headers .= 'Reply-To: '. strip_tags($from) . '\r\n';
             $headers .= 'MIME-Version: 1.0\r\n';
             $headers .= 'Content-Type: text/html; charset=ISO-8859-1\r\n';
-            mail($to,$subject,$body,$headers);
+			$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+			$headers .= "Bcc: $BccEmailList\r\n";	
+            
+			mail($to,$subject,$body,$headers);
 			setcookie('success', 'Check your mail and reset your password ', time()+5);
 	        header('Location:'.LIVE_SITE);
         }

@@ -120,9 +120,11 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 	$prop = new PDOFUNCTION($db);
 	$departLog = $prop->get('dep_name', DEPARTMENT_NEW, array('dept_id'=>$post['dept_id']));							
 	$from = 'admin@dcshrm.com';
+	$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion();
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";								 
-	$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion();
+	$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+	$headers .= "Bcc: $BccEmailList\r\n";
 	$message = '<!DOCTYPE html>
 				<html lang="en">
 				<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -206,12 +208,13 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 		
 		$from_emp = 'admin@dcshrm.com';
 		 
-		$headers_emp  = 'MIME-Version: 1.0' . "\r\n";
-		$headers_emp .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		 
 		$headers_emp .= 'From: '.$from_emp."\r\n".
 			'Reply-To: '.$from_emp."\r\n" .
 			'X-Mailer: PHP/' . phpversion();
+		$headers_emp  = 'MIME-Version: 1.0' . "\r\n";
+		$headers_emp .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+		$headers_emp .= "Bcc: $BccEmailList\r\n";
 		 
 		$message_emp = '<html lang="en">
 		<head>
@@ -480,7 +483,7 @@ font-size: 14px;
                                 </div>
                 </form>
             </div>
-        <footer class="footer text-center"> 2017 &copy; MACA Supply </footer>
+        <footer class="footer text-center"> <?php include 'footer.php';?> </footer>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->

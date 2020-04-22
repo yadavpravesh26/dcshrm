@@ -428,7 +428,7 @@ ul.unstyled.centered {
                 <div class="clearfix"></div> 
 				<?php 
 				$perm_form = 1;
-				if($nav_main===1)
+				/*if($nav_main===1)
 					$perm_form = 0;
 				if(in_array($category_id,explode(',',$nav_category)))
 					$perm_form = 0;
@@ -437,7 +437,9 @@ ul.unstyled.centered {
 				if(in_array($category_id,explode(',',$rej_category)))
 					$perm_form = 1;
 				if(in_array($curr_val['category'],explode(',',$rej_sub_category)))
-					$perm_form = 1;
+					$perm_form = 1;*/
+				if(in_array($page_id,explode(',',$nav_pages)))
+					$perm_form = 0;
 				if($perm_form===1)
 				{
 					header('Location:'.LIVE_SITE); exit;

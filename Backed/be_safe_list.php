@@ -86,8 +86,30 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 		$count_cat = count($row_cat);
 		for($i=0; $i<$count_cat; $i++){
 		$mainCatID = $row_cat[$i]['c_id'];
-		$countDepartCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND catID=".$mainCatID);
-		$countEmpCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND catID=".$mainCatID);
+		
+		//Count Department
+		$sqlDepartIDs = 'select GROUP_CONCAT( DISTINCT dept_id ORDER BY dept_id SEPARATOR ",") as deptIDs from department where company_id='.$session['bid'];
+		$rowDepartIDs = $prop->get_Disp($sqlDepartIDs);
+		if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+		{
+			$DepartIDs = $rowDepartIDs['deptIDs'];
+			$countDepartCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID);
+		}
+		else
+		$countDepartCat = 0;
+		
+		//Count Employees		
+		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where u_id='.$session['bid'];
+		$rowEmpIDs = $prop->get_Disp($sqlEmpIDs);
+		if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+		{
+			$EmpIDs = $rowEmpIDs['empIDs'];
+			$countEmpCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
+		}
+		else
+		$countEmpCat = 0;
+			
+		
 		?>
 		<ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg">
 			<li class="cd-accordion__item cd-accordion__item--has-children">
@@ -115,8 +137,15 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			for($j = 0; $j<$count_subCat; $j++)
 			{
 			$subCatID = $row_subCat[$j]['c_id'];
-			$countSubCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND catID=".$mainCatID." AND subCatID=".$subCatID);
-			$countEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			
+			if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+			$countSubCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			else
+			$countSubCat =0;
+			if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+			$countEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			else
+			$countEmpSubCat = 0;
 			?>
 			  <ul class="cd-accordion__sub cd-accordion__sub--l1 main_cate_checkbox<?php echo $mainCatID;?>">
 				<li class="cd-accordion__item cd-accordion__item--has-children">
@@ -143,8 +172,15 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 					for($k = 0; $k<$count_programs; $k++)
 					{
 					$pID = $row_programs[$k]['p_id'];
-					$countProgram = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
-					$countEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
+					if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+					$countProgram = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
+					else
+					$countProgram = 0;
+					
+					if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+					$countEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
+					else
+					$countEmpProgram = 0;
 					?>
 					<li class="cd-accordion__item">
 						<div class="checkbox checkbox-success porgram_checkbox">
@@ -288,20 +324,20 @@ jQuery(document).ready(function() {
 	});
 	/*EMPLOYEE Model ancher Click END*/
 	/*Filter Code Start */
-	$('#filterKey').keyup(function(e){
-		var keyword = $(this).val();
+	$('#filterKey').click(function(e){
+		var keyword = $('#filterVal').val();
 		var departID = $('#filterDep').children("option:selected").val();
 		var empID = $('#filterEmp').children("option:selected").val();				
 		call_filter_data(keyword,departID,empID);
 	});
 	$('#filterDep').change(function(e){
-		var keyword = $('#filterKey').val();
+		var keyword = $('#filterVal').val();
 		var departID = $(this).children("option:selected").val();
 		var empID = $('#filterEmp').children("option:selected").val();				
 		call_filter_data(keyword,departID,empID);
 	});
 	$('#filterEmp').change(function(e){
-		var keyword = $('#filterKey').val();
+		var keyword = $('#filterVal').val();
 		var departID = $('#filterDep').children("option:selected").val();
 		var empID = $(this).children("option:selected").val();				
 		call_filter_data(keyword,departID,empID);

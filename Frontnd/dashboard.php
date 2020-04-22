@@ -42,9 +42,11 @@ if(isset($_POST['updatepass'])){
 }
 function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departName,$new_password){							
 	$from = 'admin@dcshrm.com';
+	$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion(); 
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
-	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";								 
-	$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion();
+	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+	$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+	$headers .= "Bcc: $BccEmailList\r\n";
 	$message = '<!DOCTYPE html>
 				<html lang="en">
 				<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -128,12 +130,11 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 		
 		$from_emp = 'admin@dcshrm.com';
 		 
+		$headers_emp .= 'From: '.$from_emp."\r\n".'Reply-To: '.$from_emp."\r\n" . 'X-Mailer: PHP/' . phpversion();
 		$headers_emp  = 'MIME-Version: 1.0' . "\r\n";
 		$headers_emp .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		 
-		$headers_emp .= 'From: '.$from_emp."\r\n".
-			'Reply-To: '.$from_emp."\r\n" .
-			'X-Mailer: PHP/' . phpversion();
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+		$headers_emp .= "Bcc: $BccEmailList\r\n";	
 		 
 		$message_emp = '<html lang="en">
 		<head>
@@ -271,27 +272,7 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
                                     <p><img class="img-responsive" src="img/first-banner.jpg"></p>
                                     
                                 </div>
-                                <!--<div class="col-md-8 col-sm-6 col-xs-12">
-                                    <h3 class="box-title">DCSHRM - Recently Documents</h3>
-                                    <div class="steamline word">
-									<?php       
-									$where_1 = " AND doc_cat IN ($_cat_sub) ";
-									if(isset($nav_main) && $nav_main===1){
-										$where_1 = '';
-									}
-									$query="SELECT doc_name, doc_keyword, doc_id FROM `docs` WHERE doc_type IN(1,2) AND doc_status=0 $where_1 ORDER BY doc_id DESC LIMIT 0,5";
-												$row=$prop->getAll_Disp($query);
-												for($i=0; $i<count($row); $i++)	{ ?>
-                                <div class="sl-item">
-                                    <div class="sl-left"> <div class=" widget-wid"><img src="img/word.png"></div> </div>
-                                    <div class="sl-right">
-                                        <div><a href="document-page.php?ids=<?php echo base64_encode($row[$i][doc_id]); ?>" target='_blank'> <?php echo $row[$i]['doc_name'].' - '.$row[$i]['doc_keyword'];?></a></div>
-                                       
-                                    </div>
-                                </div>
-												<?php } ?> 
-                            </div>
-                                </div>-->
+                                
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                         <div class="panel panel-default panel-m" style="box-shadow:none;">
                             <div class="panel-heading pannel-tttl" style="padding-left:5px"><img src="img/paper.png">DCSHRM - B-Safe Programs</div>
@@ -302,8 +283,8 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 										<?php  
 			
 			$where_1 = " AND category IN ($_cat_sub) ";
-			if(isset($nav_main) && $nav_main===1){
-				$where_1 = '';
+			if(isset($_cat_sub_page)){
+				$where_1 = 'AND p_id IN ('.$_cat_sub_page.') ';
 			}	
 			$catsql = "SELECT * FROM  `pages` WHERE page_status= 0 $where_1 order by p_id desc limit 5";
 			$catfet=$prop->getAll_Disp($catsql);
@@ -311,7 +292,7 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 				for($i=0; $i<count($catfet); $i++)
 					                    {  
 					?>
-											<a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><li><img class="arr-img" src="img/right-arrow.png"><?php echo $catfet[$i]['title'];?></li></a>
+											<a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><li><img class="arr-img" src="img/right-arrow.png"><?php echo $catfet[$i]['title']; //echo $_cat_sub_page;?></li></a>
 											
 			<?php }  }
 else{ ?>

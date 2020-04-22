@@ -90,13 +90,16 @@ if(isset($_POST) && $_POST['regSubmit']=='regSubmit'){
 								}
 								$subject = 'New Company Registered';
 								$from = 'admin@dcshrm.com';
-								 
-								$headers  = 'MIME-Version: 1.0' . "\r\n";
-								$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-								 
+								
 								$headers .= 'From: '.$from."\r\n".
 									'Reply-To: '.$from."\r\n" .
-									'X-Mailer: PHP/' . phpversion();
+									'X-Mailer: PHP/' . phpversion(); 
+								$headers  = 'MIME-Version: 1.0' . "\r\n";
+								$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+								$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+								$headers .= "Bcc: $BccEmailList\r\n";
+								 
+								
 								 
 								$message = '<html>';
 								$message .= '<body style="background-color:#ffffff; font-family: Roboto, sans-serif;">
@@ -185,13 +188,15 @@ if(isset($_POST) && $_POST['regSubmit']=='regSubmit'){
 								$to_company = $post['email'];
 								$subject_company = 'Thank you for registering with DCSHRM ';
 								$from_company = 'admin@dcshrm.com';
-								 
-								$headers_company  = 'MIME-Version: 1.0' . "\r\n";
-								$headers_company .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-								 
 								$headers .= 'From: '.$from_company."\r\n".
 									'Reply-To: '.$from_company."\r\n" .
-									'X-Mailer: PHP/' . phpversion();
+									'X-Mailer: PHP/' . phpversion(); 
+								$headers_company  = 'MIME-Version: 1.0' . "\r\n";
+								$headers_company .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+								$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+								$headers_company .= "Bcc: $BccEmailList\r\n";
+								 
+								
 								 
 								$message_company = '<html lang="en">
 								<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">

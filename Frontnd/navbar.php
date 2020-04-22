@@ -139,28 +139,51 @@ nav{width:100%;}
 		<li><a href='#'>Category</a>
         	<ul>
 			<?php
-        	$sqlCat = 'select E.catID as catID,C.c_name as catName from  assign_emp E JOIN cats C on E.catID = C.c_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' GROUP BY E.catID';
+			$_cat_sub = '';
+			$nav_category = '';
+			$nav_sub_category = '';
+			$nav_pages = '';
+			$depID = $prop->getName('department_id', USERS, "id=".$_SESSION['US']['user_id']);
 			
+			$depCatID = explode(',', $row_DepartCat['depCatID']);
+			$depSubCatID = explode(',', $row_DepartCat['depSubCatID']);
+			$depProgramID = explode(',', $row_DepartCat['depProgramID']);
+			
+        	$sqlCat = 'select E.catID as catID,C.c_name as catName from  assign_emp E 
+			JOIN cats C on E.catID = C.c_id
+			JOIN assign_depart D on D.catID = E.catID  
+			where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') GROUP BY E.catID';
 			$row_cat = $prop->getAll_Disp($sqlCat);
 			if(count($row_cat)>0)
 			{
 				for($i=0; $i<count($row_cat); $i++)
-				{?>
-				<li><a href='#'><?php echo $row_cat[$i]['catName']; ?></a>
+				{
+					$nav_category .= $row_cat[$i]['catID'].',';
+				?>
+				<li><a href='#'><?php echo $row_cat[$i]['catName']; //echo $sqlCat; ?></a>
 					<ul class="sub_category_menu">
 						<?php
-						$sqlSubCat = 'select E.subCatID as subCatID,C.sc_name as subCatName from  assign_emp E JOIN cat_sub C on E.subCatID = C.c_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' and E.catID='.$row_cat[$i]['catID'].' GROUP BY E.subCatID';
+						$sqlSubCat = 'select E.subCatID as subCatID,C.sc_name as subCatName from  assign_emp E 
+						JOIN cat_sub C on E.subCatID = C.c_id  
+						JOIN assign_depart D on D.catID = E.catID 
+						where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') and ( E.catID='.$row_cat[$i]['catID'].' or D.catID='.$row_cat[$i]['catID'].') GROUP BY E.subCatID';
 						$row_subCat = $prop->getAll_Disp($sqlSubCat);
 						for($j=0; $j<count($row_subCat); $j++)
 						{
+						$_cat_sub .=$row_subCat[$j]['subCatID'].',';
+						$nav_sub_category .= $row_subCat[$j]['subCatID'].',';
 						?>
-							<li><a href='#'><?php echo $row_subCat[$j]['subCatName']; ?></a>
+							<li><a href='#'><?php echo $row_subCat[$j]['subCatName']; //echo $sqlSubCat; ?></a>
                             	<ul class="large-menu pre-scrollable">
                                 	<?php
-                                    	$sqlPage = 'select E.programID as programID,C.title as title from  assign_emp E JOIN pages C on E.programID = C.p_id  where E.status = 0 and E.emp_id='.$_SESSION['US']['user_id'].' and E.catID='.$row_cat[$i]['catID'].' and E.subCatID='.$row_subCat[$j]['subCatID'].' GROUP BY E.programID';
+                                    	$sqlPage = 'select E.programID as programID,C.title as title from  assign_emp E 
+										JOIN pages C on E.programID = C.p_id 
+										JOIN assign_depart D on D.programID = C.p_id  
+										where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') and ( E.catID='.$row_cat[$i]['catID'].' or D.catID='.$row_cat[$i]['catID'].') GROUP BY E.programID';
 										$row_page = $prop->getAll_Disp($sqlPage);
 										for($k=0; $k<count($row_page); $k++)
 										{
+											$nav_pages .= $row_page[$k]['programID'].',';
 										?>
 											<li>
 												<a href='category-detail.php?id=<?php echo $row_page[$k]['programID'];?>' title="<?php echo $row_page[$k]['title'];?>">
@@ -183,7 +206,9 @@ nav{width:100%;}
 				</li>
 			<?php
 				}
-			}	
+			}
+			$_cat_sub = rtrim($_cat_sub,',');
+			$_cat_sub_page = rtrim($nav_pages,',');	
 			?>        	
             </ul>
 			

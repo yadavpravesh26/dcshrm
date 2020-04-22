@@ -221,7 +221,7 @@ switch($method)
                 
             </div>
             <!-- /.container-fluid -->
-            <footer class="footer text-center"> 2017 &copy; MACA Supply </footer>
+            <footer class="footer text-center"> <?php include 'footer.php';?> </footer>
         </div>
         <!-- /#page-wrapper -->
     </div>

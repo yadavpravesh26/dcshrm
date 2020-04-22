@@ -313,7 +313,19 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                 <input type="hidden" name="submitType" id="submitType" >
                                 <div class="row" style="margin-bottom:20px;">
                                     <div class="col-md-3">
-                                    <input type="text" name="filterKey" id="filterKey" placeholder="Search Keyword" class="form-control">
+                                        <div class="input-group md-form form-sm form-2 pl-0">
+                                          <input type="text" name="filterKey" id="filterVal" placeholder="Search Keyword" class="form-control">
+                                          <button type="button" id="filterKey" class="input-group-append" style="background:#187dd2;padding: 8px; color:#FFFFFF; border:none;border-right: 1px solid #fff;" data-toggle="tooltip" title="Search">
+                                            <span class="input-group-text lime lighten-2" id="basic-text1">
+                                            	<i class="ti-search text-grey" aria-hidden="true"></i>
+                                            </span>
+                                          </button>
+                                          <button type="reset" id="resetKey" class="input-group-append" style="background:#187dd2;padding: 8px; color:#FFFFFF; border:none" data-toggle="tooltip" title="RESET">
+                                            <span class="input-group-text lime lighten-2" id="basic-text1">
+                                            	<i class="fa fa-refresh" aria-hidden="true"></i>
+                                            </span>
+                                          </button>
+                                        </div>
                                     </div>    
                                     <div class="col-md-3">
                                     <select class="form-control select2" id="filterDep" >
@@ -327,15 +339,16 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                     </select>
                                     </div>
                                     <div class="col-md-3">
-                                    <select class="form-control select2" id="filterEmp" >
-                                        <option value="">Filter by Employee</option>
-                                        <?php
-                                        $count = count($listEmps);
-                                        for($i=0; $i<$count; $i++){ 
-                                            echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
-                                        }
-                                        ?>
-                                    </select>
+                                    	<select class="form-control select2" id="filterEmp">
+                                            <option value="">Filter by Employee</option>
+                                            <?php
+                                            $count = count($listEmps);
+                                            for($i=0; $i<$count; $i++){ 
+                                                echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+                                            }
+                                            ?>
+                                          </select>
+                                          
                                     </div>
                                     <div class="col-md-3">
                                         <button type="button" id="assignDepart" name="assignDepart" data-id="mainCatDepart-19" data-toggle="modal" data-target="#myModalDepartment" class="btn btn-success waves-effect waves-light pull-right m-r-10">

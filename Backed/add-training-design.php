@@ -515,7 +515,7 @@ button.btn.btn-success, button.btn {
                                                                                     <div class="col-sm-4 col-md-4 pt1">
                                                                                         <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'">
                                                                                           <span class="vid-thumb">
-                                                                                          <!--<img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" />--></span>
+                                                                                         <img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" /></span>
                                                                                         </a>
                                                                                     </div>
                                                                                     <div class="col-sm-6 col-md-6 pt2"> 

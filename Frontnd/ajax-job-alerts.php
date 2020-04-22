@@ -27,12 +27,12 @@ if($meth=="jobAlertForm")
 	
 		$to = $your_email;		
 		$from = 'admin@dcshrm.com';		 
+		$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion(); 
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		 
-		$headers .= 'From: '.$from."\r\n".
-			'Reply-To: '.$from."\r\n" .
-			'X-Mailer: PHP/' . phpversion();
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+		$headers .= "Bcc: $BccEmailList\r\n";	
+		
 		$message = '<html lang="en">
 		<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -116,12 +116,11 @@ if($meth=="emailJobForm")
 	if ($lastId != 0) {
 		$to = $recipient_email;		
 		$from = 'admin@dcshrm.com';		 
+		$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion(); 
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		 
-		$headers .= 'From: '.$from."\r\n".
-			'Reply-To: '.$from."\r\n" .
-			'X-Mailer: PHP/' . phpversion();
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+		$headers .= "Bcc: $BccEmailList\r\n";
 		$message = '<html lang="en">
 		<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -204,12 +203,12 @@ if($meth=="ReferFriendForm")
 	if ($lastId != 0) {
 		$to = $friend_email;		
 		$from = 'admin@dcshrm.com';		 
+		$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion(); 
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		 
-		$headers .= 'From: '.$from."\r\n".
-			'Reply-To: '.$from."\r\n" .
-			'X-Mailer: PHP/' . phpversion();
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
+		$headers .= "Bcc: $BccEmailList\r\n";
+		
 		$message = '<html lang="en">
 		<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
