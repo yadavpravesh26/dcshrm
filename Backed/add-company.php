@@ -727,7 +727,7 @@ ol.auto-checkboxes.bonsai label {
                                             <label for="exampleInputuname">Email</label>
                                             <div class="input-group">
                                                 <!--<div class="input-group-addon"><i class="ti-email"></i></div>-->
-                                                <input type="email" class="form-control" id="inputemail" placeholder="Email" name="clname" data-error="Please enter valid email address" value="<?php echo $curr_val['email'];?>" <?php echo (isset($_REQUEST['id'])?'readonly':'required'); ?>>
+                                                <input type="email" class="form-control" id="inputemail" placeholder="Email" name="clname" data-error="Please enter valid email address" value="<?php echo $curr_val['email'];?>" <?php //echo (isset($_REQUEST['id'])?'readonly':'required'); ?> required>
                                             </div>
                                             <div class="help-block with-errors alexist"></div>
                                         </div>

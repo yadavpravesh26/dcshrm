@@ -181,7 +181,7 @@ if($meth=='depart-status')
 	$id = $_POST["id"];
 	$status = $_POST['status'];
 	$output = array('status'=>'Error','msg'=>'Updated Failed','err'=>'error');
-	if($id>0){
+	if($id>0){		
 		$t_cond = array("dept_id" => $id);
 		$values = array("dep_status" => $status);
 		$s = $prop->update(DEPARTMENT_NEW, $values, $t_cond);
@@ -197,11 +197,19 @@ if($meth=='depart-delete')
 	$status = $_POST['status'];
 	$output = array('status'=>'Error','msg'=>'Updated Failed','err'=>'error');
 	if($id>0){
-		$t_cond = array("dept_id" => $id);
-		$values = array("dep_status" => $status);
-		$s = $prop->update(DEPARTMENT_NEW, $values, $t_cond);
-		if($s){
-			$output = array('status'=>'Status','msg'=>'Deleted Successfully','err'=>'success','result'=>1);
+		$exits = $prop->getName('count(id)', USERS, " department_id=".$id." AND status != 2");
+		if($exits === 0)
+		{
+			$t_cond = array("dept_id" => $id);
+			$values = array("dep_status" => $status);
+			$s = $prop->update(DEPARTMENT_NEW, $values, $t_cond);
+			if($s){
+				$output = array('status'=>'Status','msg'=>'Department Deleted Successfully','result'=>1);
+			}
+		}
+		else
+		{
+			$output = array('status'=>'Error','msg'=>'Department is assiged to Employees','err'=>'error');
 		}
 	}
 	echo json_encode($output); exit;

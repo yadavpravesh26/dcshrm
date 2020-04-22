@@ -149,10 +149,19 @@ nav{width:100%;}
 			$depSubCatID = explode(',', $row_DepartCat['depSubCatID']);
 			$depProgramID = explode(',', $row_DepartCat['depProgramID']);
 			
+			$countAssignEmpOrNot = $prop->getName('emp_id', 'assign_emp', "emp_id=".$_SESSION['US']['user_id']);
+			if($countAssignEmpOrNot != '')
+			$whereAssignEMP = 'AND (E.emp_id='.$_SESSION['US']['user_id'].' AND E.status = 0 )';
+			else
+			$whereAssignEMP = '';
+			
+			//echo $countAssignEmpOrNot."pravesh";
+			
         	$sqlCat = 'select E.catID as catID,C.c_name as catName from  assign_emp E 
 			JOIN cats C on E.catID = C.c_id
 			JOIN assign_depart D on D.catID = E.catID  
-			where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') GROUP BY E.catID';
+			where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') '.$whereAssignEMP.' GROUP BY E.catID';
+			//echo $sqlCat;
 			$row_cat = $prop->getAll_Disp($sqlCat);
 			if(count($row_cat)>0)
 			{

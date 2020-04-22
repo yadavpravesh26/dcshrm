@@ -63,7 +63,6 @@ switch($method)
 							setcookie('status', 'Error', time()+10);
 							setcookie('title', $msg, time()+10);
 							setcookie('err', 'error', time()+10);
-							header('Location: employee-details.php');	
 							break;
 						}
 					}
@@ -72,7 +71,6 @@ switch($method)
 						setcookie('status', 'Error', time()+10);
 						setcookie('title', $msg, time()+10);
 						setcookie('err', 'error', time()+10);
-						header('Location: employee-details.php');	
 						break;
 					}
 				}
@@ -81,7 +79,6 @@ switch($method)
 					setcookie('status', 'Error', time()+10);
 					setcookie('title', $msg, time()+10);
 					setcookie('err', 'error', time()+10);
-					header('Location: employee-details.php');	
 					break;
 				}
 			}
@@ -99,7 +96,6 @@ switch($method)
 			setcookie('status', 'Error', time()+10);
 			setcookie('title', $msg, time()+10);
 			setcookie('err', 'error', time()+10);
-			header('Location: employee-details.php');	
 			break;
 		}
 	    
@@ -519,7 +515,9 @@ font-size: 14px;
 			<div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Phone</label>
-                    <input type="number" id="phone" min="1000000000" max="9999999999" name="phone" class="form-control" value="<?php echo $curr_val['contact_no'];?>" placeholder="+0123456789" required>  </div>
+                    <input type="number" id="phone"  pattern="/[^0-9]/"  min="1000000000" max="9999999999" name="phone" data-error="Please enter valid phone number" class="form-control" value="<?php echo $curr_val['contact_no'];?>" placeholder="Phone Number"  required>  
+                     <div class="help-block with-errors"></div>
+                    </div>
             </div>
 			
 
@@ -578,26 +576,39 @@ font-size: 14px;
     </div>
     <!-- /#wrapper -->
 	<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="bootstrap/dist/js/tether.min.js"></script>
-    <script src="bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
+	<!-- Bootstrap Core JavaScript -->
+	<script src="bootstrap/dist/js/tether.min.js"></script>
+	<script src="bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
     <!-- Menu Plugin JavaScript -->
     <script src="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
-
     <!--slimscroll JavaScript -->
     <script src="js/jquery.slimscroll.js"></script>
- <!-- Sweet-Alert  -->
-    <script src="js/validator.js"></script>
+	
+    <!--Wave Effects -->
+    <script src="js/waves.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="js/custom.min.js"></script>
+    <script src="js/jasny-bootstrap.js"></script>
+    <!--Style Switcher -->
+    <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
+    <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <!-- Sweet-Alert  -->
     <script src="plugins/bower_components/sweetalert/sweetalert.min.js"></script>
     <script src="plugins/bower_components/sweetalert/jquery.sweet-alert.custom.js"></script>
-	   <script src="plugins/bower_components/custom-select/custom-select.min.js" type="text/javascript"></script>
-    <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="plugins/bower_components/multiselect/js/jquery.multi-select.js"></script>
     
-    <script>
+    <!-- Select2  -->
+    <script src="plugins/bower_components/custom-select/custom-select.min.js" type="text/javascript"></script>
+    <!-- dataTables  -->
+    <script src="plugins/bower_components/datatables/jquery.dataTables.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/custom.min.js"></script>
+    <script src="js/validator.js"></script>
+    
+	<script>
 	$(document).ready(function () { //newly added
+		$(".select2").select2();
 		$("select[name='dept_id']").change(function(){
 			$("#dept_id_text").val($(this).find(":selected").text());
 		});
@@ -673,54 +684,6 @@ font-size: 14px;
    
 
   </script>
-    <!--Wave Effects -->
-    <script src="js/waves.js"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="js/custom.min.js"></script>
-    <script src="js/jasny-bootstrap.js"></script>
-    <!--Style Switcher -->
-    <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
-    <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="js/custom.min.js"></script>
-    <script src="js/validator.js"></script>
-	<!-- Footable -->
-    <script src="plugins/bower_components/footable/js/footable.all.min.js"></script>
-    <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <!--FooTable init-->
-
-    <!--Style Switcher -->
-    <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
-    <script src="plugins/bower_components/datatables/jquery.dataTables.min.js"></script>
-	<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-    <!-- end - This is for export functionality only -->
-    <script>
-    $(document).ready(function() {
-        $(".select2").select2();
-
-
-       var ClientTable = $('#example23').DataTable({
-           'processing': true,
-           'serverSide': true,
-           "ajax":{
-              url : "ajax-employee-list.php<?php echo (isset($_REQUEST['s'])?'?s='.$_REQUEST['s']:''); ?>", // json datasource
-              type: "post",  // method  , by default get
-              "data": function ( data ) {
-
-               },
-			   complete: function() {
-						$('[data-toggle="tooltip"]').tooltip();
-					},
-              error: function(){  // error handling
-                $(".example23-error").html("");
-                $("#example23").append('<tbody class="employee-grid-error"><tr><th colspan="3">No Net Volume found in the server</th></tr></tbody>');
-                $("#example23_processing").css("display","none");
-              }
-            }
-       });
-});
-    </script>
 
 </body>
 

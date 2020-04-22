@@ -464,7 +464,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 
         </div>
      <!-- /.modal -->
-    <script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
 
@@ -546,6 +546,13 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 		$("#filterEmp").select2();
 		$("#popup_depart").select2();
 		$("#popup_emp").select2();
+		
+		$( "#resetKey" ).click(function(){
+			//var departID = $('#filterDep').children("option:selected").val();
+			//var empID = $('#filterEmp').children("option:selected").val();	
+			//call_filter_data('',departID,empID);
+			call_filter_data('','','');
+		});
 	});
 	
 	function call_filter_data(keyword,departID,empID)

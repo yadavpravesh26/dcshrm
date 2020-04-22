@@ -15,7 +15,7 @@ switch($method)
 		$msg = 'Enter Department Name';
 		if($_POST['form1Name']!=''){
 			$msg = 'Department already exits';
-			$exits = $prop->getName('count(dept_id)', DEPARTMENT_NEW, " dep_name='".$_POST['form1Name']."' and company_id = '".$session['bid']."'");
+			$exits = $prop->getName('count(dept_id)', DEPARTMENT_NEW, " dep_name='".$_POST['form1Name']."' AND dep_status != 2 and company_id = '".$session['bid']."'");
 			if($exits===0){
 				$msg = 'Department Created Failed';
 				

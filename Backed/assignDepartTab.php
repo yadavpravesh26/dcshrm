@@ -17,7 +17,7 @@ $currCatID = $curr_Catval['c_name'];
 if(isset($_POST['keyword']) and $_POST['keyword'] != '')
 $keySearch = ' and dep_name like "%'.$_POST['keyword'].'%"';
 
-$where_dep = ' where dep_status != 2' .$keySearch. ' and company_id='.$session['bid'];
+$where_dep = ' where dep_status != 2' .$keySearch. ' and company_id='.$session['bid'].' order by dep_name ASC';
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 
 $where_assign = ' where catID = '.$currCatID.' and subCatID = '.$currSubCatID.' and programID = '.$programID.' and status = 0';
@@ -30,7 +30,6 @@ $alreadyAssigned[$j] = $assignDepart[$j]['depart_id'];
 $count = count($listDepart);
 if($count > 0)
 {
-	echo '<div class="col-md-4">';
 	for($i=0; $i<$count; $i++){
 		$checked = 'data-val'; 
 		$departID = $listDepart[$i]['dept_id'];
@@ -41,21 +40,27 @@ if($count > 0)
 			
 		$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
 		//$empCount = $prop->getName('count(DISTINCT id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
-		$empSql = 'select count(DISTINCT U.id) as empCount from '.USERS.' U right join assign_depart D ON U.department_id = D.depart_id where U.status!=2 AND U.department_id='.$departID.' and U.u_id='.$session['bid'];
+		$empSql = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id='.$departID.' and u_id='.$session['bid'];
 		//echo $empSql;
 		$row_EmpCount = $prop->get_Disp($empSql);
-		$empCount = $row_EmpCount['empCount']; 
+		$empGET = $row_EmpCount['empIDs'];
+		//echo $empGET; 
+		$empIDs = explode(',',$empGET);
+		$empCount = 0;
+		foreach($empIDs as $empID)
+		{
+			$countEmp = $prop->getName('count(depart_id)', 'assign_depart', " depart_id='".$empID."'");
+			if($countEmp===0)
+			$empCount++;
+			
+		}
 		
 		//$programCount = $prop->getName('count(programID)', 'assign_depart', "status!=2 AND depart_id=".$departID);
-		if( ($i+1)%4 == 0)
-		echo '</div><div class="col-md-4">';
-		
-		echo '<div class="checkbox checkbox-success">
+		echo '<div class="col-md-3"><div class="checkbox checkbox-success">
 			<input id="depart-'.$listDepart[$i]['dept_id'].'" data-class="checkbox-all" data-id="'.$listDepart[$i]['dept_id'].'" class="category" name="department[]" onClick="assignDepart(this,'.$currCatID.','.$currSubCatID.','.$listDepart[$i]['dept_id'].')" value="'.$listDepart[$i]['dept_id'].'" type="checkbox" '.$checked.'>
 			<label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$empCount.')</b></label>
-		</div>';
+		</div></div>';
 	}
-	echo '</div>';
 	?>
     <div class="clearfix"></div>
 <?php

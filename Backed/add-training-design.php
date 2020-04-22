@@ -120,7 +120,16 @@ if(isset($_POST['btnEmpAssign']))
 $where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 
-$where_emp = ' where status != 2 and u_type = 4 and u_id='.$session['bid'];
+$departmentIDs='';
+for($i=0; $i < count($listDepart); $i++){ 
+
+	if($i < count($listDepart)-1)
+	$departmentIDs .= $listDepart[$i]['dept_id'].',';
+	else
+	$departmentIDs .= $listDepart[$i]['dept_id'];
+}
+
+$where_emp = ' where status != 2 and u_type = 4 AND department_id IN ('.$departmentIDs.') and u_id='.$session['bid'];
 $listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
 ?>
 <!DOCTYPE html>

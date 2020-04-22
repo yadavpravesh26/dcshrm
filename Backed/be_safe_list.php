@@ -5,6 +5,19 @@ require_once(DOC_CONFIG.'inc/pdoFunctions.php');
 require_once('inc/img_resize.php');
 $cdb = new DB();
 $db = $cdb->getDb();
+
+$where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
+$listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
+
+$departmentIDs='';
+for($i=0; $i < count($listDepart); $i++){ 
+
+	if($i < count($listDepart)-1)
+	$departmentIDs .= $listDepart[$i]['dept_id'].',';
+	else
+	$departmentIDs .= $listDepart[$i]['dept_id'];
+}
+
 $prop = new PDOFUNCTION($db);
 
 	$mainCats = $_POST['catIDs'];
@@ -84,30 +97,71 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 		
 		$row_cat=$prop->getAll_Disp($catSql);
 		$count_cat = count($row_cat);
+		
 		for($i=0; $i<$count_cat; $i++){
 		$mainCatID = $row_cat[$i]['c_id'];
-		
+		$Inc_count = 0;
+		//echo $Inc_count = 0;
 		//Count Department
-		$sqlDepartIDs = 'select GROUP_CONCAT( DISTINCT dept_id ORDER BY dept_id SEPARATOR ",") as deptIDs from department where company_id='.$session['bid'];
-		$rowDepartIDs = $prop->get_Disp($sqlDepartIDs);
-		if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+		
+		if($departmentIDs != '')
 		{
-			$DepartIDs = $rowDepartIDs['deptIDs'];
+			$DepartIDs = $departmentIDs;
 			$countDepartCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID);
 		}
 		else
 		$countDepartCat = 0;
 		
 		//Count Employees		
-		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where u_id='.$session['bid'];
+		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id IN ('.$DepartIDs.') and u_id='.$session['bid'];
 		$rowEmpIDs = $prop->get_Disp($sqlEmpIDs);
-		if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+		
+		if((count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '') )
 		{
 			$EmpIDs = $rowEmpIDs['empIDs'];
-			$countEmpCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
+			
+			$sqlGetEmpIDs = 'Select GROUP_CONCAT( DISTINCT U.id ORDER BY U.id SEPARATOR ",") as GetEmpIDs from '.USERS.' U INNER JOIN assign_depart D on D.depart_id = U.department_id where D.depart_id IN ('.$DepartIDs.') AND D.status=0 AND D.catID='.$mainCatID;
+			$rowGetEmpIDs = $prop->get_Disp($sqlGetEmpIDs);
+			$rowGetEmpIDs = explode(',',$rowGetEmpIDs['GetEmpIDs']);
+			
+			$sqlFilterEmpIDs = 'select GROUP_CONCAT( DISTINCT emp_id ORDER BY emp_id SEPARATOR ",") as emp_id from assign_emp where status!=2 AND emp_id IN ('.$EmpIDs.') AND catID='.$mainCatID;
+			//echo $sqlFilterEmpIDs;
+			$GetEmpIDs = $prop->get_Disp($sqlFilterEmpIDs);
+			$GetEmpIDs = explode(',',$GetEmpIDs['emp_id']);
+			
+			/*var_dump($rowGetEmpIDs);
+			echo "<br>";
+			var_dump($GetEmpIDs);
+			*/
+			if(count($GetEmpIDs)>0)
+			{
+				for($AC=0; $AC < count($rowGetEmpIDs); $AC++)
+				{
+					if( in_array($rowGetEmpIDs[$AC],$GetEmpIDs) )
+					{
+						//echo $rowGetEmpIDs[$AC];
+					}
+					else if($rowGetEmpIDs[$AC] != '')
+					{
+						$Inc_count++;
+						//echo "notIN".$rowGetEmpIDs[$AC];
+					}
+				}
+			}
+			else
+			{
+				$Inc_count = count($rowGetEmpIDs);
+			}	
+			
+			$countEmpCat1 = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
+			//$sql_EMPcount = "Select COUNT( DISTINCT A.id) as EMPCOUNT from assign_depart D INNER JOIN assign_emp E on E.catID = D.catID INNER JOIN appuser A on A.department_id = D.depart_id where ( ( E.emp_id IN (".$EmpIDs.") OR D.depart_id IN (".$DepartIDs.") ) AND (  E.catID=".$mainCatID." AND E.status = 0 AND D.catID=".$mainCatID." AND D.status = 0) ) AND A.u_id = ".$session['bid']." AND A.status=0";
+			$row_EMPcount = $prop->get_Disp($sql_EMPcount);
+			//echo $sql_EMPcount;
+			$countEmpCat2 = $row_EMPcount['EMPCOUNT'];
+			$countEmpCat = $countEmpCat1 + $Inc_count;
 		}
 		else
-		$countEmpCat = 0;
+		$countEmpCat = 0 + $Inc_count;
 			
 		
 		?>
@@ -138,14 +192,20 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			{
 			$subCatID = $row_subCat[$j]['c_id'];
 			
-			if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+			if($departmentIDs != '')
+			{
 			$countSubCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			}
 			else
 			$countSubCat =0;
+			
 			if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+			{
 			$countEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			$countEmpSubCat = $countEmpSubCat + $Inc_count ;
+			}
 			else
-			$countEmpSubCat = 0;
+			$countEmpSubCat = $Inc_count;
 			?>
 			  <ul class="cd-accordion__sub cd-accordion__sub--l1 main_cate_checkbox<?php echo $mainCatID;?>">
 				<li class="cd-accordion__item cd-accordion__item--has-children">
@@ -172,15 +232,18 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 					for($k = 0; $k<$count_programs; $k++)
 					{
 					$pID = $row_programs[$k]['p_id'];
-					if(count($rowDepartIDs) > 0 and $rowDepartIDs['deptIDs'] != '')
+					if($departmentIDs != '')
 					$countProgram = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
 					else
 					$countProgram = 0;
 					
 					if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+					{
 					$countEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
+					$countEmpProgram = $countEmpProgram + $Inc_count;
+					}
 					else
-					$countEmpProgram = 0;
+					$countEmpProgram = $Inc_count;;
 					?>
 					<li class="cd-accordion__item">
 						<div class="checkbox checkbox-success porgram_checkbox">

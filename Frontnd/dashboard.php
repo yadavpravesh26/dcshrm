@@ -281,20 +281,23 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 									<div class="">
 										<ul class="document">
 										<?php  
-			
-			$where_1 = " AND category IN ($_cat_sub) ";
-			if(isset($_cat_sub_page)){
-				$where_1 = 'AND p_id IN ('.$_cat_sub_page.') ';
+			if($_cat_sub != ''){
+				$where_1 = " AND category IN ($_cat_sub) ";
+				
+				if(isset($_cat_sub_page) and $_cat_sub_page != ''){
+					$where_1 = 'AND p_id IN ('.$_cat_sub_page.') ';
+				}	
+				$catsql = "SELECT * FROM  `pages` WHERE page_status= 0 $where_1 order by p_id desc limit 5";
+				$catfet=$prop->getAll_Disp($catsql);
+				//echo count($catfet).$catsql;
+				if(count($catfet) > 0){
+					for($i=0; $i<count($catfet); $i++)
+											{  
+						?>
+												<a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><li><img class="arr-img" src="img/right-arrow.png"><?php echo $catfet[$i]['title']; //echo $_cat_sub_page;?></li></a>
+												
+				<?php }  }
 			}	
-			$catsql = "SELECT * FROM  `pages` WHERE page_status= 0 $where_1 order by p_id desc limit 5";
-			$catfet=$prop->getAll_Disp($catsql);
-			if(count($catfet)>0){
-				for($i=0; $i<count($catfet); $i++)
-					                    {  
-					?>
-											<a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><li><img class="arr-img" src="img/right-arrow.png"><?php echo $catfet[$i]['title']; //echo $_cat_sub_page;?></li></a>
-											
-			<?php }  }
 else{ ?>
 	<p style='font-weight:600px;'>No Details to Display!</p>
 <?php }

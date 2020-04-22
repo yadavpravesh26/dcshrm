@@ -44,7 +44,7 @@ switch($method)
 		$msg = 'Enter Department Name';
 		if($_POST['form1Name']!=''){
 			$msg = 'Industry already exits';
-			$exits = $prop->getName('count(dept_id)', DEPARTMENT, " dep_name='".$_POST['form1Name']."'");
+			$exits = $prop->getName('count(dept_id)', DEPARTMENT, " dep_name='".$_POST['form1Name']."' AND dep_status != 2");
 			if($exits===0){
 				$msg = 'Department Updated Failed';
 				$t_cond = array('dept_id'=>$_REQUEST['id']);
@@ -56,6 +56,14 @@ switch($method)
 				);
 				if($prop->update(DEPARTMENT_NEW, $input, $t_cond))
 				{
+					//$get_all_emp = 'select id from '.USERS.' where department_id='.$_REQUEST['id'];
+					//$all_emp_val = $prop->get_Disp($get_all_emp);
+					/*$DP_cond = array('depart_id'=>$_REQUEST['id']);
+					$update_AssignDep  = array(
+					'depart_id'		=>$_POST['form1Name'],
+					);
+					$prop->update('assign_depart', $update_AssignDep, $DP_cond);
+					*/
 					setcookie('status', 'Success', time()+10);
 					setcookie('title', 'Department Updated Successfully', time()+10);
 					setcookie('err', 'success', time()+10);
