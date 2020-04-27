@@ -79,6 +79,21 @@ if($meth=='catsub-status-delete')
 	echo json_encode($output); exit;
 }
 
+if($meth=='AssignEmpDelete')
+{
+	$id = $_POST["id"];
+	$output = array('status'=>'Error','msg'=>'Deleted Failed','err'=>'error');
+	if($id>0){
+		//$t_cond = array("c_id" => $id);
+		$values = array("status" => $status);
+		$s = $prop->DeleteAssign('assign_emp','id' , $id);
+		if($s){
+			$output = array('status'=>'Status','msg'=>'Deleted Successfully','err'=>'success','result'=>1);
+		}
+	}
+	echo json_encode($output); exit;
+}
+
 if($meth=='docs-status')
 {
 	$id = $_POST["id"];

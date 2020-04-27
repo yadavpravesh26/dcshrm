@@ -177,7 +177,8 @@ if(isset($_POST) && $_POST['regSubmit']=='regSubmit'){
 								$message .= '</html>';
 								 
 								// Sending email
-								if(mail($admin_to, $subject, $message, $headers)){
+								//if(mail($admin_to, $subject, $message, $headers)){
+								if(sendemail($admin_to,$subject,$message)){
 									$EmailTest = 'Your mail has been sent successfully.';
 								} else{
 									$EmailTest =  'Unable to send email. Please try again.';
@@ -252,7 +253,8 @@ if(isset($_POST) && $_POST['regSubmit']=='regSubmit'){
 								</body>
 								</html>';
 								// Sending email
-								if(mail($to_company, $subject_company, $message_company, $headers_company)){
+								//if(mail($to_company, $subject_company, $message_company, $headers_company)){
+								if(sendemail($to_company,$subject_company,$message_company)){
 									$EmailTest = 'Your mail has been sent successfully.';
 								} else{
 									$EmailTest =  'Unable to send email. Please try again.';

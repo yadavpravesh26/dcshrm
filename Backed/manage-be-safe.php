@@ -442,7 +442,9 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                     <?php
                                     $count = count($listEmps);
                                     for($i=0; $i<$count; $i++){ 
-                                        echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].'</option>';
+										$sqlDep = 'SELECT D.dep_name as DepName FROM appuser U INNER JOIN department D ON U.department_id = D.dept_id WHERE U.id = '.$listEmps[$i]['id'];
+										$rowDepName = $prop->get_Disp($sqlDep);
+										echo '<option value="'.$listEmps[$i]['id'].'">'.$listEmps[$i]['name'].' ('.$rowDepName['DepName'].')</option>';
                                     }
                                     ?>
                                 </select>

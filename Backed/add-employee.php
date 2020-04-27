@@ -170,12 +170,12 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 	$db = $cdb->getDb();
 	$prop = new PDOFUNCTION($db);
 	$departLog = $prop->get('dep_name', DEPARTMENT_NEW, array('dept_id'=>$post['dept_id']));							
-	$from = 'admin@dcshrm.com';	
-	$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion();
+	//$from = 'admin@dcshrm.com';	
+	/*$headers .= 'From: '.$from."\r\n".'Reply-To: '.$from."\r\n" .'X-Mailer: PHP/' . phpversion();
 	$headers  = 'MIME-Version: 1.0' . "\r\n";
 	$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";								 
-	$BccEmailList = 'm.kamal@hexagonitsolutions.com';
-	$headers .= "Bcc: $BccEmailList\r\n";
+	$BccEmailList = 'm.kamal@hexagonitsolutions.com,yadav.pravesh26@gmail.com';
+	$headers .= "Bcc: $BccEmailList\r\n";*/
 	
 	$message = '<!DOCTYPE html>
 				<html lang="en">
@@ -250,7 +250,8 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 				</body>
 				</html>';
 				// Sending email
-		if(mail($company_to, $subject, $message, $headers)){
+				
+		if(sendemail($company_to,$subject,$message)){
 			$EmailTest = 'Your mail has been sent successfully1.';
 		} else{
 			$EmailTest =  'Unable to send email. Please try again1.';
@@ -258,15 +259,15 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 	/*Send Email to Company END*/
 	//Employee email Template Start
 		$to_emp = $post['email'];
-		
 		$from_emp = 'admin@dcshrm.com';
-		$headers_emp .= 'From: '.$from_emp."\r\n".
+		
+		/*$headers_emp .= 'From: '.$from_emp."\r\n".
 			'Reply-To: '.$from_emp."\r\n" .
 			'X-Mailer: PHP/' . phpversion();
 		$headers_emp  = 'MIME-Version: 1.0' . "\r\n";
 		$headers_emp .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		$BccEmailList = 'm.kamal@hexagonitsolutions.com';
-		$headers_emp .= "Bcc: $BccEmailList\r\n";
+		$BccEmailList = 'm.kamal@hexagonitsolutions.com,yadav.pravesh26@gmail.com';
+		$headers_emp .= "Bcc: $BccEmailList\r\n";*/
 		
 		$message_emp = '<html lang="en">
 		<head>
@@ -322,10 +323,10 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to){
 		</body>
 		</html>';
 		// Sending email
-		if(mail($to_emp, $subject_emp, $message_emp, $headers_emp)){
+		if(sendemail($to_emp,$subject_emp,$message_emp)){
 			$EmailTest = 'Your mail has been sent successfully.';
 		} else{
-			$EmailTest =  'Unable to send email. Please try again12.';
+			$EmailTest =  'Unable to send email. Please try again.';
 		}
 		return $EmailTest;
 		//Company email Template end 	

@@ -319,7 +319,7 @@ if(isset($_REQUEST['id'])){
 				type: "warning",
 				showCancelButton: true,
 				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, Change it!",
+				confirmButtonText: "Yes, Delete it!",
 				cancelButtonText: "Cancel",
 				closeOnConfirm: false,
 				closeOnCancel: false

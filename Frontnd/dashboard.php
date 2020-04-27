@@ -119,7 +119,8 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 				</body>
 				</html>';
 				// Sending email
-		if(mail($company_to, $subject, $message, $headers)){
+		//if(mail($company_to, $subject, $message, $headers)){
+		if(sendemail($company_to,$subject,$message)){
 			$EmailTest = 'Your mail has been sent successfully1.';
 		} else{
 			$EmailTest =  'Unable to send email. Please try again1.';
@@ -190,7 +191,8 @@ function sendemailafteremployee($post,$subject,$subject_emp,$company_to,$departN
 		</body>
 		</html>';
 		// Sending email
-		if(mail($to_emp, $subject_emp, $message_emp, $headers_emp)){
+		//if(mail($to_emp, $subject_emp, $message_emp, $headers_emp)){
+		if(sendemail($to_emp,$subject_emp,$message_emp)){
 			$EmailTest = 'Your mail has been sent successfully.';
 		} else{
 			$EmailTest =  'Unable to send email. Please try again12.';

@@ -130,7 +130,7 @@ nav{width:100%;}
 }
 
 </style>
-<nav id='cssmenu'>
+<nav id='cssmenu'> 
 	<div class="logo"><a href="index.php">Menu </a></div>
 	<div id="head-mobile"></div>
 	<div class="button"></div>
@@ -143,27 +143,58 @@ nav{width:100%;}
 			$nav_category = '';
 			$nav_sub_category = '';
 			$nav_pages = '';
-			$depID = $prop->getName('department_id', USERS, "id=".$_SESSION['US']['user_id']);
-			
-			$depCatID = explode(',', $row_DepartCat['depCatID']);
-			$depSubCatID = explode(',', $row_DepartCat['depSubCatID']);
-			$depProgramID = explode(',', $row_DepartCat['depProgramID']);
-			
+			$depID = $prop->getName('department_id', USERS, "status!=2 AND id=".$_SESSION['US']['user_id']);
 			$countAssignEmpOrNot = $prop->getName('emp_id', 'assign_emp', "emp_id=".$_SESSION['US']['user_id']);
+			
+			if($depID != '')
+			{
+				$depart_val = $prop->get("GROUP_CONCAT( DISTINCT catID ORDER BY catID SEPARATOR ',') as catIDs","assign_depart", array('depart_id'=>$depID,'status'=>0));		
+				$departMainCats = $depart_val['catIDs'];
+			}
+			
 			if($countAssignEmpOrNot != '')
-			$whereAssignEMP = 'AND (E.emp_id='.$_SESSION['US']['user_id'].' AND E.status = 0 )';
+			{
+				$emp_val = $prop->get("GROUP_CONCAT( DISTINCT catID ORDER BY catID SEPARATOR ',') as catIDs","assign_emp", array('emp_id'=>$_SESSION['US']['user_id'],'status'=>0));
+				$empMainCats = $emp_val['catIDs'];
+			}
+			
+			if($departMainCats != '' and $empMainCats != '')
+			{
+				$arr1 = explode(',',$departMainCats);
+				$arr2 = explode(',',$empMainCats);
+				$result = array_unique(array_merge($arr1,$arr2), SORT_REGULAR);
+				//$result = array_intersect($arr1, $arr2);
+				if($result[1] != '')
+				$mainCats = implode(',', $result);
+				else
+				$mainCats = $result[0];
+			}
+			else if($departMainCats != '')
+			{
+				$mainCats = $departMainCats;
+			}
+			else if($empMainCats != '')
+			{
+				$mainCats = $empMainCats;
+			}
+			if($mainCats!='')
+			{
+			$sqlCat = "select c_id as catID, c_name as catName  from ".MAIN_CATEGORY." WHERE status!=2 and `c_id` IN (".$mainCats.") order by c_name ASC";
+			$row_cat = $prop->getAll_Disp($sqlCat);
+			$row_count = count($row_cat);
+			}
 			else
-			$whereAssignEMP = '';
+			{
+			$row_count = 0;
+			}
+			
 			
 			//echo $countAssignEmpOrNot."pravesh";
 			
-        	$sqlCat = 'select E.catID as catID,C.c_name as catName from  assign_emp E 
-			JOIN cats C on E.catID = C.c_id
-			JOIN assign_depart D on D.catID = E.catID  
-			where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') '.$whereAssignEMP.' GROUP BY E.catID';
 			//echo $sqlCat;
-			$row_cat = $prop->getAll_Disp($sqlCat);
-			if(count($row_cat)>0)
+			//echo $mainCats;
+			
+			if($row_count>0)
 			{
 				for($i=0; $i<count($row_cat); $i++)
 				{
@@ -172,10 +203,40 @@ nav{width:100%;}
 				<li><a href='#'><?php echo $row_cat[$i]['catName']; //echo $sqlCat; ?></a>
 					<ul class="sub_category_menu">
 						<?php
-						$sqlSubCat = 'select E.subCatID as subCatID,C.sc_name as subCatName from  assign_emp E 
-						JOIN cat_sub C on E.subCatID = C.c_id  
-						JOIN assign_depart D on D.catID = E.catID 
-						where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') and ( E.catID='.$row_cat[$i]['catID'].' or D.catID='.$row_cat[$i]['catID'].') GROUP BY E.subCatID';
+						if($depID != '')
+						{
+							$depart_val = $prop->get("GROUP_CONCAT( DISTINCT subCatID ORDER BY subCatID SEPARATOR ',') as subCatIDs","assign_depart", array('depart_id'=>$depID,'status'=>0,'catID'=>$row_cat[$i]['catID']));
+							
+							$departSubCateIDs = $depart_val['subCatIDs'];
+						}
+						
+						if($countAssignEmpOrNot != '')
+						{
+							$emp_val = $prop->get("GROUP_CONCAT( DISTINCT subCatID ORDER BY subCatID SEPARATOR ',') as subCatIDs","assign_emp", array('emp_id'=>$_SESSION['US']['user_id'],'status'=>0,'catID'=>$row_cat[$i]['catID']));
+							$empSubCateIDs = $emp_val['subCatIDs'];
+						}
+						
+						if($departSubCateIDs != '' and $empSubCateIDs != '')
+						{
+							$arr1 = explode(',',$departSubCateIDs);
+							$arr2 = explode(',',$empSubCateIDs);
+							$result = array_unique(array_merge($arr1,$arr2), SORT_REGULAR);
+							if($result[1] != '')
+							$subCateIDs = implode(',', $result);
+							else
+							$subCateIDs = $result[0];
+							
+						}
+						else if($departSubCateIDs != '')
+						{
+							$subCateIDs = $departSubCateIDs;
+						}
+						else if($empSubCateIDs != '')
+						{
+							$subCateIDs = $empSubCateIDs;
+						}
+						$sqlSubCat = "select c_id as subCatID, sc_name as subCatName from ".SUB_CATEGORY." WHERE status!=2 and c_name = ".$row_cat[$i]['catID']." and  `c_id` IN (".$subCateIDs.") order by c_name ASC";
+						
 						$row_subCat = $prop->getAll_Disp($sqlSubCat);
 						for($j=0; $j<count($row_subCat); $j++)
 						{
@@ -185,13 +246,51 @@ nav{width:100%;}
 							<li><a href='#'><?php echo $row_subCat[$j]['subCatName']; //echo $sqlSubCat; ?></a>
                             	<ul class="large-menu pre-scrollable">
                                 	<?php
-                                    	$sqlPage = 'select E.programID as programID,C.title as title from  assign_emp E 
-										JOIN pages C on E.programID = C.p_id 
-										JOIN assign_depart D on D.programID = C.p_id  
-										where (E.status = 0 and D.status = 0) and (E.emp_id='.$_SESSION['US']['user_id'].' or D.depart_id='.$depID.') and ( E.catID='.$row_cat[$i]['catID'].' or D.catID='.$row_cat[$i]['catID'].') GROUP BY E.programID';
+										if($depID != '')
+										{
+											$depart_val = $prop->get("GROUP_CONCAT( DISTINCT programID ORDER BY programID SEPARATOR ',') as programIDs","assign_depart", array('depart_id'=>$depID,'status'=>0,'catID'=>$row_cat[$i]['catID'],'subCatID'=>$row_subCat[$j]['subCatID']));
+									
+											$departPageIDs = $depart_val['programIDs'];
+										}
+										
+										if($countAssignEmpOrNot != '')
+										{
+											$emp_val = $prop->get("GROUP_CONCAT( DISTINCT programID ORDER BY programID SEPARATOR ',') as programIDs","assign_emp", array('emp_id'=>$_SESSION['US']['user_id'],'status'=>0,'catID'=>$row_cat[$i]['catID'],'subCatID'=>$row_subCat[$j]['subCatID']));
+											
+											$empPageIDs = $emp_val['programIDs'];
+										}
+										
+										if($departPageIDs != '' and $empPageIDs != '')
+										{
+											$arr1 = explode(',',$departPageIDs);
+											$arr2 = explode(',',$empPageIDs);
+											$result = array_unique(array_merge($arr1,$arr2), SORT_REGULAR);
+											//$pageIDs = implode(',', $result);
+											if($result[1] != '')
+											$pageIDs = implode(',', $result);
+											else
+											$pageIDs = $result[0];
+											
+										}
+										else if($departPageIDs != '')
+										{
+											$pageIDs = $departPageIDs;
+										}
+										else if($empPageIDs != '')
+										{
+											
+											$pageIDs = $empPageIDs;
+										}
+										
+										$sqlPage = "select p_id as programID, title  from ".PAGES." WHERE page_status!=2 and  `p_id` IN (".$pageIDs.") order by title ASC";
+										//echo $sqlPage;
 										$row_page = $prop->getAll_Disp($sqlPage);
 										for($k=0; $k<count($row_page); $k++)
 										{
+											
+											$checkStatus = $prop->get('status', 'assign_emp',array( 'emp_id'=>$_SESSION['US']['user_id'],'catID'=>$row_cat[$i]['catID'],'subCatID'=>$row_subCat[$j]['subCatID'],'programID'=>$row_page[$k]['programID']));
+											if($checkStatus['status'] == 0)
+											{
 											$nav_pages .= $row_page[$k]['programID'].',';
 										?>
 											<li>
@@ -203,7 +302,8 @@ nav{width:100%;}
 												echo $sqlnew;
 												?></a>
                                         	</li>
-										<?php 
+										<?php
+											} 
 										}
 									?>
                                 </ul>

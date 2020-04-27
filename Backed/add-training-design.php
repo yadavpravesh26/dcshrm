@@ -662,6 +662,7 @@ button.btn.btn-success, button.btn {
                                         <tr>
                                             <th class="text-center">Employee Assigned</th>
                                             <th class="text-center">Department</th>
+                                            <th class="text-center">Employee Email </th>
                                             <th class="text-center" width="250px">Action</th>
 
                                         </tr>
@@ -798,7 +799,55 @@ button.btn.btn-success, button.btn {
 			var keyword = $(this).val();
 			AssignPart(keyword);
 		});
+		
+		
 	});
+	/*Delete Code start*/
+	$(document).on('click', '.deleteone', function() {
+		var element = $(this);
+		var id = element.attr("id");
+		var status = 2;
+		var ms = 'DELETE';
+		swal({
+			title: ms,
+			text: "Are you sure?",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#DD6B55",
+			confirmButtonText: "Yes, Delete it!",
+			cancelButtonText: "Cancel",
+			closeOnConfirm: false,
+			closeOnCancel: false
+		}, function(isConfirm){
+			if (isConfirm) {
+				$.ajax({
+					type: "POST",
+					url: "ajax-status.php",
+					cache:false,
+					data: 'id='+id+'&status='+status+'&meth=AssignEmpDelete',
+					dataType:'json',
+					success: function(response)
+					{
+						swal(response.status, response.msg,response.err);
+						setTimeout(function() {
+							$(".confirm").trigger('click');
+						}, 3000);
+						if(response.result){
+							location.reload();
+						}
+					}
+				});
+			}
+			else
+			{
+				swal("Cancelled", "", "error");
+				setTimeout(function() {
+					$(".confirm").trigger('click');
+				}, 3000);
+			}
+		});
+		});
+		/*Delete Code END*/
 	function filter_data()
 	{
 		$('#myTable1').DataTable().ajax.reload();

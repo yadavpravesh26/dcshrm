@@ -47,18 +47,20 @@ if($count > 0)
 		//echo $empGET; 
 		$empIDs = explode(',',$empGET);
 		$empCount = 0;
-		foreach($empIDs as $empID)
+		if($empIDs[0]!='')
 		{
-			$countEmp = $prop->getName('count(depart_id)', 'assign_depart', " depart_id='".$empID."'");
-			if($countEmp===0)
-			$empCount++;
-			
+			foreach($empIDs as $empID)
+			{
+				$countEmp = $prop->getName('count(depart_id)', 'assign_depart', " depart_id='".$empID."'");
+				if($countEmp===0)
+				$empCount++;
+				
+			}
 		}
-		
 		//$programCount = $prop->getName('count(programID)', 'assign_depart', "status!=2 AND depart_id=".$departID);
 		echo '<div class="col-md-3"><div class="checkbox checkbox-success">
 			<input id="depart-'.$listDepart[$i]['dept_id'].'" data-class="checkbox-all" data-id="'.$listDepart[$i]['dept_id'].'" class="category" name="department[]" onClick="assignDepart(this,'.$currCatID.','.$currSubCatID.','.$listDepart[$i]['dept_id'].')" value="'.$listDepart[$i]['dept_id'].'" type="checkbox" '.$checked.'>
-			<label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .'('.$empCount.')</b></label>
+			<label class="category-label" for="depart-'.$listDepart[$i]['dept_id'].'"><b>'. $listDepart[$i]['dep_name'] .' ('.$empCount.')</b></label>
 		</div></div>';
 	}
 	?>
