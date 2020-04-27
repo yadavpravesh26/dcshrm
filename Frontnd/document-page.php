@@ -91,7 +91,7 @@ span.twitter-typeahead {
 
                 </div>-->
                 <?php 
-				$perm_form = 1;
+				/*$perm_form = 1;
 				if($nav_main===1)
 					$perm_form = 0;
 				if(in_array($rowdoc[0]['doc_cat'],explode(',',$nav_category)))
@@ -105,7 +105,17 @@ span.twitter-typeahead {
 				if($perm_form===1)
 				{
 					header('Location:'.LIVE_SITE); exit;
+				}*/
+				?>
+                <?php 
+				$perm_form = 1;
+				if(in_array($page_id,explode(',',$nav_pages)))
+					$perm_form = 0;
+				if($perm_form===1)
+				{
+					header('Location:'.LIVE_SITE); exit;
 				}
+				
 				?>
                 <div class="clearfix"></div>
                <div class="row m-t-15">

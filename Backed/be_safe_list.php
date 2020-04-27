@@ -158,7 +158,15 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			
 			if($countEmpCat1 > 0 or $Inc_count > 0)
 			{
-				if($Inc_count > 0)
+				if($Inc_count > 0 and $countEmpCat1 > 0 and $countUnassignEmpCat1 > 0)
+				{
+					$subcatcount = $prop->getName("count(c_id)",SUB_CATEGORY, "status!=2 and c_name = ".$mainCatID." and  `c_id` IN (".$subCateIDs.")" );
+					if($subcatcount > 0)
+					$countEmpCat = $countEmpCat1 + $Inc_count;
+					else
+					$countEmpCat = $countEmpCat1 + $Inc_count - $countUnassignEmpCat1;
+				}
+				else if($Inc_count > 0 and $countEmpCat1 > 1)
 				{
 					$subcatcount = $prop->getName("count(c_id)",SUB_CATEGORY, "status!=2 and c_name = ".$mainCatID." and  `c_id` IN (".$subCateIDs.")" );
 					if($subcatcount > 0)
@@ -248,7 +256,16 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			$countUnAssEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
 				if($countEmpSubCat > 0 or $Inc_count > 0)
 				{
-					if($Inc_count > 0)
+				
+					if($Inc_count > 0 and $countEmpSubCat > 0 and $countUnAssEmpSubCat > 0)
+					{
+						$pagecount = $prop->getName("count(p_id)",PAGES, "page_status!=2 and category = ".$subCatID." and  `p_id` IN (".$pageIDs.")" );
+						if($pagecount > 0)
+						$countEmpSubCat = $countEmpSubCat + $Inc_count ;
+						else
+						$countEmpSubCat = $countEmpSubCat + $Inc_count - $countUnAssEmpSubCat ;
+					}
+					else if($Inc_count > 0 and $countEmpSubCat > 1)
 					{
 						$pagecount = $prop->getName("count(p_id)",PAGES, "page_status!=2 and category = ".$subCatID." and  `p_id` IN (".$pageIDs.")" );
 						if($pagecount > 0)

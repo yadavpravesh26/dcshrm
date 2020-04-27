@@ -130,7 +130,7 @@ for($i=0; $i < count($listDepart); $i++){
 }
 
 $where_emp = ' where status != 2 and u_type = 4 AND department_id IN ('.$departmentIDs.') and u_id='.$session['bid'];
-$listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
+$listEmps = $prop->getAll('*',USERS, $where_emp, ' ORDER BY name ASC ', 0, 0);
 ?>
 <!DOCTYPE html>
 

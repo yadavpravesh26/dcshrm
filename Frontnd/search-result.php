@@ -88,8 +88,26 @@ $com_id = $_SESSION['US']['user_id'] ;
                             <h3 class="box-title m-b-0 emp-own h-head-u">Category Detail Page</h3>
                             <?php 							$catsql = "SELECT p_id,title FROM  `".PAGES."` WHERE category IN(".$_cat_sub.") AND title LIKE '%".$searchvalue."%' AND page_status= 0 ";        $catfet=$prop->getAll_Disp($catsql); 		 							?>
                             <div class="col-sm-12">
-                                <ul>							<?php 							if(count($catfet)>0){							for($i=0; $i<count($catfet); $i++)					                    {  ?>
-                                	<li><img src="images/layers.png"><a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><?php echo $catfet[$i]['title']; ?></a></li>							<?php } } else{								echo "No Records Found";							}?>
+                                <ul>							<?php 							
+								$check_search = 0;
+								if(count($catfet)>0){							
+									for($i=0; $i<count($catfet); $i++){  
+										if(in_array($catfet[$i]['p_id'],explode(',',$nav_pages)))
+										{
+											$check_search++;
+								?>
+                                	<li><img src="images/layers.png"><a href="category-detail.php?id=<?php echo $catfet[$i]['p_id']; ?>" target='_blank'><?php echo $catfet[$i]['title']; ?></a></li>							<?php
+										 } 
+									}
+									if($check_search == 0)
+									{
+										echo "No Records Found";
+									} 
+								} 
+								else
+								{
+									echo "No Records Found";
+								}?>
                                 	
                                 </ul>
                                 

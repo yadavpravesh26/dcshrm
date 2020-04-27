@@ -796,7 +796,7 @@ ol.auto-checkboxes.bonsai label {
 										$permission['s'] = explode(",",@$per['s']);
 										$permission['p'] = explode(",",@$per['p']);
 									}
-									$sqlm = 'SELECT c_id,c_name as name from `'.MAIN_CATEGORY.'` WHERE status=0 ';
+									$sqlm = 'SELECT c_id,c_name as name from `'.MAIN_CATEGORY.'` WHERE status=0 order by c_name ASC';
 									$row_m=$prop->getAll_Disp($sqlm);
 									$count_m = count($row_m);
 									for($i=0; $i<$count_m; $i++){?>
@@ -805,7 +805,7 @@ ol.auto-checkboxes.bonsai label {
 										  <li class="expanded" data-value="<?php echo $row_m[$i]['c_id']; ?>" <?php if (in_array($row_m[$i]['c_id'], $permission['c'])){?> data-checked='true'<?php } ?>><?php echo $row_m[$i]['name']; ?>
 											<ol>
 											  <?php
-											  $sqls = "SELECT c_id as id,c_name as c_id, sc_name as name  from `".SUB_CATEGORY."` WHERE status=0 AND c_name='".$row_m[$i]['c_id']."'";
+											  $sqls = "SELECT c_id as id,c_name as c_id, sc_name as name  from `".SUB_CATEGORY."` WHERE status=0 AND c_name='".$row_m[$i]['c_id']."' order by sc_name ASC ";
 												$row_s=$prop->getAll_Disp($sqls);
 												$count_s = count($row_s);
 												for($j=0; $j<$count_s; $j++){?>
@@ -973,10 +973,16 @@ $('.auto-checkboxes').bonsai({
 </script>
 <script>
 $(document).ready(function () {
+	$( 'input[type="checkbox"]' ).each(function( index ) {
+		if ($(this).prop("indeterminate")) {
+			$(this).prop("indeterminate", false);
+			$(this).prop("checked", true);
+			console.log( index + ": " + $( this ).val() );
+		}
+	});
 	$( 'input[type="checkbox"]' ).click(function() {
 		setInterval(function(){ 
 			$( 'input[type="checkbox"]' ).each(function( index ) {
-				console.log($(this).val());
 				if ($(this).prop("indeterminate")) {
 					$(this).prop("indeterminate", false);
 					$(this).prop("checked", true);
@@ -987,6 +993,7 @@ $(document).ready(function () {
 	  	
 	  
 	});
+	
 	
 })
 </script>
