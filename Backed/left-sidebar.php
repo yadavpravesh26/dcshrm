@@ -30,6 +30,7 @@
                     <li> <a href="manage-new-page.php">Manage Be Safe Pages</a> </li>
                 </ul>
             </li>
+           
            <?php } ?>
           	<li class=""> <a href="#" class="waves-effect"><i class="ti-medall-alt"></i> <span class="hide-menu">Settings<span class="fa arrow"></span> </span></a>
                 <ul <?php if($current_page != 'page-builder.php' and $current_page != 'manage-new-page.php' and $current_page != 'dashboard.php'){echo $active_css;} else{ echo 'class="nav nav-second-level"';}?>>
@@ -51,6 +52,8 @@
                     <li> <a href="manage-training.php">Manage Training</a> </li>
                     </ul>
                     </li>
+                    
+                     <li> <a href="manage-assign.php" class="waves-effect"><i class="fa fa-building-o" aria-hidden="true"></i> <span class="hide-menu">Manage Assign </span></a></li>
                     
                     <li> <a href="#" class="waves-effect"><i class="fa fa-tasks" aria-hidden="true"></i> Manage Jobs <span class="fa arrow"></span> </a> 
                     <ul class="nav nav-second-level">

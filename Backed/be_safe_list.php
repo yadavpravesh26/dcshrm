@@ -6,7 +6,14 @@ require_once('inc/img_resize.php');
 $cdb = new DB();
 $db = $cdb->getDb();
 
-$where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
+if(isset($_POST['company_id']) and $_POST['company_id'] != '')
+$company_id = $_POST['company_id'];
+else
+$company_id = $session['bid'];
+
+
+$where_dep = ' where dep_status != 2 and company_id='.$company_id;
+
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 
 $departmentIDs='';
@@ -20,9 +27,21 @@ for($i=0; $i < count($listDepart); $i++){
 
 $prop = new PDOFUNCTION($db);
 
-	$mainCats = $_POST['catIDs'];
-	$subCateIDs = $_POST['subCateIDs'];
-	$pageIDs = $_POST['pageIDs']; 
+	if(isset($_POST['company_id']) and $_POST['company_id'] != '')
+	{
+		$permission = $prop->get('permission',USERS, array("id"=>$company_id));
+		$nav_cat = json_decode($permission['permission'], TRUE);
+		$mainCats = $nav_cat['c'];
+		$subCateIDs = $nav_cat['s'];
+		$pageIDs = $nav_cat['p'];
+	}
+	else
+	{
+		$mainCats = $_POST['catIDs'];
+		$subCateIDs = $_POST['subCateIDs'];
+		$pageIDs = $_POST['pageIDs']; 
+	}
+	
 	$keyword = $_POST['keyword'];
 	$departID = $_POST['departID'];
 	$empID = $_POST['empID'];
@@ -112,7 +131,7 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 		$countDepartCat = 0;
 		
 		//Count Employees		
-		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id IN ('.$DepartIDs.') and u_id='.$session['bid'];
+		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id IN ('.$DepartIDs.') and u_id='.$company_id;
 		$rowEmpIDs = $prop->get_Disp($sqlEmpIDs);
 		
 		if((count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '') )
@@ -151,7 +170,7 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			
 			$countEmpCat1 = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
 			$countUnassignEmpCat1 = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
-			//$sql_EMPcount = "Select COUNT( DISTINCT A.id) as EMPCOUNT from assign_depart D INNER JOIN assign_emp E on E.catID = D.catID INNER JOIN appuser A on A.department_id = D.depart_id where ( ( E.emp_id IN (".$EmpIDs.") OR D.depart_id IN (".$DepartIDs.") ) AND (  E.catID=".$mainCatID." AND E.status = 0 AND D.catID=".$mainCatID." AND D.status = 0) ) AND A.u_id = ".$session['bid']." AND A.status=0";
+			//$sql_EMPcount = "Select COUNT( DISTINCT A.id) as EMPCOUNT from assign_depart D INNER JOIN assign_emp E on E.catID = D.catID INNER JOIN appuser A on A.department_id = D.depart_id where ( ( E.emp_id IN (".$EmpIDs.") OR D.depart_id IN (".$DepartIDs.") ) AND (  E.catID=".$mainCatID." AND E.status = 0 AND D.catID=".$mainCatID." AND D.status = 0) ) AND A.u_id = ".$company_id." AND A.status=0";
 			$row_EMPcount = $prop->get_Disp($sql_EMPcount);
 			//echo $sql_EMPcount;
 			$countEmpCat2 = $row_EMPcount['EMPCOUNT'];
