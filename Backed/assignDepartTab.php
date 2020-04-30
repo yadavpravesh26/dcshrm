@@ -10,6 +10,7 @@ $keySearch = '';
 $curr_subCatval = $prop->get('category',PAGES, array("p_id"=>$_POST['programID'],'page_status'=>0));
 $currSubCatID = $curr_subCatval['category'];
 $programID = $_POST['programID'];
+$companyID = $_POST['companyID'];
 
 $curr_Catval = $prop->get('c_name','cat_sub', array("c_id"=>$currSubCatID ,'status'=>0));
 $currCatID = $curr_Catval['c_name'];
@@ -17,7 +18,7 @@ $currCatID = $curr_Catval['c_name'];
 if(isset($_POST['keyword']) and $_POST['keyword'] != '')
 $keySearch = ' and dep_name like "%'.$_POST['keyword'].'%"';
 
-$where_dep = ' where dep_status != 2' .$keySearch. ' and company_id='.$session['bid'].' order by dep_name ASC';
+$where_dep = ' where dep_status != 2' .$keySearch. ' and company_id='.$companyID.' order by dep_name ASC';
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 
 $where_assign = ' where catID = '.$currCatID.' and subCatID = '.$currSubCatID.' and programID = '.$programID.' and status = 0';
@@ -39,8 +40,8 @@ if($count > 0)
 		}
 			
 		$depName = $prop->getName('dep_name', DEPARTMENT_NEW, "dept_id=".$depID);
-		//$empCount = $prop->getName('count(DISTINCT id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$session['bid']."'");
-		$empSql = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id='.$departID.' and u_id='.$session['bid'];
+		//$empCount = $prop->getName('count(DISTINCT id)', USERS, "status!=2 AND department_id='".$departID."' and u_id='".$companyID."'");
+		$empSql = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id='.$departID.' and u_id='.$companyID;
 		//echo $empSql;
 		$row_EmpCount = $prop->get_Disp($empSql);
 		$empGET = $row_EmpCount['empIDs'];

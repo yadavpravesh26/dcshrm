@@ -124,11 +124,11 @@ switch($method)
 
 			}
 
-			if($_POST['images']!="")
+			if($_POST['checklist']!="")
 
 			{
 
-			$images = implode(",",$_POST['images']);
+			$images = implode(",",$_POST['checklist']);
 
 			}
 
@@ -621,6 +621,16 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
                 color: #ffffff;
 
             }
+			.floating{
+				position:fixed;
+				bottom:13px;
+				right:17px;
+				width:200px;
+				z-index:999999;
+			}
+			.floating a,.floating button{
+				box-shadow: 2px 2px 3px #999;
+			}
 
         </style>
 
@@ -1286,11 +1296,11 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
 
 
-                                                        <?php /*?><div class="col-sm-6 col-md-6 m-b-30">
+                                                       <div class="col-sm-6 col-md-6 m-b-30">
 
                                                             <div class="file-box">
 
-                                                                <h3 class="m-t-0 m-b-10" style="background: #688a86;"><div class="title pull-left">Images</div><div class="add pull-right" data-toggle="modal" data-target="#myModalImages"><img  data-toggle="tooltip" data-original-title="Add Images"  src="img/add-file-button.png"></div></h3>
+                                                                <h3 class="m-t-0 m-b-10" style="background: #688a86;"><div class="title pull-left">Check List</div><div class="add pull-right" data-toggle="modal" data-target="#myModalChecklist"><img  data-toggle="tooltip" data-original-title="Add Checklist"  src="img/add-file-button.png"></div></h3>
 
                                                                 <div class="clearfix m-b-10"></div>
 
@@ -1312,7 +1322,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                                                                         </thead>
 
-                                                                        <tbody id="addmoreimages">
+                                                                        <tbody id="addmorechecklists">
 
                                                                         <?php
 
@@ -1341,7 +1351,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
 																				<tr id="row-img<?php echo $exp[$i];?>">
 
-																					<input type="hidden" name="images[]" value="<?php echo $exp[$i];?>">
+																					<input type="hidden" name="checklist[]" value="<?php echo $exp[$i];?>">
 
 																					<td>
 
@@ -1374,10 +1384,8 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
 
                                                             </div>
-
-
-
-                                                        </div><?php */?>
+														
+                                                        </div>
 
                                                         <div class="col-sm-6 col-md-6 m-b-30">
 
@@ -1483,7 +1491,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                                                     <div class="clearfix"></div>
 
-                                                    <div class="col-sm-12">
+                                                    <div class="col-sm-12 floating">
 
                                                         <a href="manage-new-page.php" class="btn btn-inverse waves-effect waves-light pull-right" style="padding-top:7px;">Cancel</a>
 
@@ -1873,7 +1881,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
 		<!-- sample modal content -->
 
-        <div id="myModalImages" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="myModalChecklist" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
             <div class="modal-dialog">
 
@@ -1883,43 +1891,48 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
-                        <h4 class="modal-title" id="myModalLabel">Add Images</h4> </div>
+                        <h4 class="modal-title" id="myModalLabel">Add Checklist</h4> 
 
-					<div id="select-images" class="modal-body">
+					</div>
 
-                        <select class="select2 select2-multiple select-images" id="addimages" multiple="multiple" data-placeholder="Choose">
-
-                            <?php
-
-							if($curr_val['category']!='' && $curr_val['category']>0){
-
-								$catfetdoc =  "SELECT doc_id,doc_name FROM docs WHERE doc_type=4 AND doc_status=0 AND doc_scat=".$curr_val['category'];
-
-								$rowdoc=$prop->getAll_Disp($catfetdoc);
-
-								for($i=0; $i<count($rowdoc); $i++)
-
-								{
-
-									echo '<option value="'.$rowdoc[$i][doc_id].'">'.$rowdoc[$i][doc_name].'</option>';
-
-								}
-
-							}
-
-							?>
-
-                        </select>
-
-                    </div>
-
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-info waves-effect" id="saveImage">Add</button>
-
-                    </div>
-
-                </div>
+                        
+                        <form method="post" id="ajaxChecklistForm">
+                            <div class="modal-body">
+                                <?php
+									$videocategory_id = '';
+									$subcategory_id = '';
+									if(isset($curr_val[category]))
+									{
+										$catfetsub =  "SELECT * FROM cat_sub WHERE c_id='". $curr_val[category]."' AND status=0";
+										$rowcatub=$prop->getAll_Disp($catfetsub);
+										$rowcatub=$prop->getAll_Disp($catfetsub);
+										for($di=0; $di<count($rowcatub); $di++)
+										{
+											$videocategory_id = $rowcatub[$di]['c_name'];
+											$subcategory_id = $curr_val[category];
+										}
+									}	
+								?>
+								<input type="hidden" name="catId" class="CatId" value="<?php echo $videocategory_id?>">
+								<input type="hidden" name="subCatID" class="SubCatId" value="<?php echo $subcategory_id?>">
+                                <input type="hidden" name="meth" id="meth" value="ajaxsaveCheckList">
+                                
+                                <label for="document_name">Checklist Title</label>
+                                <div class="form-group">
+                                <input type="text" class="form-control" name="checklist_name" id="checklist_name" placeholder="Title" required>
+                                </div>
+                                <div class="help-block with-errors"></div>      
+                                <label for="exampleInputuname">Checklist URL</label>
+                                <div class="form-group">
+                                    <input type="url" class="form-control" name="checklist_url" id="checklist_url" required>
+                                </div>
+                            </div>
+    
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-info waves-effect">Add</button>
+                            </div>
+						</form>
+				</div>
 
                 <!-- /.modal-content -->
 
@@ -2147,7 +2160,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 					  tags: true
 				});
 				
-				setInterval(ajaxCall, 15000);
+				//setInterval(ajaxCall, 15000);
 			});
 			
 			 var ajaxCall = function(){
@@ -2597,7 +2610,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 				var QuizArray = new Array();
 				var QuizArrayIndex=0;
 				$('#addmorequiz').find('td').each (function() {
-				  console.log($(this).html());
+				  //console.log($(this).html());
 				  QuizArray[QuizArrayIndex] = $.trim($(this).text());
 				  QuizArrayIndex++;
 				});  
@@ -2664,6 +2677,76 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 					});
 				});
 				/*Quizzes End*/
+				/*CheckList Start*/
+				var CheckListArray = new Array();
+				var CheckListArrayIndex =0;
+				$('#addmorechecklists').find('td').each (function() {
+				  //console.log($(this).html());
+				  CheckListArray[CheckListArrayIndex] = $.trim($(this).text());
+				  CheckListArrayIndex++;
+				});
+				$("form#ajaxChecklistForm").submit(function(e) {
+					e.preventDefault();    
+					var formData = new FormData(this);
+					
+					var cat_id = $('#catId').val();
+					var subcat_id = $('#subCatID').val();
+					if(cat_id == '' || subcategory_id == '')
+					{
+						swal('Please select Category');
+						setTimeout(function() {
+							$(".confirm").trigger('click');
+						}, 3000);
+						return false;
+					}
+					
+					var checklist_name = $('#checklist_name').val();
+					if(jQuery.inArray(checklist_name, CheckListArray) !== -1)
+					{
+						swal('Checklist title alrady exist');							
+						setTimeout(function() {
+							$(".confirm").trigger('click');
+						}, 3000);
+						return false;
+					}
+					
+					$.ajax({
+						url: "ajax-functions.php",
+						type: 'POST',
+						data: formData,
+						dataType:'json',
+						success: function (response) {
+							if(response.err)
+							{
+								swal(response.msg);
+								setTimeout(function() {
+									$(".confirm").trigger('click');
+								}, 3000);
+							}
+							else
+							{
+								$('#checklist_name').val('');
+								$('#checklist_url').val('');
+								var newRowContent = '<tr id="row-checklist' + response.lastId + '">'
+											+'<input type="hidden" name="checklist[]" value="' + response.lastId + '">'
+											+'<td>' + response.checkListTitle + '</td>'
+											+'<td class="text-nowrap text-center">'
+											+'<a href="javascript:void(0);" rel="row-checklist' + response.lastId + '" data-toggle="tooltip" data-original-title="Remove" class="removeField"><img src="img/close-button.png"></a>'
+											+'</td>'
+										+'</tr>';
+								
+								$(newRowContent).appendTo($("#addmorechecklists"));
+								$("#myModalChecklist").modal('toggle');	
+								CheckListArray[CheckListArrayIndex] = response.checkListTitle;
+				  				CheckListArrayIndex++;
+							}
+						},
+						cache: false,
+						contentType: false,
+						processData: false
+					});
+				});
+				/*CheckList End*/
 
                 $("#saveHand").click(function() {
 
@@ -2852,7 +2935,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
 
                     }
 
-                    $("#myModalImages").modal('toggle');
+                    $("#myModalChecklist").modal('toggle');
 
                 });
 

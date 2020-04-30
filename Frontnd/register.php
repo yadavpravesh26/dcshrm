@@ -160,7 +160,7 @@ if(isset($_POST) && $_POST['regSubmit']=='regSubmit'){
 								</div>
 								<p style="text-align:left; font-size:15px; font-weight:600; color:#353535; margin-bottom: 5px; margin-top:20px; padding-bottom:30px;line-height:25px;border-bottom: 1px solid #e5e5e5;">If you don’t know why you got this email, please tell us straight away so we can fix this for you.</p>
 								<div style="width:50%; float:left;">
-								<p style="font-size:14px; font-weight:400; color:#353535;margin-bottom: 5px;">dcshrm.com</p>
+								<p style="font-size:14px; font-weight:400; color:#353535;margin-bottom: 5px;">info@dcshrm.com</p>
 								<p style="font-size:14px; font-weight:400; color:#353535;margin-top: 0px;margin-bottom: 5px;">Call Us: +1 (801) 360-5036</p>
 								</div>
 								<div style="width:50%;float:left;">

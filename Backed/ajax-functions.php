@@ -101,6 +101,35 @@ if($meth=="ajaxsaveQuiz")
 }
 
 
+if($meth=="ajaxsaveCheckList")
+{
+	$table_name = "docs";
+	$insdata = array(
+					'doc_cat'		=>$_POST['catId'],
+					'doc_scat'		=>$_POST['subCatID'],
+					'doc_name'		=>$_POST['checklist_name'],
+					'doc_file'		=>$_POST['checklist_url'],
+					'doc_type'		=>4,
+					
+			);
+		
+		$msg = 'Checklist Creation Error';
+		$lastId = $prop->addID($table_name, $insdata);
+		
+		if ($lastId == 0)
+		$msg = 'Checklist Creation Faild';
+		
+        if ($lastId != 0) {
+			$msg = 'Checklist Creation Success';
+			echo json_encode(array('lastId'=>$lastId,'checkListTitle'=>$_POST['checklist_name'],'err'=>0,'msg'=>$msg)); exit;
+		}
+	    else{
+			echo json_encode(array('err'=>1,'msg'=>$msg)); exit;
+		}
+	
+}
+
+
 if($meth=="get-training-data")
 {
 	$table_name = "docs";

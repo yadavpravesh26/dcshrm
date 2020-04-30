@@ -117,7 +117,12 @@ if(isset($_POST['btnEmpAssign']))
 	}
 }
 
-$where_dep = ' where dep_status != 2 and company_id='.$session['bid'];
+if(isset($_REQUEST['company_id']))
+$companyID = $_REQUEST['company_id'];
+else
+$companyID = $session['bid'];
+
+$where_dep = ' where dep_status != 2 and company_id='.$companyID;
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 
 $departmentIDs='';
@@ -129,7 +134,7 @@ for($i=0; $i < count($listDepart); $i++){
 	$departmentIDs .= $listDepart[$i]['dept_id'];
 }
 
-$where_emp = ' where status != 2 and u_type = 4 AND department_id IN ('.$departmentIDs.') and u_id='.$session['bid'];
+$where_emp = ' where status != 2 and u_type = 4 AND department_id IN ('.$departmentIDs.') and u_id='.$companyID;
 $listEmps = $prop->getAll('*',USERS, $where_emp, ' ORDER BY name ASC ', 0, 0);
 ?>
 <!DOCTYPE html>
@@ -473,7 +478,7 @@ button.btn.btn-success, button.btn {
                                                                      <?php
                                                                     $catfetdoc =  "SELECT * FROM dynamic_form WHERE form_type=0 AND d_form_id IN(".$curr_val['quiz'].") AND d_detele_status=0";
                                                                     $rowdoc=$prop->getAll_Disp($catfetdoc);
-                                                                    $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['bid']));
+                                                                    $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$companyID));
                                                                     $user_name = $CompanyId['name'];
                                                                     $email = $CompanyId['email'];
                                                                     $contact_no = $CompanyId['contact_no'];
@@ -782,6 +787,7 @@ button.btn.btn-success, button.btn {
 					data.empFilterByDep = $("#empFilterByDep option:selected").val();
 					data.empFilterByType = $("#empFilterByType option:selected").val();
 					data.programID = <?php echo $page_id;?>;
+					data.companyID = <?php echo $companyID;?>;
 				},
 				complete: function() {
 					console.log('complete');
@@ -857,7 +863,7 @@ button.btn.btn-success, button.btn {
 		$.ajax({
 			url: "assignDepartTab.php",
 			type: 'POST',
-			data: 'keyword='+ keyword+'&programID=<?php echo $_REQUEST['programID']; ?>',
+			data: 'keyword='+ keyword+'&programID=<?php echo $_REQUEST['programID']; ?>&companyID=<?php echo $companyID;?>',
 			dataType:'html',
 			success: function (datahtml) {
 				$('#departAssignTab').html(datahtml);				

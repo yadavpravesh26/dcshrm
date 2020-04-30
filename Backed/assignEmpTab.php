@@ -9,6 +9,7 @@ $requestData= $_REQUEST;
 $where='';
 $whereEmp='';
 $programID = $requestData['programID'];
+$companyID = $requestData['companyID'];
 $assignStatus = '';
 $assignStatusValue ='';
 $data = array();
@@ -27,7 +28,7 @@ $sql = 'Select U.name as name,U.email as EmailID,U.department_id as department_i
 		from '.USERS.' U 
 		INNER JOIN assign_emp A 
 		ON U.id = A.emp_id 
-		where U.u_type = 4 '.$where.' and U.u_id='.$session['bid'].' and  A.programID ='. $programID .' GROUP BY U.id' ;
+		where U.u_type = 4 '.$where.' and U.u_id='.$companyID.' and  A.programID ='. $programID .' GROUP BY U.id' ;
 
 $row = $prop->getAll_Disp($sql);
 for($i=0; $i<count($row); $i++)

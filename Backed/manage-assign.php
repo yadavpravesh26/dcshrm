@@ -12,112 +12,213 @@ if(bckPermission($session['b_type'])){
 }
 $table_name = "cat_sub";
 
-/*Assign Department code END*/
-if(isset($_POST['submitType']) and $_POST['submitType'] == 'assignDepart')
+
+if(isset($_POST['assignEmp']))
 {
+	
 	$BeSafePorgram = $_POST['BeSafePorgram'];
-	$departID = $_POST['departID'];
+	$checkDepart = $_POST['checkDepart'];
 	$insert_count = 0;
+	$WhichType = '';
 	$msg = '';
 	foreach($_POST['BeSafePorgram'] as $item) {
        $item = explode('-',$item);
-	   $input = array(
-			'depart_id'	=>$departID,
-			'catID'	=>$item[0],
-			'subCatID'	=>$item[1],
-			'programID'	=>$item[2],
-			'status'	=>0
-		);
-	   $exits = $prop->getName('count(id)', 'assign_depart', "depart_id=".$departID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
-	   if($exits === 0){
-	   		$result = $prop->add('assign_depart', $input);
-			if ($result) {
-				$insert_count++;
-			}
+	   if($checkDepart)
+	   {
+	   	    /*Assign Departments code Start*/
+		   $WhichType = 'Departments';
+	   	   foreach($_POST['departmentDpn'] as $departmentDpn)
+		   {
+		   		$depID = $departmentDpn;
+			   $input = array(
+					'depart_id'	=>$depID,
+					'catID'	=>$item[0],
+					'subCatID'	=>$item[1],
+					'programID'	=>$item[2],
+					'status'	=>0
+				);
+			   $exits = $prop->getName('count(id)', 'assign_depart', "depart_id=".$depID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			   
+			   if($exits === 0){
+					$result = $prop->add('assign_depart', $input);
+					if ($result) {
+						$insert_count++;
+					}
+			   }
+			   else
+			   {
+					$unassignDepID = $prop->getName('id', 'assign_depart', "status=2 AND depart_id=".$depID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+					if($unassignDepID != 0)
+					{
+						$t_cond = array("id" => $unassignDepID);
+						$result = $prop->update('assign_depart', $input, $t_cond);
+						if ($result) {
+							$insert_count++;
+						}
+						
+					}
+			   }
+		   }
+		   /*Assign Departments code end*/
 	   }
 	   else
 	   {
-	   		$unassignDepID = $prop->getName('id', 'assign_depart', "status=2 AND depart_id=".$departID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
-			if($unassignDepID != 0)
-			{
-				$t_cond = array("id" => $unassignDepID);
-				$result = $prop->update('assign_depart', $input, $t_cond);
-				if ($result) {
-					$insert_count++;
-				}
-				
-			}
-	   }
+		   /*Assign Employee code Start*/
+		   $WhichType = 'Employees';
+		   foreach($_POST['employeeDpn'] as $employeeDpn)
+		   {
+			   $empID = $employeeDpn;
+			   $input = array(
+					'emp_id'	=>$empID,
+					'catID'	=>$item[0],
+					'subCatID'	=>$item[1],
+					'programID'	=>$item[2],
+					'status'	=>0
+				);
+			   $exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			   
+			   if($exits === 0){
+					$result = $prop->add('assign_emp', $input);
+					if ($result) {
+						$insert_count++;
+					}
+			   }
+			   else
+			   {
+					$unassignEmpID = $prop->getName('id', 'assign_emp', "status=2 AND emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+					if($unassignEmpID != 0)
+					{
+						$t_cond = array("id" => $unassignEmpID);
+						$result = $prop->update('assign_emp', $input, $t_cond);
+						if ($result) {
+							$insert_count++;
+						}
+						
+					}
+			   }
+		   }
+		   /*Assign Employee code END*/
+		}	   
+	   
     }
+	
 	if($insert_count != 0)
 	{
-		setcookie('status', 'Success', time()+10);
-		setcookie('title', 'Department Assigned Successfully', time()+10);
-		setcookie('err', 'success', time()+10);
-		header('Location: manage-be-safe.php');
+		$status = 'Success';
+		$title = $WhichType.' Assigned Successfully';
+		$err = 'success';
 	}
 	else
 	{
-		setcookie('status', 'Error', time()+10);
-		setcookie('title', 'Department already Assigned', time()+10);
-		setcookie('err', 'error', time()+10);
-		header('Location: manage-be-safe.php');
+		$status = 'Error';
+		$title = $WhichType.' already Assigned';
+		$err = 'error';
 	}
 }
-/*Assign Department code END*/
-/*Assign Employee code Start*/
-if(isset($_POST['submitType']) and $_POST['submitType'] == 'assignEMP')
+
+/*Unassign Employee code Start*/
+if(isset($_POST['unassignEmp']))
 {
 	$BeSafePorgram = $_POST['BeSafePorgram'];
-	$empID = $_POST['empID'];
+	$checkDepart = $_POST['checkDepart'];
 	$insert_count = 0;
+	$WhichType = '';
 	$msg = '';
 	foreach($_POST['BeSafePorgram'] as $item) {
        $item = explode('-',$item);
-	   $input = array(
-			'emp_id'	=>$empID,
-			'catID'	=>$item[0],
-			'subCatID'	=>$item[1],
-			'programID'	=>$item[2],
-			'status'	=>0
-		);
-	   $exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
-	   if($exits === 0){
-	   		$result = $prop->add('assign_emp', $input);
-			if ($result) {
-				$insert_count++;
-			}
+	   if($checkDepart)
+	   {
+	   	    /*Unassign Departments code Start*/
+		   $WhichType = 'Departments';
+	   	   foreach($_POST['departmentDpn'] as $departmentDpn)
+		   {
+		   		$depID = $departmentDpn;
+			   $input = array(
+					'depart_id'	=>$depID,
+					'catID'	=>$item[0],
+					'subCatID'	=>$item[1],
+					'programID'	=>$item[2],
+					'status'	=>2
+				);
+			   $exits = $prop->getName('count(id)', 'assign_depart', "depart_id=".$depID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			   
+			   if($exits === 0){
+					$result = $prop->add('assign_depart', $input);
+					if ($result) {
+						$insert_count++;
+					}
+			   }
+			   else
+			   {
+					$assignDepID = $prop->getName('id', 'assign_depart', "status=0 AND depart_id=".$depID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+					if($assignDepID != 0)
+					{
+						$t_cond = array("id" => $assignDepID);
+						$result = $prop->update('assign_depart', $input, $t_cond);
+						if ($result) {
+							$insert_count++;
+						}
+						
+					}
+			   }
+		   }
+		   /*Unassign Departments code end*/
 	   }
 	   else
 	   {
-	   		$unassignEmpID = $prop->getName('id', 'assign_emp', "status=2 AND emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
-			if($unassignEmpID != 0)
-			{
-				$t_cond = array("id" => $unassignEmpID);
-				$result = $prop->update('assign_emp', $input, $t_cond);
-				if ($result) {
-					$insert_count++;
-				}
-				
-			}
-	   }
+		   /*Unassign Employee code Start*/
+		   $WhichType = 'Employees';
+		   foreach($_POST['employeeDpn'] as $employeeDpn)
+		   {
+			   $empID = $employeeDpn;
+			   $input = array(
+					'emp_id'	=>$empID,
+					'catID'	=>$item[0],
+					'subCatID'	=>$item[1],
+					'programID'	=>$item[2],
+					'status'	=>2
+				);
+			   $exits = $prop->getName('count(id)', 'assign_emp', "emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+			   
+			   if($exits === 0){
+					$result = $prop->add('assign_emp', $input);
+					if ($result) {
+						$insert_count++;
+					}
+			   }
+			   else
+			   {
+					$assignEmpID = $prop->getName('id', 'assign_emp', "status=0 AND emp_id=".$empID." AND catID=".$item[0]." AND subCatID=".$item[1]." AND programID=".$item[2]);
+					if($assignEmpID != 0)
+					{
+						$t_cond = array("id" => $assignEmpID);
+						$result = $prop->update('assign_emp', $input, $t_cond);
+						if ($result) {
+							$insert_count++;
+						}
+						
+					}
+			   }
+		   }
+		   /*Unassign Employee code END*/
+		}	   
+	   
     }
+	
 	if($insert_count != 0)
 	{
-		setcookie('status', 'Success', time()+10);
-		setcookie('title', 'Employee Assigned Successfully', time()+10);
-		setcookie('err', 'success', time()+10);
-		header('Location: manage-be-safe.php');
+		$status = 'Success';
+		$title = $WhichType.' Unssigned Successfully';
+		$err = 'success';
 	}
 	else
 	{
-		setcookie('status', 'Error', time()+10);
-		setcookie('title', 'Employee already Assigned', time()+10);
-		setcookie('err', 'error', time()+10);
-		header('Location: manage-be-safe.php');
+		$status = 'Error';
+		$title = $WhichType.' already Unssigned';
+		$err = 'error';
 	}
 }
-/*Assign Employee code END*/
+/*Unassign Employee code END*/
 
 $permission = $prop->get('permission',USERS, array("id"=>$session['bid']));
 $nav_cat = json_decode($permission['permission'], TRUE);
@@ -314,35 +415,43 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                         <div class="white-box">
                             <h3 class="box-title m-b-0">List of Be safe Pages</h3>
                             <form method="post" enctype="multipart/form-data" id="formBeSafe">
-                            	<input type="hidden" name="departID" id="departID" >
+                            	<input type="hidden" name="checkDepart" id="checkDepart" >
                                 <input type="hidden" name="empID" id="empID" >
-                                <input type="hidden" name="submitType" id="submitType" >
                                 <div class="row" style="margin-bottom:20px;">
                                     <div class="col-md-3">
-                                    <select class="form-control select2" id="companyDpn" required>
+                                    <select class="form-control select2" id="companyDpn" name="companyDpn" required>
                                         <option value="">Select Company</option>
                                         <?php
+										if(isset($_POST['assignEmp']) or isset($_POST['unassignEmp']))
+										$compID = $_POST['companyDpn'];
+										else
+										$compID = '';
+										
 										$sqlcomp = "SELECT  * from ".USERS." WHERE `u_type`= 2 and status != 2";
 										$rowComp=$prop->getAll_Disp($sqlcomp);
 										for($i=0; $i<count($rowComp); $i++){
-											echo '<option value="'.$rowComp[$i]['id'].'">'.$rowComp[$i]['c_name'].'</option>';
+											if($compID == $rowComp[$i]['id'])
+											$sel='selected';
+											else
+											$sel='';
+											echo '<option value="'.$rowComp[$i]['id'].'" '.$sel.'>'.$rowComp[$i]['c_name'].'</option>';
                                         }
                                         ?>
                                     </select>
                                     </div>    
                                     <div class="col-md-3">
-                                    <select class="form-control select2" id="departmentDpn" name="departmentDpn" required>
+                                    <select class="form-control select2" id="departmentDpn" name="departmentDpn[]" required>
                                         <option value="">Select Departments</option>
                                     </select>
                                     </div>
                                     <div class="col-md-3">
-                                    	<select class="form-control select2" id="employeeDpn" required>
+                                    	<select class="form-control select2" id="employeeDpn" name="employeeDpn[]" required>
                                             <option value="">Select Employees</option>
                                         </select>
                                           
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="submit" id="unassignDepart" name="unassignDepart" class="btn btn-success waves-effect waves-light pull-right m-r-10"> Unassign</button>&nbsp;&nbsp;&nbsp;<button type="submit" id="assignDepart" name="assignDepart" class="btn btn-success waves-effect waves-light pull-right m-r-10"> Assign</button>
+                                        <button type="submit" id="unassignDepart" name="unassignEmp" class="btn btn-success waves-effect waves-light pull-right m-r-10"> Unassign</button>&nbsp;&nbsp;&nbsp;<button type="submit" id="assignDepart" name="assignEmp" class="btn btn-success waves-effect waves-light pull-right m-r-10"> Assign</button>
                                   </div>
                                     <div class="clearfix"></div>
                                     </div>                                
@@ -429,25 +538,34 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
     <script>
     $(function() {
     <?php 
-		if($_COOKIE['err'] !='')
+		if(isset($insert_count))
 		{
-			echo 'swal("'.$_COOKIE['status'].'", "'.$_COOKIE['title'].'", "'.$_COOKIE['err'].'");';
+			echo 'swal("'.$status.'", "'.$title.'", "'.$err.'");';
 				?>
 				setTimeout(function() {
 					$(".confirm").trigger('click');
 				  }, 3000);
 				<?php
-			setcookie('status', $_COOKIE['status'], time()-100);
-			setcookie('title', $_COOKIE['title'], time()-100);
-			setcookie('err', $_COOKIE['err'], time()-100);
 		}
 	?>
 	
     });
 	jQuery(document).ready(function() {
+		
+		$('#assignDepart').attr("disabled", true);
+		$('#unassignDepart').attr("disabled", true);
 		$("#companyDpn").select2();
 		$("#departmentDpn").select2();
 		$("#employeeDpn").select2();
+		<?php
+		if(isset($_POST['assignEmp']) or isset($_POST['unassignEmp']))
+		{
+			$compID = $_POST['companyDpn'];
+			?>
+			call_filter_data('','','',<?php echo $compID;?>);
+			<?php
+		}
+		?>
 		
 		$('#companyDpn').change(function(e){
 			var companyID = $(this).children("option:selected").val();
@@ -492,12 +610,15 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 		});
 		$('#employeeDpn').change(function(e){
 			var empIds = $('#employeeDpn').val();
+			$('#checkDepart').val(0);
 			if(empIds != null)
 				{
 				if($('#employeeDpn option').length === empIds.length )
 				{
+					$('#checkDepart').val(1);
 					$('#employeeDpn').next().addClass('SelEMP');
 					$('.SelEMP ul .multiselect-all.active a label').html('<input type="checkbox" value="empMultiselect-all" checked> Deselect All');
+					
 				}
 				else
 				{
@@ -553,7 +674,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 			success: function (dataEmps) {
 				if(dataEmps != '')
 				{
-					if($('#employeeDpn option').length == 1)
+					if($('#employeeDpn option').text() == 'Select Employees' || $('#employeeDpn option').text() == 'No Employees found')
 					$("#employeeDpn").select2('destroy');
 					
 					$('#employeeDpn').removeAttr('multiple');
