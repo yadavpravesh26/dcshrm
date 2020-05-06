@@ -120,92 +120,61 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 		for($i=0; $i<$count_cat; $i++){
 		$mainCatID = $row_cat[$i]['c_id'];
 		//echo $Inc_count = 0;
-		//Count Department
 		
+		//Count Department Start
+		$countDepartCat = 0;
 		if($departmentIDs != '')
 		{
 			$DepartIDs = $departmentIDs;
-			$countDepartCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID);
-		}
-		else
-		$countDepartCat = 0;
-		
-		//Count Employees		
-		$sqlEmpIDs = 'select GROUP_CONCAT( DISTINCT id ORDER BY id SEPARATOR ",") as empIDs from '.USERS.' where status!=2 AND department_id IN ('.$DepartIDs.') and u_id='.$company_id;
-		$rowEmpIDs = $prop->get_Disp($sqlEmpIDs);
-		//echo $sqlEmpIDs;
-		if((count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '') )
-		{
-			$EmpIDs = $rowEmpIDs['empIDs'];
-			//echo $EmpIDs;
-			$sqlGetEmpIDs = 'Select GROUP_CONCAT( DISTINCT U.id ORDER BY U.id SEPARATOR ",") as GetEmpIDs from '.USERS.' U INNER JOIN assign_depart D on D.depart_id = U.department_id where D.depart_id IN ('.$DepartIDs.') AND U.status=0 AND D.status=0 AND D.catID='.$mainCatID;
-			//echo $sqlGetEmpIDs;
-			$rowGetEmpIDs = $prop->get_Disp($sqlGetEmpIDs);
-			$rowGetEmpIDs = explode(',',$rowGetEmpIDs['GetEmpIDs']);
-			
-			$sqlFilterEmpIDs = 'select GROUP_CONCAT( DISTINCT emp_id ORDER BY emp_id SEPARATOR ",") as emp_id from assign_emp where status=0 AND emp_id IN ('.$EmpIDs.') AND catID='.$mainCatID;
-			//echo $sqlFilterEmpIDs;
-			$GetEmpIDs = $prop->get_Disp($sqlFilterEmpIDs);
-			$GetEmpIDs = explode(',',$GetEmpIDs['emp_id']);
-			$Inc_count = 0;
-			//echo count($GetEmpIDs);
-			if(count($GetEmpIDs)>0 and count($rowGetEmpIDs)> 0)
+			$countDepartCat = 0;
+			$AssignDEmpIDsArray = array();
+			$getDepIds = $prop->getAll('DISTINCT depart_id as depart_id','assign_depart',"where status=0 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID);
+			$countDep = count($getDepIds);
+			if($countDep>0)
 			{
-				for($AC=0; $AC < count($rowGetEmpIDs); $AC++)
-				{
-					if( in_array($rowGetEmpIDs[$AC],$GetEmpIDs) )
+				for($DAE=0; $DAE < $countDep; $DAE++)
+				{ 
+					$ADId = $getDepIds[$DAE]['depart_id'];
+					$CheckEMPonDEP = "select E.emp_id as EMPIDS from appuser U inner join assign_emp E on U.id = E.emp_id WHERE E.status = 0 AND U.status!=2 AND U.department_id =".$ADId." AND E.catID=".$mainCatID;
+					//echo $CheckEMPonDEP."<br>";
+					$empCounter = $prop->getAll_Disp($CheckEMPonDEP);
+					if(count($empCounter) > 0)
 					{
-						//echo $rowGetEmpIDs[$AC];
-					}
-					else if($rowGetEmpIDs[$AC] != '')
-					{
-						$Inc_count++;
-						//echo "notIN".$rowGetEmpIDs[$AC];
+					
+						for($AEMP = 0; $AEMP< count($empCounter);$AEMP++)
+						$AssignDEmpIDsArray[] = $empCounter[$AEMP]['EMPIDS'];
+						$countDepartCat++;
+						//print_r($AssignDEmpIDsArray);
 					}
 				}
 			}
-			else
+		}
+		
+		//Count Department END
+		/*Count Employee Start*/
+			$countEmpCat = 0;
+			if($countDepartCat > 0)
 			{
-				$Inc_count = count($rowGetEmpIDs);
-			}	
-			
-			$countEmpCat1 = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
-			$countUnassignEmpCat1 = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID);
-			//$sql_EMPcount = "Select COUNT( DISTINCT A.id) as EMPCOUNT from assign_depart D INNER JOIN assign_emp E on E.catID = D.catID INNER JOIN appuser A on A.department_id = D.depart_id where ( ( E.emp_id IN (".$EmpIDs.") OR D.depart_id IN (".$DepartIDs.") ) AND (  E.catID=".$mainCatID." AND E.status = 0 AND D.catID=".$mainCatID." AND D.status = 0) ) AND A.u_id = ".$company_id." AND A.status=0";
-			$row_EMPcount = $prop->get_Disp($sql_EMPcount);
-			//echo $sql_EMPcount;
-			$countEmpCat2 = $row_EMPcount['EMPCOUNT'];
-			
-			if($countEmpCat1 > 0 or $Inc_count > 0)
-			{
-				if($Inc_count > 0 and $countEmpCat1 > 0 and $countUnassignEmpCat1 > 0)
+				$getDepIds = implode(",",$AssignDEmpIDsArray);
+				$countEmployees = 0;
+				$EmpIDsArray = array();		
+				//echo 'select emp_id from assign_emp where status = 0 and catID = '.$mainCatID;		
+				$EmpFromAE = $prop->getAll_Disp('select emp_id from assign_emp where status = 0 and catID = '.$mainCatID);
+				$count = count($EmpFromAE);
+				//array_unique($EmpIDsArray);
+				if($count > 0)
 				{
-					$subcatcount = $prop->getName("count(c_id)",SUB_CATEGORY, "status!=2 and c_name = ".$mainCatID." and  `c_id` IN (".$subCateIDs.")" );
-					if($subcatcount > 0)
-					$countEmpCat = $countEmpCat1 + $Inc_count;
-					else
-					$countEmpCat = $countEmpCat1 + $Inc_count - $countUnassignEmpCat1;
-				}
-				else if($Inc_count > 0 and $countEmpCat1 > 1)
-				{
-					$subcatcount = $prop->getName("count(c_id)",SUB_CATEGORY, "status!=2 and c_name = ".$mainCatID." and  `c_id` IN (".$subCateIDs.")" );
-					if($subcatcount > 0)
-					$countEmpCat = $countEmpCat1 + $Inc_count;
-					else
-					$countEmpCat = $countEmpCat1 + $Inc_count - $countUnassignEmpCat1;
-				}
-				else if($Inc_count>0)
-				$countEmpCat = $countEmpCat1 + $Inc_count - $countUnassignEmpCat1;
-				else
-				$countEmpCat = $countEmpCat1;
+					for($EAE=0; $EAE < $count; $EAE++) 
+					$EmpIDsArray[] = $EmpFromAE[$EAE]['emp_id'];
+					//print_r(array_unique($EmpIDsArray));
+					$countEmpCat = count(array_unique($EmpIDsArray));
+				}	
 			}
 			else
-			$countEmpCat = $countEmpCat1 + $Inc_count;
-		}
-		else
-		$countEmpCat = 0 + $Inc_count;
+			$countEmpCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=0 AND catID=".$mainCatID);
 			
-		
+			
+		/*Count Employee Start*/		
 		?>
 		<ul class="cd-accordion cd-accordion--animated margin-top-lg margin-bottom-lg" <?php echo  $Inc_count;?>>
 			<li class="cd-accordion__item cd-accordion__item--has-children">
@@ -233,79 +202,42 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 			for($j = 0; $j<$count_subCat; $j++)
 			{
 			$subCatID = $row_subCat[$j]['c_id'];
-			$Inc_count = 0;
+			
+			//Count Department Start
+			$countDepSubCat = 0;
 			if($departmentIDs != '')
 			{
-			$countSubCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
-			}
-			else
-			$countSubCat =0;
-			
-			if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
-			{
-				$EmpIDs = $rowEmpIDs['empIDs'];			
-				$sqlGetEmpIDs = 'Select GROUP_CONCAT( DISTINCT U.id ORDER BY U.id SEPARATOR ",") as GetEmpIDs from '.USERS.' U INNER JOIN assign_depart D on D.depart_id = U.department_id where D.depart_id IN ('.$DepartIDs.') AND U.status=0 AND D.status=0 AND D.catID='.$mainCatID.' AND D.subCatID='.$subCatID;
-				//echo $sqlGetEmpIDs;
-				$rowGetEmpIDs = $prop->get_Disp($sqlGetEmpIDs);
-				$rowGetEmpIDs = explode(',',$rowGetEmpIDs['GetEmpIDs']);
-				
-				$sqlFilterEmpIDs = 'select GROUP_CONCAT( DISTINCT emp_id ORDER BY emp_id SEPARATOR ",") as emp_id from assign_emp where status=0 AND emp_id IN ('.$EmpIDs.') AND catID='.$mainCatID.' AND subCatID='.$subCatID;
-				//echo $sqlFilterEmpIDs;
-				$GetEmpIDs = $prop->get_Disp($sqlFilterEmpIDs);
-				$GetEmpIDs = explode(',',$GetEmpIDs['emp_id']);
-				
-				if(count($GetEmpIDs)>0)
+				$DepartIDs = $departmentIDs;
+				$countDepSubCat = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
+			}			
+			//Count Department END
+			/*Count Employee Start*/
+				$countEmpSubCat = 0;
+				$sqlAllDep = "SELECT GROUP_CONCAT( DISTINCT depart_id ORDER BY depart_id SEPARATOR ',') as depart_id from assign_depart where status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID;
+				$getDepIds = $prop->get_Disp($sqlAllDep);
+				$countEmployees = 0;
+				if($getDepIds['depart_id'] != '')
 				{
-					for($AC=0; $AC < count($rowGetEmpIDs); $AC++)
-					{
-						if( in_array($rowGetEmpIDs[$AC],$GetEmpIDs) )
-						{
-							//echo $rowGetEmpIDs[$AC];
-						}
-						else if($rowGetEmpIDs[$AC] != '')
-						{
-							$Inc_count++;
-							//echo "notIN".$rowGetEmpIDs[$AC];
-						}
-					}
-				}
-				else
-				{
-					$Inc_count = count($rowGetEmpIDs);
-				}	
-			$countEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status!=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
-			
-			$countUnAssEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID);
-				if($countEmpSubCat > 0 or $Inc_count > 0)
-				{
-				
-					if($Inc_count > 0 and $countEmpSubCat > 0 and $countUnAssEmpSubCat > 0)
-					{
-						$pagecount = $prop->getName("count(p_id)",PAGES, "page_status!=2 and category = ".$subCatID." and  `p_id` IN (".$pageIDs.")" );
-						if($pagecount > 0)
-						$countEmpSubCat = $countEmpSubCat + $Inc_count ;
-						else
-						$countEmpSubCat = $countEmpSubCat + $Inc_count - $countUnAssEmpSubCat ;
-					}
-					else if($Inc_count > 0 and $countEmpSubCat > 1)
-					{
-						$pagecount = $prop->getName("count(p_id)",PAGES, "page_status!=2 and category = ".$subCatID." and  `p_id` IN (".$pageIDs.")" );
-						if($pagecount > 0)
-						$countEmpSubCat = $countEmpSubCat + $Inc_count ;
-						else
-						$countEmpSubCat = $countEmpSubCat + $Inc_count - $countUnAssEmpSubCat ;
-					}
-					else if($Inc_count>0)
-					$countEmpSubCat = $countEmpSubCat + $Inc_count - $countUnAssEmpSubCat ;
-					else
-					$countEmpSubCat = $countEmpSubCat;
+					$EmpIDsArray = array();
+					$EmpFromAD = $prop->getAll('id',USERS,'where department_id IN ('.$getDepIds['depart_id'].') and status!=2 and u_type = 4');
+					$count = count($EmpFromAD);
+					for($EAD=0; $EAD<$count; $EAD++) 
+					$EmpIDsArray[] = $EmpFromAD[$EAD]['id'];
+					
+					$EmpFromAE = $prop->getAll('emp_id','assign_emp','where catID = '.$mainCatID.' AND subCatID='.$subCatID.' and status = 0');
+					$count = count($EmpFromAE);
+					for($EAE=0; $EAE < $count; $EAE++) 
+					$EmpIDsArray[] = $EmpFromAD[$EAE]['id'];
+					
+					$countUnassignEmp = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND catID=".$mainCatID." AND subCatID=".$subCatID );
+					
+					$countEmpSubCat = count(array_unique($EmpIDsArray)) - $countUnassignEmp;
 					
 				}
 				else
-				$countEmpSubCat = $countEmpSubCat + $Inc_count;
-			}
-			else
-			$countEmpSubCat = $Inc_count;
+				$countEmpSubCat = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=0 AND catID=".$mainCatID." AND subCatID=".$subCatID );
+				
+			/*Count Employee Start*/
 			?>
 			  <ul class="cd-accordion__sub cd-accordion__sub--l1 main_cate_checkbox<?php echo $mainCatID;?>">
 				<li class="cd-accordion__item cd-accordion__item--has-children">
@@ -314,7 +246,7 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 					  <label class="category-label" for="sub_cate_<?php echo $mainCatID.$subCatID;?>"></label>
 				  </div>
 				  <input class="cd-accordion__input" type="checkbox" name ="sub-group-<?php echo $mainCatID.$subCatID;?>" id="sub-group-<?php echo $mainCatID.$subCatID;?>">
-				  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-<?php echo $mainCatID.$subCatID;?>"><span class="span1"><?php echo $row_subCat[$j]['sc_name'];?></span><span class="span2"><a><?php echo $countSubCat;?></a>
+				  <label class="cd-accordion__label cd-accordion__label--icon-folder" for="sub-group-<?php echo $mainCatID.$subCatID;?>"><span class="span1"><?php echo $row_subCat[$j]['sc_name'];?></span><span class="span2"><a><?php echo $countDepSubCat;?></a>
 				  <a class="addDepartment" data-id="sub_cate_<?php echo $mainCatID.$subCatID;?>" data-toggle="modal" data-target="#myModalDepartment" style="font-size:16px;">
 					<i class="fa fa-plus-circle" aria-hidden="true"></i>
 				  </a>
@@ -332,62 +264,49 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 					for($k = 0; $k<$count_programs; $k++)
 					{
 					$pID = $row_programs[$k]['p_id'];
-					$Inc_count = 0;
-					if($departmentIDs != '')
-					$countProgram = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
-					else
-					$countProgram = 0;
 					
-					if(count($rowEmpIDs) > 0 and $rowEmpIDs['empIDs'] != '')
+					//Count Department Start
+					$countDepProgram = 0;
+					if($departmentIDs != '')
 					{
-						$EmpIDs = $rowEmpIDs['empIDs'];			
-						$sqlGetEmpIDs = 'Select GROUP_CONCAT( DISTINCT U.id ORDER BY U.id SEPARATOR ",") as GetEmpIDs from '.USERS.' U INNER JOIN assign_depart D on D.depart_id = U.department_id where D.depart_id IN ('.$DepartIDs.') AND U.status=0 AND D.status=0 AND D.catID='.$mainCatID.' AND D.subCatID='.$subCatID.' AND programID='.$pID;
-						//echo $sqlGetEmpIDs;
-						$rowGetEmpIDs = $prop->get_Disp($sqlGetEmpIDs);
-						$rowGetEmpIDs = explode(',',$rowGetEmpIDs['GetEmpIDs']);
-						
-						$sqlFilterEmpIDs = 'select GROUP_CONCAT( DISTINCT emp_id ORDER BY emp_id SEPARATOR ",") as emp_id from assign_emp where status=0 AND emp_id IN ('.$EmpIDs.') AND catID='.$mainCatID.' AND subCatID='.$subCatID.' AND programID='.$pID;
-						//echo $sqlFilterEmpIDs;
-						$GetEmpIDs = $prop->get_Disp($sqlFilterEmpIDs);
-						$GetEmpIDs = explode(',',$GetEmpIDs['emp_id']);
-						
-						if(count($GetEmpIDs)>0)
+						$DepartIDs = $departmentIDs;
+						$countDepProgram = $prop->getName('count(DISTINCT depart_id)', 'assign_depart', "status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
+					}
+					//Count Department END
+					/*Count Employee Start*/
+						$countEmpSubCat = 0;
+						$sqlAllDep = "SELECT GROUP_CONCAT( DISTINCT depart_id ORDER BY depart_id SEPARATOR ',') as depart_id from assign_depart where status!=2 AND depart_id IN (".$DepartIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID;
+						$getDepIds = $prop->get_Disp($sqlAllDep);
+						$countEmpProgram = 0;
+						if($getDepIds['depart_id'] != '')
 						{
-							for($AC=0; $AC < count($rowGetEmpIDs); $AC++)
-							{
-								if( in_array($rowGetEmpIDs[$AC],$GetEmpIDs) )
-								{
-									//echo $rowGetEmpIDs[$AC];
-								}
-								else if($rowGetEmpIDs[$AC] != '')
-								{
-									$Inc_count++;
-									//echo "notIN".$rowGetEmpIDs[$AC];
-								}
-							}
+							$EmpIDsArray = array();
+							$EmpFromAD = $prop->getAll('id',USERS,'where department_id IN ('.$getDepIds['depart_id'].') and status!=2 and u_type = 4');
+							$count = count($EmpFromAD);
+							for($EAD=0; $EAD<$count; $EAD++) 
+							$EmpIDsArray[] = $EmpFromAD[$EAD]['id'];
+							
+							$EmpFromAE = $prop->getAll('emp_id','assign_emp','where catID = '.$mainCatID.' AND subCatID='.$subCatID.' and status = 0 AND programID='.$pID);
+							$count = count($EmpFromAE);
+							for($EAE=0; $EAE < $count; $EAE++) 
+							$EmpIDsArray[] = $EmpFromAD[$EAE]['id'];
+							
+							$countUnassignEmp = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID );
+							
+							$countEmpProgram = count(array_unique($EmpIDsArray)) - $countUnassignEmp;
+							
 						}
 						else
-						{
-							$Inc_count = count($rowGetEmpIDs);
-						}
-					
-					//echo $Inc_count;
-					$countEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
-					$countUnAssEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=2 AND emp_id IN (".$EmpIDs.") AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID);
-						//echo $countUnAssEmpProgram.$Inc_count.$countEmpProgram;
-						//echo $countEmpProgram ;
-						$countEmpProgram = $countEmpProgram + $Inc_count - $countUnAssEmpProgram;
+						$countEmpProgram = $prop->getName('count(DISTINCT emp_id)', 'assign_emp', "status=0 AND catID=".$mainCatID." AND subCatID=".$subCatID." AND programID=".$pID );
 						
-					}
-					else
-					$countEmpProgram = $Inc_count;
+					/*Count Employee Start*/
 					?>
 					<li class="cd-accordion__item">
 						<div class="checkbox checkbox-success porgram_checkbox">
 						  <input id="porgram_<?php echo $mainCatID.$subCatID.$pID;?>" data-class="subcate<?php echo $subCatID;?>" class="program_check" type="checkbox" value="<?php echo $mainCatID;?>-<?php echo $subCatID;?>-<?php echo $pID;?>" name="BeSafePorgram[]">
 						  <label class="category-label" for="porgram_<?php echo $mainCatID.$subCatID.$pID;?>"></label>
 						</div>
-						<div class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1"><a href="add-training-design.php?programID=<?php echo $pID;?>&company_id=<?php echo $company_id;?>"><?php echo $row_programs[$k]['title'];?></a></span><span class="span2"><a href="add-training-design.php?programID=<?php echo $pID;?>&company_id=<?php echo $company_id;?>""><?php echo $countProgram;?></a>
+						<div class="cd-accordion__label cd-accordion__label--icon-img" href="add-training-design.php"><span class="span1"><a href="add-training-design.php?programID=<?php echo $pID;?>&company_id=<?php echo $company_id;?>"><?php echo $row_programs[$k]['title'];?></a></span><span class="span2"><a href="add-training-design.php?programID=<?php echo $pID;?>&company_id=<?php echo $company_id;?>""><?php echo $countDepProgram;?></a>
 						<a class="addDepartment" data-id="porgram_<?php echo $mainCatID.$subCatID.$pID;?>" data-toggle="modal" data-target="#myModalDepartment" style="font-size:16px;">
 						<i class="fa fa-plus-circle" aria-hidden="true"></i>
 					  </a>
@@ -413,7 +332,7 @@ GROUP_CONCAT( DISTINCT p.p_id ORDER BY p.p_id SEPARATOR ",") as programIDs from 
 		} 
 	}
 	else
-	echo '<p style="border: 1px solid #ccc;padding: 10px;text-align: center;">No record found</p>';	
+	echo '<p style="border: 1px solid #ccc;padding: 10px;text-align: center;">No records found</p>';	
 ?>
 <script>
 jQuery(document).ready(function() {

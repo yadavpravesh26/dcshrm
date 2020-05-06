@@ -28,12 +28,13 @@
                     <li> <a href="page-builder.php">Add New Page</a> </li>
                      <?php } ?>
                     <li> <a href="manage-new-page.php">Manage Be Safe Pages</a> </li>
+                    <li> <a href="manage-assign.php" >Assign Be Safe Pages</a></li>
                 </ul>
             </li>
            
            <?php } ?>
           	<li class=""> <a href="#" class="waves-effect"><i class="ti-medall-alt"></i> <span class="hide-menu">Settings<span class="fa arrow"></span> </span></a>
-                <ul <?php if($current_page != 'page-builder.php' and $current_page != 'manage-new-page.php' and $current_page != 'dashboard.php'){echo $active_css;} else{ echo 'class="nav nav-second-level"';}?>>
+                <ul <?php if($current_page != 'page-builder.php' and $current_page != 'manage-assign.php' and $current_page != 'manage-new-page.php' and $current_page != 'dashboard.php'){echo $active_css;} else{ echo 'class="nav nav-second-level"';}?>>
                     <?php if($session['b_type']===0){ ?>
                     <li> 
 				<a href="manage-category.php" class="waves-effect"><i class="ti-settings"></i> <span class="hide-menu">Manage Category </span></a> 
@@ -52,8 +53,6 @@
                     <li> <a href="manage-training.php">Manage Training</a> </li>
                     </ul>
                     </li>
-                    
-                     <li> <a href="manage-assign.php" class="waves-effect"><i class="fa fa-building-o" aria-hidden="true"></i> <span class="hide-menu">Manage Assign </span></a></li>
                     
                     <li> <a href="#" class="waves-effect"><i class="fa fa-tasks" aria-hidden="true"></i> Manage Jobs <span class="fa arrow"></span> </a> 
                     <ul class="nav nav-second-level">
@@ -120,6 +119,7 @@
                     <li class=""> <a href="manage-departments.php" class="waves-effect"><i class="ti-settings"></i> <span class="hide-menu">Manage Departments </span></a>
                     </li>
                     <li> <a href="survey-details.php" class="waves-effect"><i class="ti-user"></i> <span class="hide-menu">Quiz Report </span></a> </li>
+                    <li> <a href="checklist-details.php" class="waves-effect"><i class="fa fa-list"></i> <span class="hide-menu">Checklist Report </span></a> </li>
                     <li class=""> <a href="#" class="waves-effect"><i class="ti-medall-alt"></i> <span class="hide-menu">Manage Certificates<span class="fa arrow"></span> </span></a>
                         <ul class="nav nav-second-level">
                             <li> <a href="certificate-page.php">Add New Certificate</a> </li>

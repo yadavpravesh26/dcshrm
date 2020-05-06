@@ -727,11 +727,11 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
                                                             <?php
 															$first_cat='';
 															$mod_cat_id = '';
-                                                            $catfets =  "SELECT * FROM cats WHERE status=0";
+                                                            $catfets =  "SELECT * FROM cats WHERE status=0 order by c_name ASC";
 															$rowcat=$prop->getAll_Disp($catfets);
 															if(isset($curr_val[category]) and $curr_val[category] != '')
 															{
-																$sql =  "SELECT * FROM cat_sub WHERE status=0 AND c_id=$curr_val[category]";
+																$sql =  "SELECT * FROM cat_sub WHERE status=0 AND c_id=$curr_val[category] order by sc_name ASC";
 																//echo $sql;
 																$mod_cat = $prop->getAll_Disp($sql);
 																$mod_cat_id = $mod_cat[0][c_name];
@@ -767,7 +767,7 @@ if(isset($_REQUEST['id']) && $_REQUEST['id']!=''){
                                                             <?php
 															if($mod_cat_id != '')
 															$first_cat = $mod_cat_id;
-                                                            $catfetsub =  "SELECT * FROM cat_sub WHERE c_name='". $first_cat ."' AND status=0";												$rowcatub=$prop->getAll_Disp($catfetsub);
+                                                            $catfetsub =  "SELECT * FROM cat_sub WHERE c_name='". $first_cat ."' AND status=0 order by sc_name ASC";												$rowcatub=$prop->getAll_Disp($catfetsub);
 
 															for($di=0; $di<count($rowcatub); $di++)
 															 {

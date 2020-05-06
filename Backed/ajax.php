@@ -894,7 +894,7 @@ if($meth=='get-subCategory')
 		$status = 1;
 		$subcate = '<option value="">Select Sub Category</option>';
 
-		$sql =  "SELECT * FROM cat_sub WHERE status=0 AND c_name=$id";
+		$sql =  "SELECT * FROM cat_sub WHERE status=0 AND c_name=$id order by sc_name ASC";
 
 		$row=$prop->getAll_Disp($sql);
 

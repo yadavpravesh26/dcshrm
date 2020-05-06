@@ -8,7 +8,7 @@ $db = $cdb->getDb();
 if(isset($_POST['company_id']) and $_POST['company_id'] != '')
 {
 	$company_id = $_POST['company_id'];
-	$where_dep = ' where dep_status != 2 and company_id='.$company_id;
+	$where_dep = ' where dep_status != 2 and company_id='.$company_id.' order by dep_name ASC';
 	$listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
 	$departmentIDs='';
 	for($i=0; $i < count($listDepart); $i++){ 

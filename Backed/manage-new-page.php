@@ -212,14 +212,14 @@ if(bckPermission($session['b_type'])){
  										<option value="">Select</option>
  										<?php
  										// Perform queries
- 									$catfets =  "SELECT * FROM `".MAIN_CATEGORY."` WHERE status=0";
+ 									$catfets =  "SELECT * FROM `".MAIN_CATEGORY."` WHERE status=0 order by c_name ASC";
  									$rowcat=$prop->getAll_Disp($catfets);
  									for($i=0; $i<count($rowcat); $i++)
  										 {
  									?>
  										<optgroup label="<?php echo $rowcat[$i]['c_name']; ?>">
  											<?php
- 											$catfetsub =  "SELECT * FROM `".SUB_CATEGORY."` WHERE c_name='". $rowcat[$i]['c_id']."' AND status=0";
+ 											$catfetsub =  "SELECT * FROM `".SUB_CATEGORY."` WHERE c_name='". $rowcat[$i]['c_id']."' AND status=0 order by sc_name ASC";
  											$rowcatub=$prop->getAll_Disp($catfetsub);
  											for($di=0; $di<count($rowcatub); $di++)
  											 {

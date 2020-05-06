@@ -27,27 +27,30 @@ if(isset($_POST['acknowledgeBtn']))
 				);
 	$result = $prop->add('acknowledge', $input);
 }
-function ger_origenal_url($url)
+function get_origenal_url($url)
 {
-    $ch = curl_init($url);
-    curl_setopt($ch,CURLOPT_HEADER,true); // Get header information
-    curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION,false);
-    $header = curl_exec($ch);
-    
-    $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header)); // Parse information
-        
-    for($i=0;$i<count($fields);$i++)
+    $curl = curl_init();
+	curl_setopt_array($curl, array(    
+    CURLOPT_URL => $url,
+    CURLOPT_HEADER => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_NOBODY => true));
+	$header = explode("\n", curl_exec($curl));
+	curl_close($curl);
+	for($i=0;$i<count($header);$i++)
     {
-        if(strpos($fields[$i],'Location') !== false)
+        if(strpos($header[$i],'Location') !== false or strpos($header[$i],'location') !== false)
         {
-            $url = str_replace("Location: ","",$fields[$i]);
-        }
-    }
-    return $url;
+            $url = str_replace("Location: ","",$header[$i]);
+			$url = str_replace("location: ","",$url);
+		}
+	}
+	return $url;
 }
 function long_to_short_url($long_url)
 {
+	//$long_url = 'https://dchsrm.survey360pro.com/index-dcshrm.php?s=Y5JTMmFWrs';
+	//echo $long_url;
 	$client_id = '58989d0612817317372c79680be27f8ce8d46320';
 	$client_secret = 'e866b2b37a4e2706edb2002ae31d89ee64a9a3e0';
 	$user_access_token = '0dbfe11922a256a03e1d04ef93c40d6e9590329a';
@@ -60,7 +63,7 @@ function long_to_short_url($long_url)
 	$params['longUrl'] = $long_url;
 	$params['domain'] = 'bit.ly';
 	$results = bitly_get('shorten', $params);
-	
+	//print_r($results);
 	return $results['data']['url'];
 }
 ?>
@@ -484,6 +487,9 @@ ul.unstyled.centered {
                       <li class="nav-item">
                         <a class="nav-link" href="#Videos_tab" role="tab" data-toggle="tab">Videos</a>
                       </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#Checklist_tab" role="tab" data-toggle="tab" aria-expanded="false">Checklist</a>
+                      </li>
                     </ul>
                 </div>
 				<div class="col-md-9 text-box" id="runtime_descript">
@@ -618,7 +624,8 @@ ul.unstyled.centered {
                              <?php
                             $catfetdoc =  "SELECT * FROM dynamic_form WHERE form_type=0 AND d_form_id IN(".$curr_val['quiz'].") AND d_detele_status=0";
                             $rowdoc=$prop->getAll_Disp($catfetdoc);
-                            $CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['fid']));
+                            /*Send Data TO https://survey360pro.com/ */
+							$CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['fid']));
                             $user_name = $CompanyId['name'];
                             $email = $CompanyId['email'];
                             $contact_no = $CompanyId['contact_no'];
@@ -628,16 +635,14 @@ ul.unstyled.centered {
                             
                             for($i=0; $i<count($rowdoc); $i++)
                              {
-                             $quiz_url = ger_origenal_url($rowdoc[$i][quiz_url]);
-                             $quiz_url = str_replace("asia","dcshrm",$quiz_url);
-                             $encript = base64_encode($CompanyId['u_id']."-".$session['fid']."-".$fname."-".$lname."-".$email."-".$contact_no);
-                             
-                             $quiz_url2 = $quiz_url."&data=".$encript;					 
-                             $quiz_url = long_to_short_url($quiz_url2);
-                             
-                                            
+                             $quiz_url = get_origenal_url($rowdoc[$i][quiz_url]);
+							 $quiz_url = str_replace("asia","dcshrm",$quiz_url);
+							 $encript = $CompanyId['u_id']."-".$session['fid']."-".$fname."-".$lname."-".$email."-".$contact_no."-survey";
+                             $encript = base64_encode($encript);
+                             $quiz_url = long_to_short_url(trim($quiz_url)."&data=".$encript);
+							             
                             ?>
-                                <li><a href="<?php echo  $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-question-circle "></i><span class="title"><?php echo $rowdoc[$i][d_template_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                <li><a href="<?php echo $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-question-circle "></i><span class="title"><?php echo $rowdoc[$i][d_template_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
                                 <?php }?>
                             </ul>
                             </div>
@@ -694,6 +699,36 @@ ul.unstyled.centered {
 						</div>
 						<?php } ?>
                      </div>
+                     <div role="tabpanel" class="tab-pane fade" id="Checklist_tab" aria-expanded="false">
+							 <?php if($curr_val['images']!="emp" && $curr_val['images']!=""){?>
+                             <div class="tab_inner">
+                                <ul Class="handout-sst">
+                                 <?php
+                                $catfetdoc =  "SELECT * FROM docs WHERE doc_type=4 AND doc_id IN(".$curr_val['images'].") AND doc_status=0";
+                                $rowdoc=$prop->getAll_Disp($catfetdoc);
+                                /*Send Data TO https://survey360pro.com/ */
+									$CompanyId = $prop->get('u_id,name,email,contact_no', USERS, array('id'=>$session['fid']));
+									$user_name = $CompanyId['name'];
+									$email = $CompanyId['email'];
+									$contact_no = $CompanyId['contact_no'];
+									$user_name = explode(' ',$user_name);
+									$fname = $user_name[0];
+									$lname = $user_name[1];
+									
+									for($i=0; $i<count($rowdoc); $i++)
+									 {
+									 $quiz_url = get_origenal_url($rowdoc[$i][doc_file]);
+									 $quiz_url = str_replace("asia","dcshrm",$quiz_url);
+									 $encript = $CompanyId['u_id']."-".$session['fid']."-".$fname."-".$lname."-".$email."-".$contact_no."-checklist";
+									 $encript = base64_encode($encript);
+									 $quiz_url = long_to_short_url(trim($quiz_url)."&data=".$encript);
+                                 ?>
+                                    <li><a href="<?php echo  $quiz_url; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-list" aria-hidden="true"></i> <span class="title"><?php echo $rowdoc[$i][doc_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                    <?php }?>
+                                </ul>
+                                </div>
+                         <?php } ?>
+                      </div>
                     </div>   
     			</div>
     			<div class="col-sm-3" id="sidebarRight">
@@ -734,7 +769,7 @@ ul.unstyled.centered {
 					
 					for($i=0; $i<count($rowdoc); $i++)
 					 {
-					 $quiz_url = ger_origenal_url($rowdoc[$i][quiz_url]);
+					 $quiz_url = get_origenal_url($rowdoc[$i][quiz_url]);
 					 $quiz_url = str_replace("asia","dcshrm",$quiz_url);
 					 $encript = base64_encode($CompanyId['u_id']."-".$session['fid']."-".$fname."-".$lname."-".$email."-".$contact_no);
 					 

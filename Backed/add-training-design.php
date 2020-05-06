@@ -16,6 +16,12 @@ if(empty($curr_val)){
 	header('location: manage-be-safe.php');
 	exit;
 }
+
+if(isset($_REQUEST['company_id']))
+$companyID = $_REQUEST['company_id'];
+else
+$companyID = $session['bid'];
+
 if(isset($_POST['btnEmpAssign']))
 {
 	if(isset($_POST['FlowType']))
@@ -92,35 +98,32 @@ if(isset($_POST['btnEmpAssign']))
 		setcookie('status', 'Success', time()+10);
 		setcookie('title', 'Employee Assigned Successfully', time()+10);
 		setcookie('err', 'success', time()+10);
-		header('Location: add-training-design.php?programID='.$page_id);
+		header('Location: add-training-design.php?programID='.$page_id.'&company_id='.$companyID);
 	}
 	else if($assign_count == 0 and $unassign_count == 0)
 	{
 		setcookie('status', 'Error', time()+10);
 		setcookie('title', 'Employee already Assigned', time()+10);
 		setcookie('err', 'error', time()+10);
-		header('Location: add-training-design.php?programID='.$page_id);
+		header('Location: add-training-design.php?programID='.$page_id.'&company_id='.$companyID);
 	}
 	else if($unassign_count != 0)
 	{
 		setcookie('status', 'Success', time()+10);
 		setcookie('title', 'Employee Unassigned Successfully', time()+10);
 		setcookie('err', 'success', time()+10);
-		header('Location: add-training-design.php?programID='.$page_id);
+		header('Location: add-training-design.php?programID='.$page_id.'&company_id='.$companyID);
 	}
 	else
 	{
 		setcookie('status', 'Error', time()+10);
 		setcookie('title', 'Employee already Unassigned'.$assignType, time()+10);
 		setcookie('err', 'error', time()+10);
-		header('Location: add-training-design.php?programID='.$page_id);
+		header('Location: add-training-design.php?programID='.$page_id.'&company_id='.$companyID);
 	}
 }
 
-if(isset($_REQUEST['company_id']))
-$companyID = $_REQUEST['company_id'];
-else
-$companyID = $session['bid'];
+
 
 $where_dep = ' where dep_status != 2 and company_id='.$companyID;
 $listDepart = $prop->getAll('*',DEPARTMENT_NEW, $where_dep, '', 0, 0);
@@ -432,6 +435,9 @@ button.btn.btn-success, button.btn {
                                                           <li class="nav-item">
                                                             <a class="nav-link" href="#Videos_tab" role="tab" data-toggle="tab" aria-expanded="false">Videos</a>
                                                           </li>
+                                                          <li class="nav-item">
+                                                            <a class="nav-link" href="#Checklist_tab" role="tab" data-toggle="tab" aria-expanded="false">Checklist</a>
+                                                          </li>
                                                         </ul>
                                                     </div>
                                                     <div class="text-box col-md-12" id="runtime_descript">
@@ -529,7 +535,7 @@ button.btn.btn-success, button.btn {
                                                                                     <div class="col-sm-4 col-md-4 pt1">
                                                                                         <a  class="dash" href="javascript:void();" onClick="document.getElementById('vid_frame').src='https://www.youtube.com/embed/<?php echo $ex[0]; ?>?autoplay=1&rel=0&showinfo=0&autohide=1'">
                                                                                           <span class="vid-thumb">
-                                                                                         <img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" /></span>
+                                                                                        <img class="you" width="100%" height="auto" src="http://img.youtube.com/vi/<?=$ex[0]?>/hqdefault.jpg" /></span>
                                                                                         </a>
                                                                                     </div>
                                                                                     <div class="col-sm-6 col-md-6 pt2"> 
@@ -547,6 +553,24 @@ button.btn.btn-success, button.btn {
                                                             </div>
                                                             <?php } ?>
                                                                                  </div>
+                                                                                 
+                                                         <div role="tabpanel" class="tab-pane fade" id="Checklist_tab" aria-expanded="false">
+                                                                 <?php if($curr_val['images']!="emp" && $curr_val['images']!=""){?>
+                                                                 <div class="tab_inner">
+                                                                    <ul Class="handout-sst">
+                                                                     <?php
+                                                                    $catfetdoc =  "SELECT * FROM docs WHERE doc_type=4 AND doc_id IN(".$curr_val['images'].") AND doc_status=0";
+                                                                    $rowdoc=$prop->getAll_Disp($catfetdoc);
+                                                                    for($i=0; $i<count($rowdoc); $i++)
+                                                                     {
+                                                                     
+                                                                     ?>
+                                                                        <li><a href="<?php echo  $rowdoc[$i][doc_file]; ?>" target="_blank" title="Click To Attend Quiz"><i class="fa fa-list" aria-hidden="true"></i> <span class="title"><?php echo $rowdoc[$i][doc_name]; ?></span><span class="iconn"><i class="fa fa-arrow-circle-right"></i></span></a></li>
+                                                                        <?php }?>
+                                                                    </ul>
+                                                                    </div>
+                                                             <?php } ?>
+                                                          </div>                        
                                                         </div>   
                                                     </div>
                                                     

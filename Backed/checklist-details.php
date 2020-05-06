@@ -173,11 +173,11 @@ font-size: 14px;
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Survey</h4> </div>
+                        <h4 class="page-title">Checklist</h4> </div>
                     <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
                         <ol class="breadcrumb">
                             <li><a href="dashboard.php">Dashboard</a></li>
-                            <li class="active">Survey List</li>
+                            <li class="active">Checklist List</li>
                         </ol>
                     </div>
                     <!-- /.col-lg-12 -->
@@ -189,7 +189,7 @@ font-size: 14px;
                     <div class="col-md-12">
                         <div class="white-box" style="overflow:hidden;">
 
-                            <h3 class="box-title m-b-0">List of Survey</h3>
+                            <h3 class="box-title m-b-0">List of Checklist</h3>
 
                             <div class="table-responsive dash-table">
                                  <table id="myTable" class="table table-striped table-bordered">
@@ -207,7 +207,7 @@ font-size: 14px;
                                     <tbody>
                                     <?php
                                     	$apiLink = 'https://pr.survey360pro.com/admin/api/dcshrm-api.php';
-										$fetch_con = "dcshrm-".$session['bid']."-survey-";
+										$fetch_con = "dcshrm-".$session['bid']."-checklist-";
 										$url = "$apiLink?user_details=".$fetch_con."&method=call_for_gues_id";
 										$result = processURL($url);
 										$all_survey = json_decode($result, true);
@@ -239,7 +239,7 @@ font-size: 14px;
                                         	<td><?php echo $output_gues[0]['g_name']." ".$output_gues[0]['last_name'];?></td>
                                             <td><?php echo $row[0]['email'];?></td>
                                             <td><?php echo $row[0]['contact_no'];?></td>                                            
-                                            <td><a class="ic-re" href="view_survey_details.php?emp_id=<?php echo $emp_id;?>&gues_id=<?php echo $gues_id;?>"><i class="icon-chart"></i>View Report</a></td>
+                                            <td><a class="ic-re" href="view_checklist_details.php?emp_id=<?php echo $emp_id;?>&gues_id=<?php echo $gues_id;?>"><i class="icon-chart"></i>View Report</a></td>
                                         </tr> 
                                         <?php } ?>   	
                                     </tbody>

@@ -17,7 +17,11 @@ if(isset($_POST['assignEmp']))
 {
 	
 	$BeSafePorgram = $_POST['BeSafePorgram'];
-	$checkDepart = $_POST['checkDepart'];
+	$checkDepart2 = $_POST['checkDepart'];
+	$checkDepart = 1;
+	if($_POST['employeeDpn'] != '' and $checkDepart2 == 0)
+	$checkDepart = 0;
+	
 	$insert_count = 0;
 	$WhichType = '';
 	$msg = '';
@@ -120,7 +124,11 @@ if(isset($_POST['assignEmp']))
 if(isset($_POST['unassignEmp']))
 {
 	$BeSafePorgram = $_POST['BeSafePorgram'];
-	$checkDepart = $_POST['checkDepart'];
+	$checkDepart2 = $_POST['checkDepart'];
+	$checkDepart = 1;
+	if($_POST['employeeDpn'] != '' and $checkDepart2 == 0)
+	$checkDepart = 0;
+
 	$insert_count = 0;
 	$WhichType = '';
 	$msg = '';
@@ -247,7 +255,7 @@ $listEmps = $prop->getAll('*',USERS, $where_emp, '', 0, 0);
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="img/DCSHRM_logo-g.png">
-    <title>Manage Assign</title>
+    <title>Assign Be Safe Pages</title>
      <!-- Bootstrap Core CSS -->
 	<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link href="plugins/bower_components/bootstrap-extension/css/bootstrap-extension.css" rel="stylesheet">
@@ -380,6 +388,9 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 .addDepartment,.addEmp{display:none !important;}
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus{background-color: transparent;
     color: #333;}
+input.form-control.multiselect-search{max-width:80%;}
+.multiselect-filter .input-group-btn{margin-right: 10px;}	
+.multiselect-clear-filter{box-shadow: none;}
 </style>
 	<link href="plugins/bower_components/multiSelectCheckbox/bootstrap-multiselect.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -401,11 +412,11 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
             <div class="container-fluid">
                 <div class="row bg-title">
                     <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                        <h4 class="page-title">Manage Assign </h4> </div>
+                        <h4 class="page-title">Assign Be Safe Pages </h4> </div>
                     <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
                         <ol class="breadcrumb">
                             <li><a href="dashboard.php">Dashboard</a></li>
-                            <li class="active">Manage Assign</li>
+                            <li class="active">Assign Be Safe Pages</li>
                         </ol>
                     </div>
                     <!-- /.col-lg-12 -->
@@ -413,7 +424,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="white-box">
-                            <h3 class="box-title m-b-0">List of Be safe Pages</h3>
+                            <h3 class="box-title m-b-0">Assign Be Safe Pages</h3>
                             <form method="post" enctype="multipart/form-data" id="formBeSafe">
                             	<input type="hidden" name="checkDepart" id="checkDepart" >
                                 <input type="hidden" name="empID" id="empID" >
@@ -427,7 +438,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 										else
 										$compID = '';
 										
-										$sqlcomp = "SELECT  * from ".USERS." WHERE `u_type`= 2 and status != 2";
+										$sqlcomp = "SELECT  * from ".USERS." WHERE `u_type`= 2 and status != 2 order by c_name ASC";
 										$rowComp=$prop->getAll_Disp($sqlcomp);
 										for($i=0; $i<count($rowComp); $i++){
 											if($compID == $rowComp[$i]['id'])
@@ -440,12 +451,13 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                     </select>
                                     </div>    
                                     <div class="col-md-3">
-                                    <select class="form-control select2" id="departmentDpn" name="departmentDpn[]" required>
+                                    <select class="form-control select2" id="departmentDpn" name="departmentDpn[]" data-error="Please enter valid phone number" required>
                                         <option value="">Select Departments</option>
                                     </select>
+                                    <div class="help-block with-errors"></div>
                                     </div>
                                     <div class="col-md-3">
-                                    	<select class="form-control select2" id="employeeDpn" name="employeeDpn[]" required>
+                                    	<select class="form-control select2" id="employeeDpn" name="employeeDpn[]">
                                             <option value="">Select Employees</option>
                                         </select>
                                           
@@ -460,9 +472,11 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
                                     <div class="col-md-2">Departments Assigned</div>
                                     <div class="col-md-2">Employees Assigned</div>
                                 </div>
-                                <div id="filter_data_val">
-                                  <p style="border: 1px solid #ccc;padding: 10px;text-align: center;">No record found</p>
-                                </div>   
+                                <div class="row" style="border: 1px solid #eaeff3;">
+                                    <div id="filter_data_val" class="col-md-12">
+                                      <p style="text-align:center;padding: 10px;">No records found</p>
+                                    </div> 
+                                </div>  
                             </form>
                         </div>
                     </div>
@@ -476,64 +490,41 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
         </div>
         <!-- /#page-wrapper -->
     </div>
-     	<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
-
+     	 <!-- /#wrapper -->
+		<script src="plugins/bower_components/jquery/dist/jquery.min.js"></script>
         <!-- Bootstrap Core JavaScript -->
-
         <script src="bootstrap/dist/js/tether.min.js"></script>
-
         <script src="bootstrap/dist/js/bootstrap.min.js"></script>
-
         <script src="plugins/bower_components/bootstrap-extension/js/bootstrap-extension.min.js"></script>
-
         <!-- Menu Plugin JavaScript -->
-
         <script src="plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js"></script>
-
         <!--slimscroll JavaScript -->
-
         <script src="js/jquery.slimscroll.js"></script>
-
-        <!--Wave Effects -->
-
-        <script src="js/waves.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-
         <script src="js/custom.min.js"></script>
-
-        <script src="js/jasny-bootstrap.js"></script>
-
-        <!--Style Switcher -->
-
-        <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
-
-        <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-
-		<!-- Sweet-Alert  -->
-
-		<script src="plugins/bower_components/sweetalert/sweetalert.min.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-
-        <script src="js/custom.min.js"></script>
-
         <script src="js/validator.js"></script>
-
-        <script src="plugins/bower_components/custom-select/custom-select.min.js" type="text/javascript"></script>
-
+        <!-- Sweet-Alert  -->
+        <script src="plugins/bower_components/sweetalert/sweetalert.min.js"></script>
+        <!--Wave Effects -->
+        <script src="js/waves.js"></script>
+        <!-- Custom Theme JavaScript -->
+        <script src="js/custom.min.js"></script>
+        <script src="js/jasny-bootstrap.js"></script>
+        <!--Style Switcher -->
+        <script src="plugins/bower_components/styleswitcher/jQuery.style.switcher.js"></script>
         <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-
-        <script src="plugins/bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
-
-        <script src="plugins/bower_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
-
+    
+        <!-- Custom Theme JavaScript -->
+        <script src="js/custom.min.js"></script>
+        <script src="js/validator.js"></script>
         
-        <script src="plugins/bower_components/datatables/jquery.dataTables.min.js"></script>
+        <!-- Select2 -->
+        <script src="plugins/bower_components/custom-select/custom-select.min.js" type="text/javascript"></script>
+        <script src="plugins/bower_components/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
+            
         <!--Acordian 3 level init-->
-		<script src="js/main.js"></script>
+        <script src="js/main.js"></script>
         <script src="js/util.js"></script>
-        
+        <!--multiselect Dropdown-->
         <script type="text/javascript" src="plugins/bower_components/multiSelectCheckbox/bootstrap-multiselect.js"></script>
     <script>
     $(function() {
@@ -637,6 +628,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 	
 	function call_filter_data(keyword,departID,empID,company_id)
 	{
+		$('#filter_data_val').html('<p class="text-center p-t-10 p-b-10">Loadiing <i class="fa fa-spinner fa-spin"></i></p>');
 		$.ajax({
 			url: "be_safe_list.php",
 			type: 'POST',
@@ -657,6 +649,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 						  	numberDisplayed: 1,
 							includeSelectAllOption: true,
 							selectAllValue: 'depMultiselect-all',
+							enableCaseInsensitiveFiltering: true
 						});			
 					}
 				})				
@@ -686,6 +679,7 @@ button.btn.btn-success,.modal-footer button.btn{color:#FFFFFF;}
 						numberDisplayed: 1,
 						includeSelectAllOption: true,
 						selectAllValue: 'empMultiselect-all',
+						enableCaseInsensitiveFiltering: true
 					});	
 				}
 				else
